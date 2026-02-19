@@ -17,18 +17,18 @@ export default function ContactPage({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
             <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">
               <Mail className="h-6 w-6 text-[#112B4F]" />
             </div>
             <h3 className="text-white font-bold text-lg mb-2">Email</h3>
-            <a href="mailto:hello@backnbodyhurts.com" className="text-[#FAA21B] hover:underline">
-              hello@backnbodyhurts.com
+            <a href="mailto:info@bnbhurtspodcast.com" className="text-[#FAA21B] hover:underline">
+              info@bnbhurtspodcast.com
             </a>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
+          {/* <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
             <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">
               <Phone className="h-6 w-6 text-[#112B4F]" />
             </div>
@@ -36,7 +36,7 @@ export default function ContactPage({
             <a href="tel:+14161234567" className="text-[#FAA21B] hover:underline">
               (416) 123-4567
             </a>
-          </div>
+          </div> */}
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
             <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">

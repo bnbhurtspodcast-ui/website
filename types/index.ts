@@ -8,6 +8,7 @@ export interface Episode {
   audioUrl: string
   imageUrl: string
   episodeType: string  // "full" | "trailer" | "bonus"
+  youtubeVideoId?: string
 }
 
 // ── Supabase database types (snake_case matching column names) ─────────────────

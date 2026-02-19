@@ -1,0 +1,36 @@
+.description {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.75;
+  font-size: 0.9375rem;
+}
+
+.description p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  display: block;
+  white-space: pre-line;
+}
+
+.description p:last-child {
+  margin-bottom: 0;
+}
+
+.description p:empty,
+.description p br:only-child {
+  margin-bottom: 0.5rem;
+}
+
+.description a {
+  color: #FAA21B;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
+}
+
+.description a:hover {
+  opacity: 0.75;
+}
+
+.description u {
+  text-decoration: none;
+}

@@ -2,6 +2,8 @@ import { XMLParser } from 'fast-xml-parser'
 import type { Episode } from '@/types'
 
 const RSS_FEED_URL = process.env.RSS_FEED_URL ?? 'https://anchor.fm/s/ee3c58cc/podcast/rss'
+const YOUTUBE_FEED_URL =
+  'https://www.youtube.com/feeds/videos.xml?channel_id=UCZRn7RdXN8MdFmGotY1E_zA'
 
 const CHANNEL_IMAGE =
   'https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/39869323/39869323-1702863954938-4037a7dc2fade.jpg'
@@ -32,6 +34,76 @@ export async function getEpisodes(): Promise<Episode[]> {
 export async function getEpisodeByGuid(guid: string): Promise<Episode | null> {
   const episodes = await getEpisodes()
   return episodes.find((ep) => ep.id === guid) ?? null
+}
+
+interface YouTubeVideo {
+  title: string
+  videoId: string
+  published: string
+}
+
+const ytParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '@_',
+  isArray: (name) => name === 'entry',
+})
+
+async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
+  try {
+    const res = await fetch(YOUTUBE_FEED_URL, { next: { revalidate: 1800 } })
+    if (!res.ok) return []
+    const xml = await res.text()
+    const parsed = ytParser.parse(xml)
+    const entries: Record<string, unknown>[] = parsed?.feed?.entry ?? []
+    return entries.map((e) => ({
+      title: (e['title'] as string) ?? '',
+      videoId: (e['yt:videoId'] as string) ?? '',
+      published: (e['published'] as string) ?? '',
+    }))
+  } catch {
+    return []
+  }
+}
+
+function normalizeTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/ep\.?\s*\d+[:\-–—]?\s*/gi, '') // strip episode numbers
+    .replace(/[^a-z0-9\s]/g, '')              // strip punctuation
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function matchVideo(episodeTitle: string, videos: YouTubeVideo[]): string | undefined {
+  const epNorm = normalizeTitle(episodeTitle)
+  const epWords = new Set(epNorm.split(' ').filter((w) => w.length > 2))
+
+  let bestMatch: YouTubeVideo | undefined
+  let bestScore = 0
+
+  for (const video of videos) {
+    const vtNorm = normalizeTitle(video.title)
+    if (vtNorm.includes(epNorm) || epNorm.includes(vtNorm)) {
+      return video.videoId
+    }
+    const vtWords = vtNorm.split(' ').filter((w) => w.length > 2)
+    const shared = vtWords.filter((w) => epWords.has(w)).length
+    const score = shared / Math.max(epWords.size, vtWords.length, 1)
+    if (score > bestScore) {
+      bestScore = score
+      bestMatch = video
+    }
+  }
+
+  return bestScore >= 0.5 ? bestMatch?.videoId : undefined
+}
+
+export async function getEpisodesWithVideo(): Promise<Episode[]> {
+  const [episodes, videos] = await Promise.all([getEpisodes(), getYouTubeVideos()])
+  return episodes.map((ep) => ({
+    ...ep,
+    youtubeVideoId: matchVideo(ep.title, videos),
+  }))
 }
 
 // ── Internal types ────────────────────────────────────────────────────────────

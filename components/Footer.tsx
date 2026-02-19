@@ -15,20 +15,19 @@ export function Footer() {
               <span className="text-xl font-bold text-white">Back n&apos; Body Hurts</span>
             </div>
             <p className="text-white/70 mb-4 max-w-md">
-              Real talk about life&apos;s aches, pains, and everything in between.
-              Join us weekly for unfiltered conversations that matter.
+              Proving opinionated guidance for all involved in the rave scene from the host to the attendees
             </p>
             <div className="flex gap-3">
-              <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Twitter">
+              {/* <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Twitter">
                 <Twitter className="h-5 w-5 text-white/70 group-hover:text-[#112B4F]" />
-              </a>
-              <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Instagram">
+              </a> */}
+              <a href="https://www.instagram.com/bnbhurtspodcast/" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Instagram">
                 <Instagram className="h-5 w-5 text-white/70 group-hover:text-[#112B4F]" />
               </a>
-              <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Facebook">
+              {/* <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="Facebook">
                 <Facebook className="h-5 w-5 text-white/70 group-hover:text-[#112B4F]" />
-              </a>
-              <a href="#" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="YouTube">
+              </a> */}
+              <a href="https://www.youtube.com/@BnBHurtsPodcast" className="p-2 bg-white/10 hover:bg-[#FAA21B] rounded-full transition-colors group" aria-label="YouTube">
                 <Youtube className="h-5 w-5 text-white/70 group-hover:text-[#112B4F]" />
               </a>
             </div>
@@ -41,7 +40,7 @@ export function Footer() {
               <li><Link href="/" className="text-white/70 hover:text-[#FAA21B] transition-colors">Home</Link></li>
               <li><Link href="/episodes" className="text-white/70 hover:text-[#FAA21B] transition-colors">Episodes</Link></li>
               <li><Link href="/about" className="text-white/70 hover:text-[#FAA21B] transition-colors">About</Link></li>
-              <li><a href="#subscribe" className="text-white/70 hover:text-[#FAA21B] transition-colors">Subscribe</a></li>
+              <li><Link href="/admin/signin" className="text-white/70 hover:text-[#FAA21B] transition-colors">Admin Sign In</Link></li>
             </ul>
           </div>
 
@@ -68,10 +67,10 @@ export function Footer() {
             <p className="text-white/60 text-sm">
               &copy; 2026 Back n&apos; Body Hurts Podcast. All rights reserved.
             </p>
-            <div className="flex gap-6 text-sm">
+            {/* <div className="flex gap-6 text-sm">
               <a href="#" className="text-white/60 hover:text-[#FAA21B] transition-colors">Privacy Policy</a>
               <a href="#" className="text-white/60 hover:text-[#FAA21B] transition-colors">Terms of Service</a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -60,7 +60,7 @@ export default function SignInPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="admin@backnbodyhurts.com"
+                  placeholder="info@bnbhurtspodcast.com"
                 />
               </div>
             </div>

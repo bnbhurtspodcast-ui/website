@@ -45,18 +45,18 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            <a
+            {/* <a
               href="#subscribe"
               className="px-5 py-2.5 rounded-full bg-[#FAA21B] text-[#112B4F] font-bold hover:bg-[#FAA21B]/90 transition-all shadow-lg"
             >
               Subscribe
-            </a>
-            <Link
+            </a> */}
+            {/* <Link
               href="/admin/signin"
               className="px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm text-white font-bold hover:bg-white/20 transition-all border border-white/20"
             >
               Admin
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -90,12 +90,12 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-              <a
+              {/* <a
                 href="#subscribe"
                 className="mx-4 px-4 py-2 rounded-full bg-[#FAA21B] text-[#112B4F] font-bold text-center"
               >
                 Subscribe
-              </a>
+              </a> */}
             </div>
           </div>
         )}

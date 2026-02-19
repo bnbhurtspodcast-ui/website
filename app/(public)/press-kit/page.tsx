@@ -1,6 +1,9 @@
 import { Download, FileText, Newspaper } from 'lucide-react'
+import { getEpisodes } from '@/lib/rss'
 
-export default function PressKitPage() {
+export default async function PressKitPage() {
+  const allEpisodes = await getEpisodes()
+
   return (
     <div className="py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -25,11 +28,11 @@ export default function PressKitPage() {
               { label: 'Podcast Name', value: "Back n' Body Hurts" },
               { label: 'Host', value: 'BNB Crew' },
               { label: 'Launch Date', value: 'December 2023' },
-              { label: 'Episode Count', value: '58+ Episodes' },
-              { label: 'Format', value: 'Weekly Interview & Discussion' },
-              { label: 'Category', value: 'Music / EDM' },
+              { label: 'Episode Count', value: allEpisodes.length },
+              { label: 'Format', value: 'Bi-Weekly Talks, Interview & Discussion' },
+              { label: 'Category', value: 'EDM' },
               { label: 'Location', value: 'Toronto, ON' },
-              { label: 'Contact', value: 'hello@backnbodyhurts.com' },
+              { label: 'Contact', value: 'info@bnbhurtspodcast.com' },
             ].map(({ label, value }) => (
               <div key={label}>
                 <h3 className="font-bold text-[#112B4F] mb-1">{label}</h3>
@@ -43,12 +46,12 @@ export default function PressKitPage() {
         <div className="bg-white rounded-2xl p-8 mb-12 shadow-xl">
           <h2 className="text-2xl font-bold text-[#112B4F] mb-4">About the Show</h2>
           <p className="text-gray-700 mb-4 leading-relaxed">
-            Back n&apos; Body Hurts is a Toronto-based podcast covering all things EDM — tips,
-            recommendations, and real talk about local and worldwide events. Each episode features
+            Back n&apos; Body Hurts is a Toronto-based podcast covering all things EDM, from the host to the attendees. Ranging from tips,
+            recommendations, real talk about local and worldwide events, and most importantly what makes raving great. Each episode features
             unscripted conversations with DJs, promoters, wellness experts, and scene veterans.
           </p>
           <p className="text-gray-700 leading-relaxed">
-            Since launching in late 2023, the show has published 58+ episodes and continues to grow,
+            Since launching in late 2023, the show has published {allEpisodes.length} episodes and continues to grow,
             attracting a loyal audience of EDM enthusiasts who appreciate the show&apos;s authentic,
             community-driven approach.
           </p>
@@ -144,11 +147,11 @@ export default function PressKitPage() {
             For interviews, features, or additional information, please contact our media team.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:press@backnbodyhurts.com"
+            <a href="mailto:info@bnbhurtspodcast.com"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#112B4F] text-white rounded-full font-bold hover:bg-[#112B4F]/90 transition-colors">
-              press@backnbodyhurts.com
+              info@bnbhurtspodcast.com
             </a>
-            <a href="mailto:hello@backnbodyhurts.com"
+            <a href="mailto:info@bnbhurtspodcast.com"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-[#112B4F] rounded-full font-bold hover:bg-white/90 transition-colors">
               General Inquiries
             </a>

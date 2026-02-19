@@ -28,7 +28,7 @@ export default async function HomePage() {
 
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#112B4F]/20 backdrop-blur-sm rounded-full text-[#112B4F] text-sm mb-6 font-bold">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              New episodes every week
+              New episodes every two week
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold text-[#112B4F] mb-6">
@@ -38,8 +38,7 @@ export default async function HomePage() {
             </h1>
 
             <p className="text-xl text-[#112B4F] font-medium mb-8 max-w-2xl mx-auto">
-              Real talk about life&apos;s aches, pains, and everything in between. No filters, just
-              honest conversations.
+              Proving opinionated guidance for all involved in the rave scene from the host to the attendees
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -70,7 +69,7 @@ export default async function HomePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 bg-[#FAA21B] rounded-full mb-4">
                 <Mic2 className="h-6 w-6 text-[#112B4F]" />
               </div>
-              <div className="text-3xl font-bold text-white mb-2">58+</div>
+              <div className="text-3xl font-bold text-white mb-2">{allEpisodes.length}</div>
               <div className="text-[#FAA21B] font-medium">Episodes Published</div>
             </div>
             <div className="text-center">
@@ -84,7 +83,7 @@ export default async function HomePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 bg-[#FAA21B] rounded-full mb-4">
                 <TrendingUp className="h-6 w-6 text-[#112B4F]" />
               </div>
-              <div className="text-3xl font-bold text-white mb-2">Weekly</div>
+              <div className="text-3xl font-bold text-white mb-2">Bi-Weekly</div>
               <div className="text-[#FAA21B] font-medium">New Episodes</div>
             </div>
           </div>
@@ -137,13 +136,20 @@ export default async function HomePage() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            {['Apple Podcasts', 'Spotify', 'Google Podcasts', 'YouTube'].map((platform) => (
-              <button
-                key={platform}
+            {[
+              { label: 'Apple Podcasts', href: 'https://podcasts.apple.com/us/podcast/back-n-body-hurts/id1722381103' },
+              { label: 'Spotify', href: 'https://open.spotify.com/show/7Evzpy1MHgZR8Yy9xDuxXY?trackId=4sMR8fuTzbUyzB0asxifV0' },
+              { label: 'YouTube', href: 'https://www.youtube.com/@BnBHurtsPodcast/featured' },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-6 py-3 bg-[#112B4F] text-white rounded-full font-bold hover:bg-[#112B4F]/90 transition-colors shadow-lg"
               >
-                {platform}
-              </button>
+                {label}
+              </a>
             ))}
           </div>
         </div>

@@ -10,11 +10,10 @@ export default function AboutPage() {
             <img src="/logo.png" alt="Back n' Body Hurts Podcast" className="w-32 h-32 md:w-40 md:h-40" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            About Back n&apos; Body Hurts
+            About Us
           </h1>
           <p className="text-xl text-[#FAA21B] font-medium leading-relaxed">
-            A Toronto-based podcast covering all things EDM — tips, recommendations, and real talk
-            about local and worldwide events
+            A Toronto-based podcast providing opinionated guidance for all involve in the rave scene from the host to the attendees
           </p>
         </div>
 
@@ -110,10 +109,10 @@ export default function AboutPage() {
             Have a guest suggestion or feedback? We&apos;d love to hear from you!
           </p>
           <a
-            href="mailto:hello@backnbodyhurts.com"
+            href="mailto:info@bnbhurtspodcast.com"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#112B4F] text-white rounded-full font-bold hover:bg-[#112B4F]/90 transition-colors shadow-lg"
           >
-            hello@backnbodyhurts.com
+            info@bnbhurtspodcast.com
           </a>
         </div>
       </div>

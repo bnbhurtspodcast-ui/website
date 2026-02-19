@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Play, Calendar, Clock } from 'lucide-react'
 import { useAudioPlayer } from './AudioPlayerContext'
 import type { Episode } from '@/types'
@@ -21,7 +22,10 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
   }
 
   return (
-    <div className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border-2 border-[#112B4F]/10 hover:border-[#FAA21B]">
+    <Link
+      href={`/episodes/${encodeURIComponent(episode.id)}`}
+      className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border-2 border-[#112B4F]/10 hover:border-[#FAA21B] block"
+    >
       <div className="relative aspect-video overflow-hidden">
         <img
           src={episode.imageUrl}
@@ -30,7 +34,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#112B4F]/80 via-[#112B4F]/0 to-[#112B4F]/0" />
         <button
-          onClick={() => setCurrentEpisode(episode)}
+          onClick={(e) => { e.preventDefault(); setCurrentEpisode(episode) }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 transform duration-200 shadow-lg"
         >
           <Play className="h-7 w-7 text-[#112B4F] ml-1" />
@@ -43,7 +47,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         </h3>
 
         <p className="text-gray-700 text-sm mb-4 line-clamp-2">
-          {episode.description}
+          {episode.description.replace(/<[^>]*>/g, '')}
         </p>
 
         <div className="flex items-center gap-4 text-sm text-gray-600">
@@ -57,6 +61,6 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
