@@ -52,3 +52,22 @@ export async function deleteTask(id: string) {
   await supabase.from('tasks').delete().eq('id', id)
   revalidatePath('/admin/tasks')
 }
+
+export async function changePassword(currentPassword: string, newPassword: string) {
+  const supabase = await createClient()
+
+  // Re-authenticate with current password to verify it
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { error: 'Not authenticated' }
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  })
+  if (signInError) return { error: 'Current password is incorrect' }
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
+  if (error) return { error: error.message }
+
+  return { success: true }
+}

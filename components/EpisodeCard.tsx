@@ -26,13 +26,13 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
       href={`/episodes/${encodeURIComponent(episode.id)}`}
       className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border-2 border-[#112B4F]/10 hover:border-[#FAA21B] block"
     >
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative overflow-hidden">
         <img
           src={episode.imageUrl}
           alt={episode.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#112B4F]/80 via-[#112B4F]/0 to-[#112B4F]/0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#112B4F]/30 via-[#112B4F]/0 to-[#112B4F]/0" />
         <button
           onClick={(e) => { e.preventDefault(); setCurrentEpisode(episode) }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 transform duration-200 shadow-lg"
@@ -41,7 +41,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         </button>
       </div>
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col h-[12rem]">
         <h3 className="text-lg font-semibold mb-2 line-clamp-2 text-[#112B4F] group-hover:text-[#FAA21B] transition-colors">
           {episode.title}
         </h3>
@@ -50,7 +50,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           {episode.description.replace(/<[^>]*>/g, '')}
         </p>
 
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        <div className="flex items-center gap-4 mt-auto text-sm text-gray-600">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             <span>{formatDate(episode.publishedAt)}</span>

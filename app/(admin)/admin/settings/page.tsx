@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Settings as SettingsIcon, User, Bell, Lock, Palette, Globe } from 'lucide-react'
+import ChangePasswordForm from './ChangePasswordForm'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -70,23 +71,7 @@ export default async function SettingsPage() {
             </div>
             <h2 className="text-xl font-bold text-[#112B4F]">Security</h2>
           </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-              <input type="password" className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none" placeholder="••••••••" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-              <input type="password" className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none" placeholder="••••••••" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-              <input type="password" className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none" placeholder="••••••••" />
-            </div>
-            <button className="w-full px-6 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition-colors">
-              Change Password
-            </button>
-          </div>
+          <ChangePasswordForm />
         </div>
 
         {/* Appearance */}
@@ -100,17 +85,17 @@ export default async function SettingsPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
-              <select className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none">
+              <select disabled className="w-full px-4 py-2 rounded-lg border-2 bg-gray-200 border-gray-200 focus:border-[#FAA21B] outline-none">
+                <option>Auto</option>
                 <option>Light</option>
                 <option>Dark</option>
-                <option>Auto</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-gray-400" />
-                <select className="flex-1 px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none">
+                <select disabled className="flex-1 px-4 py-2 rounded-lg border-2 bg-gray-200 border-gray-200 focus:border-[#FAA21B] outline-none">
                   <option>English</option>
                 </select>
               </div>

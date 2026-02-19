@@ -1,14 +1,27 @@
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
 import { submitContactForm } from './actions'
 
-export default function ContactPage({
+export default async function ContactPage({
   searchParams,
 }: {
   searchParams: Promise<{ success?: string; error?: string }>
 }) {
+  const { success, error } = await searchParams
+
   return (
     <div className="py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {success === 'true' && (
+          <div className="mb-8 px-5 py-4 rounded-xl bg-green-100 border-2 border-green-400 text-green-800 font-medium">
+            Your message was sent successfully. We&apos;ll get back to you soon!
+          </div>
+        )}
+        {error && (
+          <div className="mb-8 px-5 py-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-800 font-medium">
+            {decodeURIComponent(error)}
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>

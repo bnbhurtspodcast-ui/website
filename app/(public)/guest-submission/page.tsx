@@ -1,10 +1,27 @@
 import { Mic, Users, Calendar, Send } from 'lucide-react'
 import { submitGuestApplication } from './actions'
 
-export default function GuestSubmissionPage() {
+export default async function GuestSubmissionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string; error?: string }>
+}) {
+  const { success, error } = await searchParams
+
   return (
     <div className="py-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        {success === 'true' && (
+          <div className="mb-8 px-5 py-4 rounded-xl bg-green-100 border-2 border-green-400 text-green-800 font-medium">
+            Your application was submitted successfully. We&apos;ll be in touch soon!
+          </div>
+        )}
+        {error && (
+          <div className="mb-8 px-5 py-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-800 font-medium">
+            {decodeURIComponent(error)}
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="w-20 h-20 bg-[#FAA21B] rounded-full flex items-center justify-center mx-auto mb-6">
