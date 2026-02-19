@@ -20,6 +20,7 @@ export interface ContactSubmission {
   subject: string
   message: string
   status: 'new' | 'reviewed' | 'responded'
+  reviewed_by?: string | null
   created_at: string
   updated_at: string
 }
@@ -34,7 +35,8 @@ export interface GuestApplication {
   bio: string
   social_media?: string
   availability?: string
-  status: 'pending' | 'approved' | 'rejected' | 'scheduled'
+  status: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'scheduled'
+  reviewed_by?: string | null
   created_at: string
   updated_at: string
 }
@@ -51,6 +53,7 @@ export interface SponsorshipInquiry {
   message?: string
   package_interest?: string
   status: 'new' | 'reviewing' | 'negotiating' | 'accepted' | 'declined'
+  reviewed_by?: string | null
   created_at: string
   updated_at: string
 }

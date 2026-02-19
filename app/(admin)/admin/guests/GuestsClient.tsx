@@ -1,21 +1,35 @@
 'use client'
 
-import { User, Search, Filter, Eye, CheckCircle, X, Star, Mail } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { User, Search, Filter, Eye, Trash2, X, RefreshCw } from 'lucide-react'
 import type { GuestApplication } from '@/types'
-import { updateGuestStatus } from '../actions'
+import { createClient } from '@/lib/supabase/client'
+import { updateGuestStatus, reviewGuestApplication, deleteGuestApplication } from '../actions'
 
 const statusColor: Record<string, string> = {
   pending: 'bg-[#FAA21B] text-[#112B4F]',
+  reviewing: 'bg-gray-400 text-white',
   approved: 'bg-green-500 text-white',
   rejected: 'bg-red-500 text-white',
   scheduled: 'bg-blue-500 text-white',
 }
 
-export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
+export function GuestsClient({ guests: initialGuests }: { guests: GuestApplication[] }) {
+  const [guests, setGuests] = useState<GuestApplication[]>(initialGuests)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
   const [selected, setSelected] = useState<GuestApplication | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<GuestApplication | null>(null)
+  const [currentUser, setCurrentUser] = useState<string>('')
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => {
+      setCurrentUser(data.user?.email ?? '')
+    })
+  }, [])
 
   const filtered = guests.filter((g) => {
     const q = searchTerm.toLowerCase()
@@ -27,11 +41,48 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
     return matchSearch && matchFilter
   })
 
+  function openModal(g: GuestApplication) {
+    let updated = g
+    if (g.status === 'pending') {
+      updated = { ...g, status: 'reviewing', reviewed_by: currentUser }
+      setGuests((prev) => prev.map((x) => (x.id === g.id ? updated : x)))
+      reviewGuestApplication(g.id, currentUser)
+    }
+    setSelected(updated)
+  }
+
+  function handleStatusChange(newStatus: GuestApplication['status']) {
+    if (!selected) return
+    const updated = { ...selected, status: newStatus, reviewed_by: currentUser }
+    setSelected(updated)
+    setGuests((prev) => prev.map((x) => (x.id === selected.id ? updated : x)))
+    updateGuestStatus(selected.id, newStatus, currentUser)
+  }
+
+  function handleDelete() {
+    if (!deleteTarget) return
+    setGuests((prev) => prev.filter((x) => x.id !== deleteTarget.id))
+    if (selected?.id === deleteTarget.id) setSelected(null)
+    deleteGuestApplication(deleteTarget.id)
+    setDeleteTarget(null)
+  }
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Guest Applications</h1>
-        <p className="text-[#FAA21B]">Review and manage potential podcast guests</p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Guest Applications</h1>
+          <p className="text-[#FAA21B]">Review and manage potential podcast guests</p>
+        </div>
+        <button
+          onClick={() => startTransition(() => router.refresh())}
+          disabled={isPending}
+          className="flex items-center gap-2 px-4 py-2 bg-white text-[#112B4F] rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
+          title="Refresh"
+        >
+          <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
 
       {/* Stats */}
@@ -82,6 +133,7 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
+              <option value="reviewing">Reviewing</option>
               <option value="approved">Approved</option>
               <option value="scheduled">Scheduled</option>
               <option value="rejected">Rejected</option>
@@ -96,7 +148,7 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                {['Name', 'Expertise', 'Topic Idea', 'Date Applied', 'Status', 'Actions'].map((h) => (
+                {['Name', 'Expertise', 'Topic Idea', 'Date Applied', 'Status', 'Reviewed By', 'Actions'].map((h) => (
                   <th key={h} className="px-6 py-3 text-left text-xs font-bold text-[#112B4F] uppercase tracking-wider">
                     {h}
                   </th>
@@ -105,7 +157,11 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filtered.map((g) => (
-                <tr key={g.id} className="hover:bg-gray-50 transition-colors">
+                <tr
+                  key={g.id}
+                  className="hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => openModal(g)}
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[#FAA21B]/10 rounded-full flex items-center justify-center flex-shrink-0">
@@ -127,28 +183,22 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
                       {g.status}
                     </span>
                   </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{g.reviewed_by ?? '—'}</td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <button
-                        onClick={() => setSelected(g)}
+                        onClick={() => openModal(g)}
                         className="p-2 text-[#FAA21B] hover:bg-[#FAA21B]/10 rounded-lg transition-colors"
                         title="View"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => updateGuestStatus(g.id, 'approved')}
-                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Approve"
+                        onClick={() => setDeleteTarget(g)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete"
                       >
-                        <CheckCircle className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => updateGuestStatus(g.id, 'rejected')}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Reject"
-                      >
-                        <X className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -159,7 +209,7 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* View Modal */}
       {selected && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
@@ -179,7 +229,13 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
                   <p className="text-gray-600">{selected.expertise}</p>
                 </div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+              <button
+                onClick={() => setSelected(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -194,30 +250,56 @@ export function GuestsClient({ guests }: { guests: GuestApplication[] }) {
               <div><label className="text-sm font-medium text-gray-600 block mb-2">Bio</label><p className="text-gray-900 bg-gray-50 p-4 rounded-lg leading-relaxed">{selected.bio}</p></div>
             </div>
 
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-gray-100">
+              <div className="flex-1">
+                <label className="text-sm font-medium text-gray-600 block mb-1">Status</label>
+                <select
+                  value={selected.status}
+                  onChange={(e) => handleStatusChange(e.target.value as GuestApplication['status'])}
+                  className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all text-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="reviewing">Reviewing</option>
+                  <option value="approved">Approved</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="text-sm font-medium text-gray-600 block mb-1">Reviewed by</label>
+                <p className="text-sm text-gray-700">{selected.reviewed_by ?? '—'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div
+            className="bg-white rounded-2xl p-8 max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-bold text-[#112B4F] mb-2">Delete Application</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete the application from <span className="font-semibold">{deleteTarget.name}</span>? This cannot be undone.
+            </p>
             <div className="flex gap-3">
               <button
-                onClick={() => { updateGuestStatus(selected.id, 'approved'); setSelected(null) }}
-                className="flex-1 px-6 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition-colors inline-flex items-center justify-center gap-2"
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
               >
-                <CheckCircle className="h-4 w-4" /> Approve
+                Cancel
               </button>
               <button
-                onClick={() => { updateGuestStatus(selected.id, 'scheduled'); setSelected(null) }}
-                className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors inline-flex items-center justify-center gap-2"
+                onClick={handleDelete}
+                className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
               >
-                <Star className="h-4 w-4" /> Schedule
-              </button>
-              <a
-                href={`mailto:${selected.email}`}
-                className="flex-1 px-6 py-3 bg-[#FAA21B] text-[#112B4F] rounded-lg font-bold hover:bg-[#FAA21B]/90 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <Mail className="h-4 w-4" /> Reply
-              </a>
-              <button
-                onClick={() => { updateGuestStatus(selected.id, 'rejected'); setSelected(null) }}
-                className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <X className="h-4 w-4" /> Reject
+                Delete
               </button>
             </div>
           </div>

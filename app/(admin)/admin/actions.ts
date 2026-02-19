@@ -3,30 +3,75 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function updateContactStatus(id: string, status: string) {
+export async function updateContactStatus(id: string, status: string, reviewedBy?: string) {
   const supabase = await createClient()
-  await supabase
-    .from('contact_submissions')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', id)
+  const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+  if (reviewedBy !== undefined) updates.reviewed_by = reviewedBy
+  await supabase.from('contact_submissions').update(updates).eq('id', id)
   revalidatePath('/admin/contacts')
 }
 
-export async function updateGuestStatus(id: string, status: string) {
+export async function reviewContactSubmission(id: string, reviewedBy: string) {
   const supabase = await createClient()
   await supabase
-    .from('guest_applications')
-    .update({ status, updated_at: new Date().toISOString() })
+    .from('contact_submissions')
+    .update({ status: 'reviewed', reviewed_by: reviewedBy, updated_at: new Date().toISOString() })
     .eq('id', id)
+    .eq('status', 'new')
+  revalidatePath('/admin/contacts')
+}
+
+export async function deleteContactSubmission(id: string) {
+  const supabase = await createClient()
+  await supabase.from('contact_submissions').delete().eq('id', id)
+  revalidatePath('/admin/contacts')
+}
+
+export async function updateGuestStatus(id: string, status: string, reviewedBy?: string) {
+  const supabase = await createClient()
+  const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+  if (reviewedBy !== undefined) updates.reviewed_by = reviewedBy
+  await supabase.from('guest_applications').update(updates).eq('id', id)
   revalidatePath('/admin/guests')
 }
 
-export async function updateSponsorshipStatus(id: string, status: string) {
+export async function reviewGuestApplication(id: string, reviewedBy: string) {
+  const supabase = await createClient()
+  await supabase
+    .from('guest_applications')
+    .update({ status: 'reviewing', reviewed_by: reviewedBy, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('status', 'pending')
+  revalidatePath('/admin/guests')
+}
+
+export async function deleteGuestApplication(id: string) {
+  const supabase = await createClient()
+  await supabase.from('guest_applications').delete().eq('id', id)
+  revalidatePath('/admin/guests')
+}
+
+export async function updateSponsorshipStatus(id: string, status: string, reviewedBy?: string) {
+  const supabase = await createClient()
+  const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+  if (reviewedBy !== undefined) updates.reviewed_by = reviewedBy
+  await supabase.from('sponsorship_inquiries').update(updates).eq('id', id)
+  revalidatePath('/admin/sponsorships')
+}
+
+export async function reviewSponsorshipInquiry(id: string, reviewedBy: string) {
   const supabase = await createClient()
   await supabase
     .from('sponsorship_inquiries')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status: 'reviewing', reviewed_by: reviewedBy, updated_at: new Date().toISOString() })
     .eq('id', id)
+    .eq('status', 'new')
+  revalidatePath('/admin/sponsorships')
+}
+
+export async function deleteSponsorshipInquiry(id: string) {
+  const supabase = await createClient()
+  await supabase.from('sponsorship_inquiries').delete().eq('id', id)
   revalidatePath('/admin/sponsorships')
 }
 
