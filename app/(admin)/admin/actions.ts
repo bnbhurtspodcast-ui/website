@@ -1,7 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import type { Task } from '@/types'
 
 export async function updateContactStatus(id: string, status: string, reviewedBy?: string) {
   const supabase = await createClient()
@@ -86,9 +88,33 @@ export async function createTask(data: {
   description: string
   column_id: string
   priority: string
+  assignee?: string
+  assignee_user_id?: string
+  due_date?: string
+  label_color?: string
 }) {
   const supabase = await createClient()
-  await supabase.from('tasks').insert(data)
+  await supabase.from('tasks').insert({
+    title:            data.title,
+    description:      data.description,
+    column_id:        data.column_id,
+    priority:         data.priority,
+    assignee:         data.assignee ?? null,
+    assignee_user_id: data.assignee_user_id ?? null,
+    due_date:         data.due_date ?? null,
+    label_color:      data.label_color ?? null,
+    tags:             [],
+    sort_order:       0,
+  })
+  revalidatePath('/admin/tasks')
+}
+
+export async function updateTask(
+  id: string,
+  data: Partial<Pick<Task, 'title' | 'description' | 'priority' | 'assignee' | 'assignee_user_id' | 'due_date' | 'label_color' | 'column_id'>>
+) {
+  const supabase = await createClient()
+  await supabase.from('tasks').update(data).eq('id', id)
   revalidatePath('/admin/tasks')
 }
 
@@ -96,6 +122,24 @@ export async function deleteTask(id: string) {
   const supabase = await createClient()
   await supabase.from('tasks').delete().eq('id', id)
   revalidatePath('/admin/tasks')
+}
+
+export async function getUsers(): Promise<{
+  users?: { id: string; email: string; name: string }[]
+  error?: string
+}> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.auth.admin.listUsers()
+  if (error) return { error: error.message }
+  const users = (data.users ?? []).map((u) => ({
+    id:    u.id,
+    email: u.email ?? '',
+    name:  (u.user_metadata?.full_name as string | undefined)
+           ?? (u.user_metadata?.name as string | undefined)
+           ?? u.email
+           ?? u.id,
+  }))
+  return { users }
 }
 
 type HostPayload = {

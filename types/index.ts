@@ -58,17 +58,28 @@ export interface SponsorshipInquiry {
   updated_at: string
 }
 
+export interface KanbanColumn {
+  id: string
+  name: string
+  color: string        // color key: 'blue', 'green', 'gray', etc. — resolved to Tailwind class in UI
+  sort_order: number
+  trello_list_id?: string
+}
+
 export interface Task {
   id: string
   title: string
   description: string
-  column_id: 'todo' | 'in-progress' | 'review' | 'done'
-  assignee?: string
-  due_date?: string
+  column_id: string            // uuid FK to kanban_columns.id
+  assignee?: string            // display name
+  assignee_user_id?: string    // uuid FK to auth.users
+  due_date?: string            // YYYY-MM-DD
   priority: 'low' | 'medium' | 'high'
   tags: string[]
+  label_color?: string         // color key: 'blue', 'red', etc.
   sort_order: number
   created_at: string
+  trello_card_id?: string
 }
 
 export interface Host {
