@@ -39,7 +39,7 @@ export function ContactsClient({ contacts }: { contacts: ContactSubmission[] }) 
           <div className="text-2xl font-bold text-[#112B4F]">{contacts.length}</div>
           <div className="text-sm text-gray-600">Total</div>
         </div>
-        <div className="bg-[#FAA21B]/10 rounded-xl p-4 shadow">
+        <div className="bg-red-50 rounded-xl p-4 shadow">
           <div className="text-2xl font-bold text-[#FAA21B]">
             {contacts.filter((c) => c.status === 'new').length}
           </div>

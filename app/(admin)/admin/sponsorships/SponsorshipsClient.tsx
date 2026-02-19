@@ -48,7 +48,7 @@ export function SponsorshipsClient({ sponsorships }: { sponsorships: Sponsorship
           <div className="text-2xl font-bold text-[#112B4F]">{sponsorships.length}</div>
           <div className="text-sm text-gray-600">Total Inquiries</div>
         </div>
-        <div className="bg-[#FAA21B]/10 rounded-xl p-4 shadow">
+        <div className="bg-red-50 rounded-xl p-4 shadow">
           <div className="text-2xl font-bold text-[#FAA21B]">
             {sponsorships.filter((s) => s.status === 'new').length}
           </div>

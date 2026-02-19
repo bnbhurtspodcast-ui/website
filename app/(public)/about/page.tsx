@@ -1,6 +1,73 @@
-import { Mail, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Mail, Twitter, Instagram, Linkedin, Youtube, Music, Link, Users } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import type { Host } from '@/types'
 
-export default function AboutPage() {
+function SocialIcon({ platform }: { platform: string }) {
+  const p = platform.toLowerCase()
+  const cls = 'h-5 w-5 text-[#112B4F]'
+  if (p === 'instagram') return <Instagram className={cls} />
+  if (p === 'twitter' || p === 'x') return <Twitter className={cls} />
+  if (p === 'linkedin') return <Linkedin className={cls} />
+  if (p === 'youtube') return <Youtube className={cls} />
+  if (p === 'tiktok') return <Music className={cls} />
+  return <Link className={cls} />
+}
+
+function HostCard({ host }: { host: Host }) {
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-2xl border-2 border-[#FAA21B]/30 overflow-hidden flex flex-col">
+      <div className="h-56 overflow-hidden">
+        {host.photo_url ? (
+          <img
+            src={host.photo_url}
+            alt={host.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-[#FAA21B]/10">
+            <Users className="h-20 w-20 text-[#FAA21B]/40" />
+          </div>
+        )}
+      </div>
+      <div className="p-6 flex flex-col flex-1">
+        <h3 className="text-xl font-bold text-white mb-1">{host.name}</h3>
+        {host.interests && (
+          <p className="text-[#FAA21B] text-sm font-medium mb-3">{host.interests}</p>
+        )}
+        {host.description && (
+          <p className="text-white/75 text-sm leading-relaxed flex-1">{host.description}</p>
+        )}
+        {host.social_links && host.social_links.length > 0 && (
+          <div className="flex gap-3 mt-4">
+            {host.social_links.map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={link.platform}
+                className="p-2 bg-[#FAA21B] hover:bg-[#FAA21B]/90 rounded-full transition-colors"
+              >
+                <SocialIcon platform={link.platform} />
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default async function AboutPage() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('hosts')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: true })
+
+  const hosts = (data as Host[]) ?? []
+
   return (
     <div className="py-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -17,45 +84,17 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* Host Section */}
-        <div className="mb-16">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-[#FAA21B]/30 overflow-hidden">
-            <div className="md:flex">
-              <div className="md:w-1/3">
-                <img
-                  src="https://images.unsplash.com/photo-1634136941261-01d4bb876512?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb2RjYXN0JTIwaG9zdCUyMHBvcnRyYWl0fGVufDF8fHx8MTc3MDY3MjExNnww&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Host"
-                  className="w-full h-64 md:h-full object-cover"
-                />
-              </div>
-              <div className="md:w-2/3 p-8">
-                <h2 className="text-2xl font-bold text-white mb-4">Meet Your Host</h2>
-                <h3 className="text-xl text-[#FAA21B] font-bold mb-4">Your Host Name</h3>
-                <p className="text-white/80 mb-4 leading-relaxed">
-                  A straight-talking host who isn&apos;t afraid to dive into the uncomfortable topics.
-                  With years of experience in media and a passion for authentic storytelling, our host
-                  brings raw honesty to every conversation.
-                </p>
-                <p className="text-white/80 mb-6 leading-relaxed">
-                  No corporate speak, no sugar-coating — just real talk about the things that matter.
-                  Whether it&apos;s discussing life&apos;s struggles, celebrating wins, or tackling
-                  tough subjects, every episode is a genuine human connection.
-                </p>
-                <div className="flex gap-4">
-                  <a href="#" className="p-2 bg-[#FAA21B] hover:bg-[#FAA21B]/90 rounded-full transition-colors">
-                    <Twitter className="h-5 w-5 text-[#112B4F]" />
-                  </a>
-                  <a href="#" className="p-2 bg-[#FAA21B] hover:bg-[#FAA21B]/90 rounded-full transition-colors">
-                    <Instagram className="h-5 w-5 text-[#112B4F]" />
-                  </a>
-                  <a href="#" className="p-2 bg-[#FAA21B] hover:bg-[#FAA21B]/90 rounded-full transition-colors">
-                    <Linkedin className="h-5 w-5 text-[#112B4F]" />
-                  </a>
-                </div>
-              </div>
+        {/* Hosts Section */}
+        {hosts.length > 0 && (
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-white mb-8">Meet Your Hosts</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {hosts.map((host) => (
+                <HostCard key={host.id} host={host} />
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         {/* Mission */}
         <div className="mb-16">

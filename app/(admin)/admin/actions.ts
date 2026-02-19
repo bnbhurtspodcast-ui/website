@@ -53,6 +53,52 @@ export async function deleteTask(id: string) {
   revalidatePath('/admin/tasks')
 }
 
+type HostPayload = {
+  name: string
+  interests: string | null
+  description: string | null
+  social_links: { platform: string; url: string }[]
+  photo_url?: string
+}
+
+export async function createHost(payload: HostPayload) {
+  const supabase = await createClient()
+  await supabase.from('hosts').insert({
+    name: payload.name,
+    interests: payload.interests,
+    description: payload.description,
+    social_links: payload.social_links,
+    photo_url: payload.photo_url ?? null,
+    sort_order: 0,
+  })
+  revalidatePath('/admin/hosts')
+  revalidatePath('/about')
+}
+
+export async function updateHost(id: string, payload: HostPayload) {
+  const supabase = await createClient()
+  const updates: Record<string, unknown> = {
+    name: payload.name,
+    interests: payload.interests,
+    description: payload.description,
+    social_links: payload.social_links,
+    updated_at: new Date().toISOString(),
+  }
+  if (payload.photo_url !== undefined) {
+    updates.photo_url = payload.photo_url
+  }
+  await supabase.from('hosts').update(updates).eq('id', id)
+  revalidatePath('/admin/hosts')
+  revalidatePath('/about')
+}
+
+export async function deleteHost(id: string) {
+  const supabase = await createClient()
+  await supabase.from('hosts').delete().eq('id', id)
+  revalidatePath('/admin/hosts')
+  revalidatePath('/about')
+}
+
 export async function changePassword(currentPassword: string, newPassword: string) {
   const supabase = await createClient()
 

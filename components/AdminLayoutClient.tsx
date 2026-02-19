@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   Trello,
+  Users,
 } from 'lucide-react'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -24,6 +25,7 @@ const navItems = [
   { name: 'Guest Applications', path: '/admin/guests', icon: User },
   { name: 'Sponsorship Inquiries', path: '/admin/sponsorships', icon: Briefcase },
   { name: 'Content Management', path: '/admin/content', icon: FileText },
+  { name: 'Hosts', path: '/admin/hosts', icon: Users },
   { name: 'Settings', path: '/admin/settings', icon: Settings },
 ]
 

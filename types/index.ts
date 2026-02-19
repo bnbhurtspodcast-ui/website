@@ -67,3 +67,15 @@ export interface Task {
   sort_order: number
   created_at: string
 }
+
+export interface Host {
+  id: string
+  name: string
+  photo_url?: string
+  interests?: string
+  description?: string
+  social_links: { platform: string; url: string }[]
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
