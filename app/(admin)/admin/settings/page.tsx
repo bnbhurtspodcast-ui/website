@@ -46,22 +46,24 @@ export default async function SettingsPage() {
         </div>
 
         {/* Notifications */}
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-              <Bell className="h-6 w-6 text-blue-600" />
+        {false && (
+          <div className="bg-white rounded-xl p-6 shadow-lg">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                <Bell className="h-6 w-6 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-bold text-[#112B4F]">Notifications</h2>
             </div>
-            <h2 className="text-xl font-bold text-[#112B4F]">Notifications</h2>
+            <div className="space-y-4">
+              {['New contact submissions', 'Guest applications', 'Sponsorship inquiries', 'Email digests'].map((item, i) => (
+                <label key={item} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                  <span className="text-sm font-medium text-gray-700">{item}</span>
+                  <input type="checkbox" className="w-5 h-5 rounded accent-[#FAA21B]" defaultChecked={i < 3} />
+                </label>
+              ))}
+            </div>
           </div>
-          <div className="space-y-4">
-            {['New contact submissions', 'Guest applications', 'Sponsorship inquiries', 'Email digests'].map((item, i) => (
-              <label key={item} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                <span className="text-sm font-medium text-gray-700">{item}</span>
-                <input type="checkbox" className="w-5 h-5 rounded accent-[#FAA21B]" defaultChecked={i < 3} />
-              </label>
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* Security */}
         <div className="bg-white rounded-xl p-6 shadow-lg">
@@ -75,6 +77,7 @@ export default async function SettingsPage() {
         </div>
 
         {/* Appearance */}
+        {false && (
         <div className="bg-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
@@ -102,6 +105,7 @@ export default async function SettingsPage() {
             </div>
           </div>
         </div>
+        )}
       </div>
 
       {/* Danger Zone */}
