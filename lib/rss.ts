@@ -106,6 +106,20 @@ export async function getEpisodesWithVideo(): Promise<Episode[]> {
   }))
 }
 
+export async function searchYouTubeByTitle(title: string): Promise<string | null> {
+  const apiKey = process.env.YOUTUBE_API_KEY
+  if (!apiKey) return null
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=id&type=video&maxResults=1&q=${encodeURIComponent(title)}&key=${apiKey}`
+    const res = await fetch(url, { next: { revalidate: 1800 } })
+    if (!res.ok) return null
+    const data = await res.json() as { items?: Array<{ id?: { videoId?: string } }> }
+    return data.items?.[0]?.id?.videoId ?? null
+  } catch {
+    return null
+  }
+}
+
 // ── Internal types ────────────────────────────────────────────────────────────
 
 interface RawItem {

@@ -31,6 +31,27 @@ export function Footer() {
                 <Youtube className="h-5 w-5 text-white/70 group-hover:text-[#112B4F]" />
               </a>
             </div>
+
+            <div className="flex flex-wrap gap-3 mt-4">
+              <a
+                href="https://www.youtube.com/@BnBHurtsPodcast?sub_confirmation=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-[#FF0000] hover:bg-[#cc0000] text-white text-sm font-semibold rounded-full transition-colors"
+              >
+                <Youtube className="h-4 w-4" />
+                Subscribe
+              </a>
+              <a
+                href="https://www.paypal.com/donate/?hosted_button_id=SMDDJYTZD9R52"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-[#FAA21B] hover:bg-[#e8911a] text-[#112B4F] text-sm font-semibold rounded-full transition-colors"
+              >
+                Donate
+              </a>
+            </div>
+
           </div>
 
           {/* Quick Links */}

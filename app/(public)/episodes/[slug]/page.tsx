@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
-import { getEpisodesWithVideo } from '@/lib/rss'
+import { getEpisodes, searchYouTubeByTitle } from '@/lib/rss'
 import { EpisodePlayButton } from '@/components/EpisodePlayButton'
 import { EpisodeDescription } from '@/components/EpisodeDescription'
 
 export const revalidate = 1800
 
 export async function generateStaticParams() {
-  const episodes = await getEpisodesWithVideo()
+  const episodes = await getEpisodes()
   return episodes.map((ep) => ({ slug: encodeURIComponent(ep.id) }))
 }
 
@@ -27,11 +27,13 @@ export default async function EpisodeDetailPage({
 }) {
   const { slug } = await params
   const id = decodeURIComponent(slug)
-  const episodes = await getEpisodesWithVideo()
-  const episode = episodes.find((ep) => ep.id === id)
-  console.log(episode)
+  const episodes = await getEpisodes()
+  const found = episodes.find((ep) => ep.id === id)
 
-  if (!episode) notFound()
+  if (!found) notFound()
+
+  const youtubeVideoId = await searchYouTubeByTitle(found.title)
+  const episode = { ...found, youtubeVideoId: youtubeVideoId ?? undefined }
 
   return (
     <div className="py-12">
@@ -88,8 +90,19 @@ export default async function EpisodeDetailPage({
         )}
 
         {/* Play audio button */}
-        <div className="mb-10">
-          <EpisodePlayButton episode={episode} />
+        <div className="mb-10 flex">
+          {episode.youtubeVideoId ? (
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+            <img
+              src={episode.imageUrl}
+              alt={episode.title}
+              className="h-32 w-32 object-cover"
+            />
+          </div>
+          ): null}
+          <div className="my-auto ml-auto">
+            <EpisodePlayButton episode={episode} />
+          </div>
         </div>
 
         {/* Description */}

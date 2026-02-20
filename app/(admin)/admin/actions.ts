@@ -111,7 +111,7 @@ export async function createTask(data: {
 
 export async function updateTask(
   id: string,
-  data: Partial<Pick<Task, 'title' | 'description' | 'priority' | 'assignee' | 'assignee_user_id' | 'due_date' | 'label_color' | 'column_id'>>
+  data: Partial<Pick<Task, 'title' | 'description' | 'priority' | 'assignee' | 'assignee_user_id' | 'due_date' | 'label_color' | 'column_id' | 'tags'>>
 ) {
   const supabase = await createClient()
   await supabase.from('tasks').update(data).eq('id', id)

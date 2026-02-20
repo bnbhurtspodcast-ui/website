@@ -58,6 +58,12 @@ export interface SponsorshipInquiry {
   updated_at: string
 }
 
+export interface AuthUser {
+  id: string
+  email: string
+  name: string
+}
+
 export interface KanbanColumn {
   id: string
   name: string

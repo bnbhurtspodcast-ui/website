@@ -5,17 +5,30 @@ import { Search } from 'lucide-react'
 import { EpisodeCard } from './EpisodeCard'
 import type { Episode } from '@/types'
 
+type FilterType = 'all' | 'regular' | 'sts'
+
 interface EpisodesClientProps {
   episodes: Episode[]
 }
 
 export function EpisodesClient({ episodes }: EpisodesClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [filter, setFilter] = useState<FilterType>('all')
 
   const filtered = episodes.filter((ep) => {
+    const isSTS = /\bSTS\s*\d+/i.test(ep.title)
+    const typeMatch =
+      filter === 'all' ||
+      (filter === 'sts' && isSTS) ||
+      (filter === 'regular' && !isSTS)
     const q = searchQuery.toLowerCase()
-    return ep.title.toLowerCase().includes(q) || ep.description.toLowerCase().includes(q)
+    const textMatch = ep.title.toLowerCase().includes(q) || ep.description.toLowerCase().includes(q)
+    return typeMatch && textMatch
   })
+
+  const pillBase = 'px-5 py-2 rounded-full text-sm transition-all cursor-pointer'
+  const pillActive = 'bg-[#FAA21B] text-[#112B4F] font-bold'
+  const pillInactive = 'border border-[#FAA21B]/40 text-white/70 hover:border-[#FAA21B] hover:text-white'
 
   return (
     <div className="py-12">
@@ -26,6 +39,19 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
           <p className="text-xl text-[#FAA21B] font-medium">
             Explore our complete collection of conversations
           </p>
+        </div>
+
+        {/* Filter Pills */}
+        <div className="flex gap-3 mb-8">
+          {(['all', 'regular', 'sts'] as FilterType[]).map((type) => (
+            <button
+              key={type}
+              onClick={() => setFilter(type)}
+              className={`${pillBase} ${filter === type ? pillActive : pillInactive}`}
+            >
+              {type === 'all' ? 'All' : type === 'sts' ? 'STS' : 'Regular'}
+            </button>
+          ))}
         </div>
 
         {/* Search */}

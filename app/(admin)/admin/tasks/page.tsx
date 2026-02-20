@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { TaskBoardClient } from './TaskBoardClient'
+import { TaskBoard } from './TaskBoard'
 import type { KanbanColumn, Task } from '@/types'
 
 export default async function TasksPage() {
@@ -11,7 +11,7 @@ export default async function TasksPage() {
   ])
 
   return (
-    <TaskBoardClient
+    <TaskBoard
       tasks={(tasks ?? []) as Task[]}
       columns={(columns ?? []) as KanbanColumn[]}
     />
