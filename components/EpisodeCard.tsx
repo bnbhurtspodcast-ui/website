@@ -34,11 +34,16 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#112B4F]/30 via-[#112B4F]/0 to-[#112B4F]/0" />
         <button
-          onClick={(e) => { e.preventDefault(); setCurrentEpisode(episode) }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 transform duration-200 shadow-lg"
         >
           <Play className="h-7 w-7 text-[#112B4F] ml-1" />
         </button>
+        {/* <button
+          onClick={(e) => { e.preventDefault(); setCurrentEpisode(episode) }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 transform duration-200 shadow-lg"
+        >
+          <Play className="h-7 w-7 text-[#112B4F] ml-1" />
+        </button> */}
       </div>
 
       <div className="p-5 flex flex-col h-[12rem]">

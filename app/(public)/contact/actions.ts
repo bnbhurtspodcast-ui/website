@@ -1,17 +1,23 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { sendDiscordNotification } from "@/lib/discord";
 import { redirect } from "next/navigation";
 
 export async function submitContactForm(formData: FormData) {
 	const supabase = await createClient();
 
+	const name = formData.get("name") as string;
+	const email = formData.get("email") as string;
+	const subject = formData.get("subject") as string;
+	const message = formData.get("message") as string;
+
 	const { error } = await supabase.from("contact_submissions").insert({
-		name: formData.get("name") as string,
-		email: formData.get("email") as string,
-		subject: formData.get("subject") as string,
-		status: formData.get("status") as string,
-		message: formData.get("message") as string,
+		name,
+		email,
+		subject,
+		status: "new",
+		message,
 	});
 
 	if (error) {
@@ -20,6 +26,10 @@ export async function submitContactForm(formData: FormData) {
 			`/contact?error=${encodeURIComponent("There is an error, will provide a fix soon")}`,
 		);
 	}
+
+	await sendDiscordNotification(
+		`📬 **New Contact Submission**\n**Name:** ${name}\n**Email:** ${email}\n**Subject:** ${subject}`,
+	);
 
 	redirect("/contact?success=true");
 }

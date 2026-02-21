@@ -1,17 +1,23 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { sendDiscordNotification } from "@/lib/discord";
 import { redirect } from "next/navigation";
 
 export async function submitGuestApplication(formData: FormData) {
 	const supabase = await createClient();
 
+	const name = formData.get("name") as string;
+	const email = formData.get("email") as string;
+	const expertise = formData.get("expertise") as string;
+	const topicIdea = formData.get("topicIdea") as string;
+
 	const { error } = await supabase.from("guest_applications").insert({
-		name: formData.get("name") as string,
-		email: formData.get("email") as string,
+		name,
+		email,
 		phone: (formData.get("phone") as string) || null,
-		expertise: formData.get("expertise") as string,
-		topic_idea: formData.get("topicIdea") as string,
+		expertise,
+		topic_idea: topicIdea,
 		bio: formData.get("bio") as string,
 		social_media: (formData.get("socialMedia") as string) || null,
 		availability: (formData.get("availability") as string) || null,
@@ -23,6 +29,10 @@ export async function submitGuestApplication(formData: FormData) {
 			`/guest-submission?error=${encodeURIComponent("There is an error, will provide a fix soon")}`,
 		);
 	}
+
+	await sendDiscordNotification(
+		`🎙️ **New Guest Application**\n**Name:** ${name}\n**Email:** ${email}\n**Expertise:** ${expertise}\n**Topic:** ${topicIdea}`,
+	);
 
 	redirect("/guest-submission?success=true");
 }
