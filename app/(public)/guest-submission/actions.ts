@@ -31,7 +31,7 @@ export async function submitGuestApplication(formData: FormData) {
 	}
 
 	await sendDiscordNotification(
-		`🎙️ **New Guest Application**\n**Name:** ${name}\n**Email:** ${email}\n**Expertise:** ${expertise}\n**Topic:** ${topicIdea}`,
+		`🎙️ **New Guest Application**\n**Name:** ${name}\n**Email:** ${email}\n**Expertise:** ${expertise}\n**Topic:** ${topicIdea}\n`,
 	);
 
 	redirect("/guest-submission?success=true");

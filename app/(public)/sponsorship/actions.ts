@@ -31,7 +31,7 @@ export async function submitSponsorshipInquiry(formData: FormData) {
 	}
 
 	await sendDiscordNotification(
-		`💼 **New Sponsorship Inquiry**\n**Company:** ${companyName}\n**Contact:** ${contactName}\n**Email:** ${email}\n**Budget:** ${budget ?? "not specified"}`,
+		`💼 **New Sponsorship Inquiry**\n**Company:** ${companyName}\n**Contact:** ${contactName}\n**Email:** ${email}\n**Budget:** ${budget ?? "not specified"}\n`,
 	);
 
 	redirect("/sponsorship?success=true");
