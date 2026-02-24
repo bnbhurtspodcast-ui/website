@@ -1,25 +1,34 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
+import { Settings } from 'lucide-react'
 import type { Task, KanbanColumn, AuthUser } from '@/types'
-import { updateTaskColumn, createTask, deleteTask, getUsers, updateTask } from '../actions'
+import { updateTaskColumn, createTask, deleteTask, getUsers } from '../actions'
 import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn'
 import { TaskDetailModal } from './TaskDetailModal'
 import { AddTaskDrawer, type AddForm, emptyForm } from './AddTaskForm'
+import { ColumnManagerSheet } from './ColumnManagerSheet'
 
 export function TaskBoard({
   tasks: initialTasks,
-  columns,
+  columns: initialColumns,
 }: {
   tasks: Task[]
   columns: KanbanColumn[]
 }) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns)
   const [addingToColumn, setAddingToColumn] = useState<KanbanColumn | null>(null)
   const [form, setForm] = useState<AddForm>(emptyForm)
   const [users, setUsers] = useState<AuthUser[]>([])
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [columnManagerOpen, setColumnManagerOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+
+  // Auto-scroll refs for drag-to-edge (F4)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const pointerXRef = useRef(0)
+  const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
     getUsers().then((result) => {
@@ -29,11 +38,50 @@ export function TaskBoard({
 
   const tasksForColumn = (colId: string) => tasks.filter((t) => t.column_id === colId)
 
-  const handleDragOver = (e: React.DragEvent) => e.preventDefault()
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    pointerXRef.current = e.clientX
+  }
+
+  const startAutoScroll = () => {
+    const EDGE_THRESHOLD = 80
+    const MAX_SPEED = 12
+
+    const loop = () => {
+      const el = scrollContainerRef.current
+      if (!el) return
+      const { left, right } = el.getBoundingClientRect()
+      const x = pointerXRef.current
+      const distFromLeft = x - left
+      const distFromRight = right - x
+      if (distFromLeft < EDGE_THRESHOLD) {
+        const speed = Math.round(MAX_SPEED * (1 - distFromLeft / EDGE_THRESHOLD))
+        el.scrollLeft -= speed
+      } else if (distFromRight < EDGE_THRESHOLD) {
+        const speed = Math.round(MAX_SPEED * (1 - distFromRight / EDGE_THRESHOLD))
+        el.scrollLeft += speed
+      }
+      rafRef.current = requestAnimationFrame(loop)
+    }
+    rafRef.current = requestAnimationFrame(loop)
+  }
+
+  const stopAutoScroll = () => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+  }
 
   const handleDrop = (e: React.DragEvent, colId: string) => {
     e.preventDefault()
+    stopAutoScroll()
     const taskId = e.dataTransfer.getData('taskId')
+    setTasks((prev) => prev.map((t) => t.id === taskId ? { ...t, column_id: colId } : t))
+    startTransition(() => updateTaskColumn(taskId, colId))
+  }
+
+  const handleMoveTask = (taskId: string, colId: string) => {
     setTasks((prev) => prev.map((t) => t.id === taskId ? { ...t, column_id: colId } : t))
     startTransition(() => updateTaskColumn(taskId, colId))
   }
@@ -91,7 +139,7 @@ export function TaskBoard({
   const handleModalSave = (id: string, data: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => t.id === id ? { ...t, ...data } : t))
     setSelectedTask(null)
-    startTransition(() => updateTask(id, data))
+    startTransition(() => import('../actions').then(({ updateTask }) => updateTask(id, data)))
   }
 
   const handleStartAdding = (colId: string) => {
@@ -102,23 +150,42 @@ export function TaskBoard({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Task Board</h1>
-        <p className="text-[#FAA21B]">Organize and track your team&apos;s work</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Task Board</h1>
+          <p className="text-[#FAA21B]">Organize and track your team&apos;s work</p>
+        </div>
+        <button
+          onClick={() => setColumnManagerOpen(true)}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 text-white/50 hover:text-white/80 hover:border-white/20 transition-all text-sm"
+          title="Manage columns"
+        >
+          <Settings className="h-4 w-4" />
+          Columns
+        </button>
       </div>
 
-      <div className="flex-1 overflow-x-auto pb-4">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-x-auto pb-4"
+        onDragOver={handleDragOver}
+        onDragStart={startAutoScroll}
+        onDragEnd={stopAutoScroll}
+        onDrop={stopAutoScroll}
+      >
         <div className="inline-flex gap-4 min-w-full">
           {columns.map((col) => (
             <KanbanColumnComponent
               key={col.id}
               column={col}
               tasks={tasksForColumn(col.id)}
+              columns={columns}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDeleteTask={handleDelete}
               onTaskClick={handleTaskClick}
               onStartAdding={handleStartAdding}
+              onMoveTask={handleMoveTask}
             />
           ))}
         </div>
@@ -145,6 +212,14 @@ export function TaskBoard({
         onClose={handleModalClose}
         onSave={handleModalSave}
         onDelete={handleDelete}
+      />
+
+      {/* Column Manager Sheet */}
+      <ColumnManagerSheet
+        open={columnManagerOpen}
+        columns={columns}
+        onClose={() => setColumnManagerOpen(false)}
+        onColumnsChange={setColumns}
       />
     </div>
   )

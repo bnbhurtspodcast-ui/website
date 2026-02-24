@@ -1,18 +1,27 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Calendar, Trash2, Tag } from 'lucide-react'
-import type { Task } from '@/types'
-import { LABEL_COLOR_MAP, PRIORITY_GLOW } from './constants'
+import { Calendar, Trash2, Tag, MoreHorizontal } from 'lucide-react'
+import type { Task, KanbanColumn } from '@/types'
+import { LABEL_COLOR_MAP, PRIORITY_GLOW, COLUMN_TOP_COLOR_MAP } from './constants'
 import { getInitials, getAvatarColor, formatDueDate } from './taskUtils'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 
 type TaskCardProps = {
   task: Task
+  columns: KanbanColumn[]
   onDelete: (id: string) => void
   onClick: (task: Task) => void
+  onMoveToColumn: (taskId: string, colId: string) => void
 }
 
-export function TaskCard({ task, onDelete, onClick }: TaskCardProps) {
+export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: TaskCardProps) {
   const isDragging = useRef(false)
   const [dragging, setDragging] = useState(false)
 
@@ -38,6 +47,8 @@ export function TaskCard({ task, onDelete, onClick }: TaskCardProps) {
     ? LABEL_COLOR_MAP[task.label_color]
     : null
 
+  const otherColumns = columns.filter((c) => c.id !== task.column_id)
+
   return (
     <div
       draggable
@@ -57,20 +68,45 @@ export function TaskCard({ task, onDelete, onClick }: TaskCardProps) {
         <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-full ${labelBg}`} />
       )}
 
-      {/* Top row: priority glow pill + delete button */}
+      {/* Top row: priority glow pill + ellipsis menu */}
       <div className="flex items-start justify-between mb-2">
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${PRIORITY_GLOW[task.priority] ?? ''}`}>
           {task.priority}
         </span>
-        <button
-          onMouseDown={(e) => {
-            e.stopPropagation()
-            onDelete(task.id)
-          }}
-          className="opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-red-400 ml-1"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white/70 ml-1"
+            >
+              <MoreHorizontal className="h-3.5 w-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="bottom"
+            align="end"
+            className="bg-[#08111e] border border-white/10 text-white text-xs min-w-[160px]"
+          >
+            {otherColumns.map((col) => (
+              <DropdownMenuItem
+                key={col.id}
+                onSelect={() => onMoveToColumn(task.id, col.id)}
+                className="text-white/70 hover:text-white focus:text-white cursor-pointer"
+              >
+                <span className={`w-2 h-2 rounded-full mr-2 flex-shrink-0 ${COLUMN_TOP_COLOR_MAP[col.color] ?? 'bg-gray-400'}`} />
+                {col.name}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuItem
+              onSelect={() => onDelete(task.id)}
+              className="text-red-400 hover:text-red-300 focus:text-red-300 cursor-pointer"
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-2" />
+              Delete task
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Title */}

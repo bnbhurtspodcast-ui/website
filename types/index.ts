@@ -86,6 +86,7 @@ export interface Task {
   sort_order: number
   created_at: string
   trello_card_id?: string
+  archived_at?: string | null
 }
 
 export interface Host {

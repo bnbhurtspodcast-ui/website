@@ -8,21 +8,25 @@ import { TaskCard } from './TaskCard'
 type KanbanColumnProps = {
   column: KanbanColumnType
   tasks: Task[]
+  columns: KanbanColumnType[]
   onDrop: (e: React.DragEvent, colId: string) => void
   onDragOver: (e: React.DragEvent) => void
   onDeleteTask: (id: string) => void
   onTaskClick: (task: Task) => void
   onStartAdding: (colId: string) => void
+  onMoveTask: (taskId: string, colId: string) => void
 }
 
 export function KanbanColumn({
   column,
   tasks,
+  columns,
   onDrop,
   onDragOver,
   onDeleteTask,
   onTaskClick,
   onStartAdding,
+  onMoveTask,
 }: KanbanColumnProps) {
   const dotColor = COLUMN_TOP_COLOR_MAP[column.color] ?? 'bg-gray-400'
 
@@ -50,8 +54,10 @@ export function KanbanColumn({
           <TaskCard
             key={task.id}
             task={task}
+            columns={columns}
             onDelete={onDeleteTask}
             onClick={onTaskClick}
+            onMoveToColumn={onMoveTask}
           />
         ))}
 

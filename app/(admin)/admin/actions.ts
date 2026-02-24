@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import type { Task } from "@/types";
+import type { Task, KanbanColumn } from "@/types";
 import { sendDiscordNotification } from "@/lib/discord";
 
 export async function updateContactStatus(
@@ -120,7 +120,7 @@ export async function updateTaskColumn(id: string, columnId: string) {
 	await supabase.from("tasks").update({ column_id: columnId }).eq("id", id);
 	revalidatePath("/admin/tasks");
 	await sendDiscordNotification(
-		`🔀 **Task Moved**\n**Task:** ${task?.title ?? id}\n**To column:** ${column?.name ?? columnId} \n`,
+		`🔀 **Task Moved**\n**Task:** ${task?.title ?? id}\n**To column:** ${column?.name ?? columnId}\n`,
 	);
 }
 
@@ -207,6 +207,74 @@ export async function deleteTask(id: string) {
 	await sendDiscordNotification(
 		`🗑️ **Task Deleted**\n**Title:** ${task?.title ?? id}\n`,
 	);
+}
+
+export async function archiveDoneTasks(): Promise<{ archivedCount: number }> {
+	const supabase = await createClient();
+	const { data: doneColumn } = await supabase
+		.from("kanban_columns")
+		.select("id")
+		.eq("name", "Done")
+		.single();
+	if (!doneColumn) return { archivedCount: 0 };
+	const cutoff = new Date();
+	cutoff.setDate(cutoff.getDate() - 30);
+	const { data: archived } = await supabase
+		.from("tasks")
+		.update({ archived_at: new Date().toISOString() })
+		.eq("column_id", doneColumn.id)
+		.lt("created_at", cutoff.toISOString())
+		.is("archived_at", null)
+		.select("id");
+	revalidatePath("/admin/tasks");
+	return { archivedCount: archived?.length ?? 0 };
+}
+
+export async function createColumn(data: {
+	name: string;
+	color: string;
+	sort_order: number;
+}): Promise<{ id?: string; error?: string }> {
+	const supabase = await createClient();
+	const { data: col, error } = await supabase
+		.from("kanban_columns")
+		.insert({ name: data.name, color: data.color, sort_order: data.sort_order })
+		.select("id")
+		.single();
+	if (error) return { error: error.message };
+	revalidatePath("/admin/tasks");
+	await sendDiscordNotification(
+		`🗂️ **Column Created**\n**Name:** ${data.name}\n`,
+	);
+	return { id: col.id };
+}
+
+export async function updateColumn(
+	id: string,
+	data: Partial<Pick<KanbanColumn, "name" | "color" | "sort_order">>,
+): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { error } = await supabase
+		.from("kanban_columns")
+		.update(data)
+		.eq("id", id);
+	if (error) return { error: error.message };
+	revalidatePath("/admin/tasks");
+	return {};
+}
+
+export async function deleteColumn(id: string): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { error } = await supabase.from("kanban_columns").delete().eq("id", id);
+	if (error) {
+		if (error.code === "23503") {
+			return { error: "Column has tasks. Move or delete them first." };
+		}
+		return { error: error.message };
+	}
+	revalidatePath("/admin/tasks");
+	await sendDiscordNotification(`🗑️ **Column Deleted**\n**ID:** ${id}\n`);
+	return {};
 }
 
 export async function getUsers(): Promise<{
