@@ -1,6 +1,27 @@
 import { TrendingUp, Target, Users, Zap, Send } from 'lucide-react'
 import { submitSponsorshipInquiry } from './actions'
 
+const packages = [
+  {
+    tier: 'Bronze',
+    price: '$500',
+    features: ['30-second mid-roll ad', 'Mention in show notes', 'Social media mention'],
+    popular: false,
+  },
+  {
+    tier: 'Silver',
+    price: '$1,200',
+    features: ['60-second pre-roll ad', '30-second mid-roll ad', 'Featured in show notes', 'Multiple social posts', 'Website banner placement'],
+    popular: true,
+  },
+  {
+    tier: 'Gold',
+    price: '$2,500',
+    features: ['Exclusive episode sponsor', 'Host-read advertisements', 'Custom integration', 'All Silver benefits', 'Dedicated email feature', 'Analytics & reporting'],
+    popular: false,
+  },
+]
+
 export default async function SponsorshipPage({
   searchParams,
 }: {
@@ -12,26 +33,32 @@ export default async function SponsorshipPage({
     <div className="py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {success === 'true' && (
-          <div className="mb-8 px-5 py-4 rounded-xl bg-green-100 border-2 border-green-400 text-green-800 font-medium">
+          <div className="mb-8 px-5 py-4 rounded-xl font-medium"
+            style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.35)', color: 'rgb(134,239,172)' }}>
             Your sponsorship inquiry was submitted successfully. We&apos;ll be in touch soon!
           </div>
         )}
         {error && (
-          <div className="mb-8 px-5 py-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-800 font-medium">
+          <div className="mb-8 px-5 py-4 rounded-xl font-medium"
+            style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.35)', color: 'rgb(252,165,165)' }}>
             {decodeURIComponent(error)}
           </div>
         )}
 
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-[#FAA21B] rounded-full flex items-center justify-center mx-auto mb-6">
-            <TrendingUp className="h-10 w-10 text-[#112B4F]" />
+          <div className="rave-icon-box w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ boxShadow: '0 0 20px rgba(250,162,27,0.15)' }}>
+            <TrendingUp className="h-10 w-10 text-[#FAA21B]" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="font-black uppercase leading-none tracking-tight mb-4"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(2rem, 6vw, 4rem)', color: 'white' }}>
             Sponsor Back n&apos; Body Hurts
           </h1>
-          <p className="text-xl text-[#FAA21B] font-medium mb-4">Reach an engaged audience that matters</p>
-          <p className="text-white/80 max-w-2xl mx-auto">
+          <p className="text-xl font-medium mb-4" style={{ color: '#FAA21B' }}>
+            Reach an engaged audience that matters
+          </p>
+          <p className="max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
             Partner with us to connect with Toronto&apos;s EDM community. Our audience is engaged,
             diverse, and ready to hear from brands they can trust.
           </p>
@@ -39,107 +66,103 @@ export default async function SponsorshipPage({
 
         {/* Sponsorship Packages */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Sponsorship Packages</h2>
+          <h2 className="font-black uppercase text-center mb-8 leading-none"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: 'white' }}>
+            Sponsorship Packages
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Bronze */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-[#FAA21B] transition-colors">
-              <h3 className="text-2xl font-bold text-[#112B4F] mb-2">Bronze</h3>
-              <div className="text-3xl font-bold text-[#FAA21B] mb-6">$500<span className="text-lg text-gray-600">/episode</span></div>
-              <ul className="space-y-3 mb-8">
-                {['30-second mid-roll ad', 'Mention in show notes', 'Social media mention'].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Zap className="h-5 w-5 text-[#FAA21B] flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Silver */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-[#FAA21B] relative shadow-lg transform scale-105">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FAA21B] text-[#112B4F] px-4 py-1 rounded-full text-sm font-bold">
-                POPULAR
+            {packages.map(({ tier, price, features, popular }) => (
+              <div
+                key={tier}
+                className={`rounded-2xl p-8 ${popular ? 'relative' : 'rave-card'}`}
+                style={
+                  popular
+                    ? {
+                        background: 'rgba(17,43,79,0.9)',
+                        backdropFilter: 'blur(16px)',
+                        border: '1px solid rgba(250,162,27,0.7)',
+                        boxShadow: '0 0 40px rgba(250,162,27,0.2), 0 0 80px rgba(250,162,27,0.08), inset 0 0 20px rgba(250,162,27,0.04)',
+                        transform: 'scale(1.03)',
+                      }
+                    : undefined
+                }
+              >
+                {popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold"
+                    style={{ backgroundColor: '#FAA21B', color: '#112B4F', boxShadow: '0 0 16px rgba(250,162,27,0.55)' }}>
+                    POPULAR
+                  </div>
+                )}
+                <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+                  {tier}
+                </h3>
+                <div className="text-3xl font-bold text-[#FAA21B] mb-6">
+                  {price}<span className="text-lg" style={{ color: 'rgba(255,255,255,0.45)' }}>/episode</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {features.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Zap className="h-5 w-5 text-[#FAA21B] flex-shrink-0 mt-0.5" />
+                      <span style={{ color: 'rgba(255,255,255,0.75)' }}>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold text-[#112B4F] mb-2">Silver</h3>
-              <div className="text-3xl font-bold text-[#FAA21B] mb-6">$1,200<span className="text-lg text-gray-600">/episode</span></div>
-              <ul className="space-y-3 mb-8">
-                {['60-second pre-roll ad', '30-second mid-roll ad', 'Featured in show notes', 'Multiple social posts', 'Website banner placement'].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Zap className="h-5 w-5 text-[#FAA21B] flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Gold */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-[#FAA21B] transition-colors">
-              <h3 className="text-2xl font-bold text-[#112B4F] mb-2">Gold</h3>
-              <div className="text-3xl font-bold text-[#FAA21B] mb-6">$2,500<span className="text-lg text-gray-600">/episode</span></div>
-              <ul className="space-y-3 mb-8">
-                {['Exclusive episode sponsor', 'Host-read advertisements', 'Custom integration', 'All Silver benefits', 'Dedicated email feature', 'Analytics & reporting'].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Zap className="h-5 w-5 text-[#FAA21B] flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Why Partner With Us */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Why Partner With Us?</h2>
+          <h2 className="font-black uppercase text-center mb-8 leading-none"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: 'white' }}>
+            Why Partner With Us?
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20">
-              <Target className="h-10 w-10 text-[#FAA21B] mb-4" />
-              <h3 className="text-white font-bold text-lg mb-2">Targeted Audience</h3>
-              <p className="text-white/70">Reach listeners who are actively engaged in Toronto&apos;s EDM scene.</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20">
-              <Users className="h-10 w-10 text-[#FAA21B] mb-4" />
-              <h3 className="text-white font-bold text-lg mb-2">Authentic Integration</h3>
-              <p className="text-white/70">Host-read ads that feel natural and resonate with our audience.</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20">
-              <TrendingUp className="h-10 w-10 text-[#FAA21B] mb-4" />
-              <h3 className="text-white font-bold text-lg mb-2">Proven Results</h3>
-              <p className="text-white/70">Track record of delivering measurable ROI for our partners.</p>
-            </div>
+            {[
+              { Icon: Target, title: 'Targeted Audience', desc: "Reach listeners who are actively engaged in Toronto's EDM scene." },
+              { Icon: Users, title: 'Authentic Integration', desc: 'Host-read ads that feel natural and resonate with our audience.' },
+              { Icon: TrendingUp, title: 'Proven Results', desc: 'Track record of delivering measurable ROI for our partners.' },
+            ].map(({ Icon, title, desc }) => (
+              <div key={title} className="rave-card p-6 rounded-xl">
+                <Icon className="h-10 w-10 text-[#FAA21B] mb-4" />
+                <h3 className="text-white font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+                  {title}
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.65)' }}>{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Inquiry Form */}
-        <div className="bg-white rounded-2xl p-8 shadow-xl">
-          <h2 className="text-2xl font-bold text-[#112B4F] mb-6">Request a Sponsorship Proposal</h2>
+        <div className="rave-panel rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+            Request a Sponsorship Proposal
+          </h2>
           <form action={submitSponsorshipInquiry} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="companyName" className="block text-sm font-medium text-[#112B4F] mb-2">Company Name *</label>
-                <input type="text" id="companyName" name="companyName" required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="Your company name" />
+                <label htmlFor="companyName" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Company Name *</label>
+                <input type="text" id="companyName" name="companyName" required placeholder="Your company name"
+                  className="rave-input w-full px-4 py-3 rounded-lg" />
               </div>
               <div>
-                <label htmlFor="contactName" className="block text-sm font-medium text-[#112B4F] mb-2">Contact Name *</label>
-                <input type="text" id="contactName" name="contactName" required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="Your full name" />
+                <label htmlFor="contactName" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Contact Name *</label>
+                <input type="text" id="contactName" name="contactName" required placeholder="Your full name"
+                  className="rave-input w-full px-4 py-3 rounded-lg" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#112B4F] mb-2">Email Address *</label>
-                <input type="email" id="email" name="email" required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="your@email.com" />
+                <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Email Address *</label>
+                <input type="email" id="email" name="email" required placeholder="your@email.com"
+                  className="rave-input w-full px-4 py-3 rounded-lg" />
               </div>
               <div>
-                <label htmlFor="budget" className="block text-sm font-medium text-[#112B4F] mb-2">Estimated Budget</label>
-                <select id="budget" name="budget"
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all">
+                <label htmlFor="budget" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Estimated Budget</label>
+                <select id="budget" name="budget" className="rave-input w-full px-4 py-3 rounded-lg">
                   <option value="">Select a range</option>
                   <option value="under-1k">Under $1,000</option>
                   <option value="1k-5k">$1,000 - $5,000</option>
@@ -150,21 +173,21 @@ export default async function SponsorshipPage({
             </div>
 
             <div>
-              <label htmlFor="goals" className="block text-sm font-medium text-[#112B4F] mb-2">Campaign Goals *</label>
+              <label htmlFor="goals" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Campaign Goals *</label>
               <input type="text" id="goals" name="goals" required
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                placeholder="e.g., Brand awareness, event promotion, product launch" />
+                placeholder="e.g., Brand awareness, event promotion, product launch"
+                className="rave-input w-full px-4 py-3 rounded-lg" />
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-[#112B4F] mb-2">Additional Information</label>
+              <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Additional Information</label>
               <textarea id="message" name="message" rows={4}
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all resize-none"
-                placeholder="Tell us more about your sponsorship goals..." />
+                placeholder="Tell us more about your sponsorship goals..."
+                className="rave-input w-full px-4 py-3 rounded-lg resize-none" />
             </div>
 
             <button type="submit"
-              className="w-full md:w-auto px-8 py-4 bg-[#FAA21B] text-[#112B4F] rounded-full font-bold hover:bg-[#FAA21B]/90 transition-colors shadow-lg inline-flex items-center justify-center gap-2">
+              className="rave-btn w-full md:w-auto px-8 py-4 rounded-full font-bold inline-flex items-center justify-center gap-2 shadow-lg">
               <Send className="h-5 w-5" />
               Request Proposal
             </button>

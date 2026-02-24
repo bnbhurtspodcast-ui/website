@@ -15,24 +15,46 @@ import {
   Trello,
   Users,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
-const navItems = [
-  { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Task Board', path: '/admin/tasks', icon: Trello },
-  { name: 'Contact Submissions', path: '/admin/contacts', icon: Mail },
-  { name: 'Guest Applications', path: '/admin/guests', icon: User },
-  { name: 'Sponsorship Inquiries', path: '/admin/sponsorships', icon: Briefcase },
-  { name: 'Content Management', path: '/admin/content', icon: FileText },
-  { name: 'Hosts', path: '/admin/hosts', icon: Users },
-  { name: 'Settings', path: '/admin/settings', icon: Settings },
+const navGroups = [
+  {
+    label: 'Workspace',
+    items: [
+      { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
+      { name: 'Task Board', path: '/admin/tasks', icon: Trello },
+    ],
+  },
+  {
+    label: 'Submissions',
+    items: [
+      { name: 'Contact Submissions', path: '/admin/contacts', icon: Mail },
+      { name: 'Guest Applications', path: '/admin/guests', icon: User },
+      { name: 'Sponsorship Inquiries', path: '/admin/sponsorships', icon: Briefcase },
+    ],
+  },
+  {
+    label: 'Manage',
+    items: [
+      { name: 'Content Management', path: '/admin/content', icon: FileText },
+      { name: 'Hosts', path: '/admin/hosts', icon: Users },
+      { name: 'Settings', path: '/admin/settings', icon: Settings },
+    ],
+  },
 ]
 
 export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string>('')
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? '')
+    })
+  }, [])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -43,16 +65,21 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const isActive = (path: string) => pathname === path
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#112B4F] via-[#1a3d5f] to-[#112B4F] flex flex-col">
+    <div className="min-h-screen admin-dot-grid flex flex-col">
       {/* Mobile Header */}
-      <div className="lg:hidden bg-[#112B4F] border-b border-[#FAA21B]/20 px-4 py-4">
+      <div className="lg:hidden bg-[#080f1a] border-b border-[#FAA21B]/15 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Logo" className="h-10 w-10" />
-            <span className="text-white font-bold">Admin Panel</span>
+            <img src="/logo.png" alt="BNB Hurts Podcast logo" className="size-10" />
+            <span className="text-white font-bold">Admin</span>
           </div>
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-white">
-            {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle navigation"
+            aria-expanded={sidebarOpen}
+            className="p-2 text-white rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FAA21B]"
+          >
+            {sidebarOpen ? <X className="size-6" aria-hidden="true" /> : <Menu className="size-6" aria-hidden="true" />}
           </button>
         </div>
       </div>
@@ -62,47 +89,60 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:static top-0 bottom-0 left-0 z-50 w-72 bg-[#112B4F] border-r border-[#FAA21B]/20 transition-transform duration-300 ease-in-out lg:h-auto`}
+          } lg:translate-x-0 fixed lg:static top-0 bottom-0 left-0 z-50 w-72 bg-[#0a1220]/95 border-r border-[#FAA21B]/15 backdrop-blur-md transition-transform duration-300 ease-in-out lg:h-auto`}
         >
           <div className="flex flex-col h-full">
             {/* Logo */}
-            <div className="hidden lg:flex items-center gap-3 p-6 border-b border-[#FAA21B]/20">
-              <img src="/logo.png" alt="Logo" className="h-12 w-12" />
+            <div className="hidden lg:flex items-center gap-3 p-6 border-b border-[#FAA21B]/12">
+              <img src="/logo.png" alt="BNB Hurts Podcast logo" className="size-12" />
               <div>
-                <h1 className="text-white font-bold text-lg">Admin Panel</h1>
-                <p className="text-[#FAA21B] text-sm">Back n&apos; Body Hurts</p>
+                <h1 className="text-white font-bold text-base tracking-tight">Admin Panel</h1>
+                <p className="text-[#FAA21B]/70 text-xs font-medium tracking-wider uppercase">Back n&apos; Body Hurts</p>
               </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.path}
-                    href={item.path}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                      isActive(item.path)
-                        ? 'bg-[#FAA21B] text-[#112B4F] font-bold shadow-lg'
-                        : 'text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.name}</span>
-                  </Link>
-                )
-              })}
+            <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" aria-label="Admin navigation">
+              {navGroups.map((group) => (
+                <div key={group.label}>
+                  <p className="admin-nav-section">{group.label}</p>
+                  {group.items.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <Link
+                        key={item.path}
+                        href={item.path}
+                        onClick={() => setSidebarOpen(false)}
+                        aria-current={isActive(item.path) ? 'page' : undefined}
+                        className={`admin-nav-item ${isActive(item.path) ? 'active' : ''}`}
+                      >
+                        <Icon className="size-4 flex-shrink-0" aria-hidden="true" />
+                        <span>{item.name}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ))}
             </nav>
 
-            {/* Sign Out */}
-            <div className="p-4 border-t border-[#FAA21B]/20">
+            {/* Bottom: user block + sign out */}
+            <div className="border-t border-[#FAA21B]/12 p-3 space-y-2">
+              {userEmail && (
+                <div className="admin-user-block">
+                  <div className="flex items-center gap-2">
+                    <div className="size-7 rounded-full bg-[#FAA21B]/20 flex items-center justify-center flex-shrink-0">
+                      <User className="size-3.5 text-[#FAA21B]" aria-hidden="true" />
+                    </div>
+                    <p className="text-xs text-white/50 truncate">{userEmail}</p>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-red-500/20 hover:text-red-400 transition-all"
+                aria-label="Sign out"
+                className="w-full admin-nav-item hover:!bg-red-500/10 hover:!text-red-400 hover:!border-l-red-400/40"
               >
-                <LogOut className="h-5 w-5" />
+                <LogOut className="size-4 flex-shrink-0" aria-hidden="true" />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -114,6 +154,7 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
           <div
             className="lg:hidden fixed inset-0 bg-black/50 z-40"
             onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
           />
         )}
 

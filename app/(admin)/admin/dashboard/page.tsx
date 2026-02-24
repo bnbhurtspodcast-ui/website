@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Mail, User, Briefcase, FileText, TrendingUp, Calendar } from 'lucide-react'
+import { Mail, User, Briefcase, FileText, Calendar } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -64,68 +64,71 @@ export default async function DashboardPage() {
   ].sort(() => -1)
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
-        <p className="text-[#FAA21B]">Welcome back! Here&apos;s what&apos;s happening.</p>
+    <div className="space-y-8">
+      <div className="mb-2">
+        <h1 className="text-3xl font-bold text-white tracking-tight mb-1">Dashboard Overview</h1>
+        <p className="text-sm text-white/45">Welcome back — here&apos;s what&apos;s happening.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
             <Link
               key={stat.label}
               href={stat.path}
-              className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              className="admin-stat-card p-6 block"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-[#FAA21B]/10 rounded-lg">
-                  <Icon className="h-6 w-6 text-[#FAA21B]" />
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2.5 bg-[#FAA21B]/10 border border-[#FAA21B]/20 rounded-lg">
+                  <Icon className="size-5 text-[#FAA21B]" aria-hidden="true" />
                 </div>
-                <TrendingUp className="h-4 w-4 text-green-600" />
               </div>
-              <div className="text-3xl font-bold text-[#112B4F] mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+              <div className="text-4xl font-black text-white tracking-tight mt-4 mb-1">{stat.value}</div>
+              <div className="text-xs text-white/45 font-medium uppercase tracking-wider">{stat.label}</div>
+              <div className="mt-4 h-0.5 bg-gradient-to-r from-[#FAA21B]/50 to-transparent rounded-full" aria-hidden="true" />
             </Link>
           )
         })}
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-xl p-6 shadow-lg">
-        <h2 className="text-xl font-bold text-[#112B4F] mb-4 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-[#FAA21B]" />
-          Recent Activity
-        </h2>
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-1 h-5 bg-[#FAA21B] rounded-full" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <Calendar className="size-4 text-[#FAA21B]" aria-hidden="true" />
+            Recent Activity
+          </h2>
+        </div>
         {recentActivity.length === 0 ? (
-          <p className="text-gray-500 text-sm">No submissions yet.</p>
+          <p className="text-white/35 text-sm">No submissions yet.</p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-0" aria-live="polite">
             {recentActivity.map((activity, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
+                className="flex items-start gap-3 py-3 border-b border-white/5 last:border-0"
               >
                 <div
-                  className={`p-2 rounded-full ${
+                  className={`p-2 rounded-full flex-shrink-0 ${
                     activity.type === 'contact'
-                      ? 'bg-purple-100'
+                      ? 'bg-violet-500/15 ring-1 ring-violet-500/25'
                       : activity.type === 'guest'
-                      ? 'bg-blue-100'
-                      : 'bg-green-100'
+                      ? 'bg-blue-500/15 ring-1 ring-blue-500/25'
+                      : 'bg-emerald-500/15 ring-1 ring-emerald-500/25'
                   }`}
                 >
-                  {activity.type === 'contact' && <Mail className="h-4 w-4 text-purple-600" />}
-                  {activity.type === 'guest' && <User className="h-4 w-4 text-blue-600" />}
-                  {activity.type === 'sponsorship' && <Briefcase className="h-4 w-4 text-green-600" />}
+                  {activity.type === 'contact' && <Mail className="size-4 text-violet-400" aria-hidden="true" />}
+                  {activity.type === 'guest' && <User className="size-4 text-blue-400" aria-hidden="true" />}
+                  {activity.type === 'sponsorship' && <Briefcase className="size-4 text-emerald-400" aria-hidden="true" />}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-900">
-                    <span className="font-medium">{activity.name}</span> {activity.action}
+                  <p className="text-sm text-white/60">
+                    <span className="font-semibold text-white">{activity.name}</span> {activity.action}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                  <p className="text-xs text-white/30 mt-0.5">{activity.time}</p>
                 </div>
               </div>
             ))}

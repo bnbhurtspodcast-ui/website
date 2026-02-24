@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Settings as SettingsIcon, User, Bell, Lock, Palette, Globe } from 'lucide-react'
+import { Settings as SettingsIcon, User, Lock } from 'lucide-react'
 import ChangePasswordForm from './ChangePasswordForm'
 
 export default async function SettingsPage() {
@@ -9,35 +9,38 @@ export default async function SettingsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-[#FAA21B]">Configure your admin panel and podcast settings</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight mb-1">Settings</h1>
+        <p className="text-sm text-white/45">Configure your admin panel and account settings</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Profile */}
-        <div className="bg-white rounded-xl p-6 shadow-lg">
+        <div className="admin-card p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-[#FAA21B]/10 rounded-full flex items-center justify-center">
-              <User className="h-6 w-6 text-[#FAA21B]" />
+            <div className="size-12 bg-[#FAA21B]/10 border border-[#FAA21B]/20 rounded-full flex items-center justify-center">
+              <User className="size-6 text-[#FAA21B]" aria-hidden="true" />
             </div>
-            <h2 className="text-xl font-bold text-[#112B4F]">Profile Settings</h2>
+            <h2 className="text-lg font-bold text-white">Profile Settings</h2>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="admin-label" htmlFor="profile-email">Email</label>
               <input
+                id="profile-email"
                 type="email"
-                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 outline-none text-gray-700"
+                className="admin-input"
                 defaultValue={user?.email ?? ''}
                 readOnly
+                autoComplete="email"
               />
-              <p className="text-xs text-gray-500 mt-1">Email is managed via Supabase Auth</p>
+              <p className="text-xs text-white/30 mt-1">Email is managed via Supabase Auth</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">User ID</label>
+              <label className="admin-label" htmlFor="profile-id">User ID</label>
               <input
+                id="profile-id"
                 type="text"
-                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 outline-none text-gray-500 text-sm font-mono"
+                className="admin-input font-mono text-sm"
                 defaultValue={user?.id ?? ''}
                 readOnly
               />
@@ -45,83 +48,38 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        {/* Notifications */}
-        {false && (
-          <div className="bg-white rounded-xl p-6 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <Bell className="h-6 w-6 text-blue-600" />
-              </div>
-              <h2 className="text-xl font-bold text-[#112B4F]">Notifications</h2>
-            </div>
-            <div className="space-y-4">
-              {['New contact submissions', 'Guest applications', 'Sponsorship inquiries', 'Email digests'].map((item, i) => (
-                <label key={item} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                  <span className="text-sm font-medium text-gray-700">{item}</span>
-                  <input type="checkbox" className="w-5 h-5 rounded accent-[#FAA21B]" defaultChecked={i < 3} />
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Security */}
-        <div className="bg-white rounded-xl p-6 shadow-lg">
+        <div className="admin-card p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center">
-              <Lock className="h-6 w-6 text-red-600" />
+            <div className="size-12 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center">
+              <Lock className="size-6 text-red-400" aria-hidden="true" />
             </div>
-            <h2 className="text-xl font-bold text-[#112B4F]">Security</h2>
+            <h2 className="text-lg font-bold text-white">Security</h2>
           </div>
           <ChangePasswordForm />
         </div>
-
-        {/* Appearance */}
-        {false && (
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-              <Palette className="h-6 w-6 text-purple-600" />
-            </div>
-            <h2 className="text-xl font-bold text-[#112B4F]">Appearance</h2>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
-              <select disabled className="w-full px-4 py-2 rounded-lg border-2 bg-gray-200 border-gray-200 focus:border-[#FAA21B] outline-none">
-                <option>Auto</option>
-                <option>Light</option>
-                <option>Dark</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
-              <div className="flex items-center gap-2">
-                <Globe className="h-5 w-5 text-gray-400" />
-                <select disabled className="flex-1 px-4 py-2 rounded-lg border-2 bg-gray-200 border-gray-200 focus:border-[#FAA21B] outline-none">
-                  <option>English</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        )}
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 mt-6">
+      <div className="admin-danger-card p-6 mt-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-            <SettingsIcon className="h-5 w-5 text-red-600" />
+          <div className="size-10 bg-red-500/12 rounded-full border border-red-500/25 flex items-center justify-center">
+            <SettingsIcon className="size-5 text-red-400" aria-hidden="true" />
           </div>
-          <h2 className="text-lg font-bold text-red-900">Danger Zone</h2>
+          <h2 className="text-lg font-bold text-red-400">Danger Zone</h2>
         </div>
-        <p className="text-sm text-red-700 mb-4">These actions are irreversible. Please proceed with caution.</p>
+        <p className="text-sm text-red-400/60 mb-4">These actions are irreversible. Please proceed with caution.</p>
         <div className="flex gap-3">
-          <button className="px-6 py-2 bg-white border-2 border-red-300 text-red-700 rounded-lg font-bold hover:bg-red-50 transition-colors">
+          <button
+            disabled
+            className="px-6 py-2 border border-red-500/35 text-red-400/70 rounded-lg font-bold hover:border-red-400 hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
             Clear All Submissions
           </button>
-          <button className="px-6 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors">
+          <button
+            disabled
+            className="px-6 py-2 bg-red-600/80 text-white rounded-lg font-bold hover:bg-red-600 border border-red-500/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
             Delete Account
           </button>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Search } from 'lucide-react'
+import { motion } from 'motion/react'
 import { EpisodeCard } from './EpisodeCard'
 import type { Episode } from '@/types'
 
@@ -26,31 +27,51 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
     return typeMatch && textMatch
   })
 
-  const pillBase = 'px-5 py-2 rounded-full text-sm transition-all cursor-pointer'
-  const pillActive = 'bg-[#FAA21B] text-[#112B4F] font-bold'
-  const pillInactive = 'border border-[#FAA21B]/40 text-white/70 hover:border-[#FAA21B] hover:text-white'
+  const pillBase = 'px-5 py-2 rounded-full text-sm transition-all cursor-pointer font-medium'
+  const pillActive = 'text-[#112B4F] font-bold'
+  const pillInactive = 'text-white/60 hover:text-white border'
 
   return (
     <div className="py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">All Episodes</h1>
-          <p className="text-xl text-[#FAA21B] font-medium">
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <h1
+            className="font-black uppercase mb-3 leading-none tracking-tight"
+            style={{
+              fontFamily: 'var(--font-barlow), sans-serif',
+              fontSize: 'clamp(3rem, 8vw, 6rem)',
+              color: 'white',
+            }}
+          >
+            All Episodes
+          </h1>
+          <p className="text-lg font-medium" style={{ color: '#FAA21B' }}>
             Explore our complete collection of conversations
           </p>
-        </div>
+        </motion.div>
 
         {/* Filter Pills */}
         <div className="flex gap-3 mb-8">
           {(['all', 'regular', 'sts'] as FilterType[]).map((type) => (
-            <button
+            <motion.button
               key={type}
               onClick={() => setFilter(type)}
+              whileTap={{ scale: 0.95 }}
               className={`${pillBase} ${filter === type ? pillActive : pillInactive}`}
+              style={
+                filter === type
+                  ? { backgroundColor: '#FAA21B', border: '1px solid #FAA21B' }
+                  : { borderColor: 'rgba(250,162,27,0.3)', backgroundColor: 'transparent' }
+              }
             >
               {type === 'all' ? 'All' : type === 'sts' ? 'STS' : 'Regular'}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -63,14 +84,29 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
               placeholder="Search episodes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-[#FAA21B]/30 bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
+              className="w-full pl-12 pr-4 py-3 rounded-full outline-none transition-all text-white placeholder:text-white/40"
+              style={{
+                border: '1px solid rgba(250,162,27,0.3)',
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                backdropFilter: 'blur(8px)',
+              }}
+              onFocus={(e) => {
+                const el = e.currentTarget as HTMLInputElement
+                el.style.borderColor = '#FAA21B'
+                el.style.boxShadow = '0 0 0 3px rgba(250,162,27,0.15)'
+              }}
+              onBlur={(e) => {
+                const el = e.currentTarget as HTMLInputElement
+                el.style.borderColor = 'rgba(250,162,27,0.3)'
+                el.style.boxShadow = 'none'
+              }}
             />
           </div>
         </div>
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-white/80">
+          <p style={{ color: 'rgba(255,255,255,0.6)' }}>
             Showing <span className="font-bold text-[#FAA21B]">{filtered.length}</span>{' '}
             episode{filtered.length !== 1 ? 's' : ''}
           </p>
@@ -85,11 +121,14 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-16 h-16 bg-[#FAA21B]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: 'rgba(250,162,27,0.1)', border: '1px solid rgba(250,162,27,0.3)' }}
+            >
               <Search className="h-8 w-8 text-[#FAA21B]" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">No episodes found</h3>
-            <p className="text-white/60">Try adjusting your search</p>
+            <p style={{ color: 'rgba(255,255,255,0.5)' }}>Try adjusting your search</p>
           </div>
         )}
       </div>

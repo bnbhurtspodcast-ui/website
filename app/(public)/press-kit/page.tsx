@@ -9,20 +9,28 @@ export default async function PressKitPage() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-[#FAA21B] rounded-full flex items-center justify-center mx-auto mb-6">
-            <Newspaper className="h-10 w-10 text-[#112B4F]" />
+          <div className="rave-icon-box w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ boxShadow: '0 0 20px rgba(250,162,27,0.15)' }}>
+            <Newspaper className="h-10 w-10 text-[#FAA21B]" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Press Kit</h1>
-          <p className="text-xl text-[#FAA21B] font-medium mb-4">Media resources and brand assets</p>
-          <p className="text-white/80 max-w-2xl mx-auto">
+          <h1 className="font-black uppercase leading-none tracking-tight mb-4"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', color: 'white' }}>
+            Press Kit
+          </h1>
+          <p className="text-xl font-medium mb-4" style={{ color: '#FAA21B' }}>
+            Media resources and brand assets
+          </p>
+          <p className="max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
             Everything you need to write about or feature Back n&apos; Body Hurts Podcast. All assets
             are free to use for press and promotional purposes.
           </p>
         </div>
 
         {/* Quick Facts */}
-        <div className="bg-white rounded-2xl p-8 mb-12 shadow-xl">
-          <h2 className="text-2xl font-bold text-[#112B4F] mb-6">Quick Facts</h2>
+        <div className="rave-panel rounded-2xl p-8 mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+            Quick Facts
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { label: 'Podcast Name', value: "Back n' Body Hurts" },
@@ -35,22 +43,26 @@ export default async function PressKitPage() {
               { label: 'Contact', value: 'info@bnbhurtspodcast.com' },
             ].map(({ label, value }) => (
               <div key={label}>
-                <h3 className="font-bold text-[#112B4F] mb-1">{label}</h3>
-                <p className="text-gray-700">{value}</p>
+                <h3 className="font-bold mb-1" style={{ color: 'rgba(250,162,27,0.8)', fontFamily: 'var(--font-barlow), sans-serif' }}>
+                  {label}
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.75)' }}>{value}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* About the Show */}
-        <div className="bg-white rounded-2xl p-8 mb-12 shadow-xl">
-          <h2 className="text-2xl font-bold text-[#112B4F] mb-4">About the Show</h2>
-          <p className="text-gray-700 mb-4 leading-relaxed">
+        <div className="rave-panel rounded-2xl p-8 mb-12">
+          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+            About the Show
+          </h2>
+          <p className="mb-4 leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
             Back n&apos; Body Hurts is a Toronto-based podcast covering all things EDM, from the host to the attendees. Ranging from tips,
             recommendations, real talk about local and worldwide events, and most importantly what makes raving great. Each episode features
             unscripted conversations with DJs, promoters, wellness experts, and scene veterans.
           </p>
-          <p className="text-gray-700 leading-relaxed">
+          <p className="leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
             Since launching in late 2023, the show has published {allEpisodes.length} episodes and continues to grow,
             attracting a loyal audience of EDM enthusiasts who appreciate the show&apos;s authentic,
             community-driven approach.
@@ -59,44 +71,35 @@ export default async function PressKitPage() {
 
         {/* Logo & Branding */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Logo & Branding</h2>
+          <h2 className="font-black uppercase mb-6 leading-none"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: 'white' }}>
+            Logo & Branding
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl p-8">
-              <div className="flex justify-center mb-4 bg-gray-100 rounded-lg p-8">
-                <img src="/logo.png" alt="Back n' Body Hurts Logo" className="w-48 h-48 object-contain" />
+            {[
+              { bg: 'rgba(255,255,255,0.04)', label: 'Primary Logo', desc: 'High resolution PNG' },
+              { bg: 'rgba(10,22,40,0.95)', label: 'Logo on Dark Background', desc: 'Optimized for dark backgrounds' },
+            ].map(({ bg, label, desc }) => (
+              <div key={label} className="rave-panel rounded-xl p-8">
+                <div className="flex justify-center mb-4 rounded-lg p-8" style={{ background: bg }}>
+                  <img src="/logo.png" alt="Back n' Body Hurts Logo" className="w-48 h-48 object-contain" />
+                </div>
+                <h3 className="font-bold text-white mb-2" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>{label}</h3>
+                <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>{desc}</p>
+                <a href="/logo.png" download="bnb-logo.png"
+                  className="rave-btn w-full px-4 py-3 rounded-lg font-bold inline-flex items-center justify-center gap-2">
+                  <Download className="h-5 w-5" />
+                  Download PNG
+                </a>
               </div>
-              <h3 className="font-bold text-[#112B4F] mb-2">Primary Logo</h3>
-              <p className="text-gray-700 text-sm mb-4">High resolution PNG</p>
-              <a
-                href="/logo.png"
-                download="bnb-logo.png"
-                className="w-full px-4 py-3 bg-[#FAA21B] text-[#112B4F] rounded-lg font-bold hover:bg-[#FAA21B]/90 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <Download className="h-5 w-5" />
-                Download PNG
-              </a>
-            </div>
-
-            <div className="bg-white rounded-xl p-8">
-              <div className="flex justify-center mb-4 bg-[#112B4F] rounded-lg p-8">
-                <img src="/logo.png" alt="Back n' Body Hurts Logo" className="w-48 h-48 object-contain" />
-              </div>
-              <h3 className="font-bold text-[#112B4F] mb-2">Logo on Dark Background</h3>
-              <p className="text-gray-700 text-sm mb-4">Optimized for dark backgrounds</p>
-              <a
-                href="/logo.png"
-                download="bnb-logo-dark.png"
-                className="w-full px-4 py-3 bg-[#FAA21B] text-[#112B4F] rounded-lg font-bold hover:bg-[#FAA21B]/90 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <Download className="h-5 w-5" />
-                Download PNG
-              </a>
-            </div>
+            ))}
           </div>
 
           {/* Brand Colors */}
-          <div className="mt-8 bg-white rounded-xl p-8">
-            <h3 className="text-xl font-bold text-[#112B4F] mb-6">Brand Colors</h3>
+          <div className="mt-8 rave-panel rounded-xl p-8">
+            <h3 className="text-xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+              Brand Colors
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
                 { name: 'Orange', hex: '#FAA21B', bg: '#FAA21B' },
@@ -105,12 +108,10 @@ export default async function PressKitPage() {
                 { name: 'Accent Blue', hex: '#1a3d5f', bg: '#1a3d5f' },
               ].map(({ name, hex, bg, border }) => (
                 <div key={name}>
-                  <div
-                    className={`w-full h-24 rounded-lg mb-3 ${border ? 'border-2 border-gray-300' : ''}`}
-                    style={{ backgroundColor: bg }}
-                  />
-                  <p className="font-bold text-[#112B4F] text-sm">{name}</p>
-                  <p className="text-gray-600 text-sm font-mono">{hex}</p>
+                  <div className="w-full h-24 rounded-lg mb-3"
+                    style={{ backgroundColor: bg, border: border ? '1px solid rgba(255,255,255,0.2)' : 'none' }} />
+                  <p className="font-bold text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{name}</p>
+                  <p className="text-sm font-mono" style={{ color: 'rgba(255,255,255,0.45)' }}>{hex}</p>
                 </div>
               ))}
             </div>
@@ -119,7 +120,10 @@ export default async function PressKitPage() {
 
         {/* Downloadable Assets */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Downloadable Assets</h2>
+          <h2 className="font-black uppercase mb-6 leading-none"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: 'white' }}>
+            Downloadable Assets
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { icon: FileText, title: 'Media Kit PDF', desc: 'Complete press kit with all information and assets', label: 'Download PDF' },
@@ -127,11 +131,11 @@ export default async function PressKitPage() {
               { icon: FileText, title: 'Cover Art', desc: 'Podcast cover art in various sizes', label: 'Download ZIP' },
               { icon: FileText, title: 'Promo Videos', desc: 'Short promotional clips for social media', label: 'Download ZIP' },
             ].map(({ icon: Icon, title, desc, label }) => (
-              <div key={title} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20">
+              <div key={title} className="rave-card p-6 rounded-xl">
                 <Icon className="h-10 w-10 text-[#FAA21B] mb-4" />
-                <h3 className="text-white font-bold text-lg mb-2">{title}</h3>
-                <p className="text-white/70 text-sm mb-4">{desc}</p>
-                <button className="px-6 py-3 bg-[#FAA21B] text-[#112B4F] rounded-full font-bold hover:bg-[#FAA21B]/90 transition-colors inline-flex items-center gap-2">
+                <h3 className="text-white font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>{title}</h3>
+                <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>{desc}</p>
+                <button className="rave-btn px-6 py-3 rounded-full font-bold inline-flex items-center gap-2">
                   <Download className="h-4 w-4" />
                   {label}
                 </button>
@@ -141,18 +145,20 @@ export default async function PressKitPage() {
         </div>
 
         {/* Contact */}
-        <div className="bg-[#FAA21B] rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-[#112B4F] mb-4">Media Inquiries</h2>
-          <p className="text-[#112B4F]/80 mb-6 font-medium">
+        <div className="rave-cta-box rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+            Media Inquiries
+          </h2>
+          <p className="font-medium mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>
             For interviews, features, or additional information, please contact our media team.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:info@bnbhurtspodcast.com"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#112B4F] text-white rounded-full font-bold hover:bg-[#112B4F]/90 transition-colors">
+              className="rave-btn inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold">
               info@bnbhurtspodcast.com
             </a>
             <a href="mailto:info@bnbhurtspodcast.com"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-[#112B4F] rounded-full font-bold hover:bg-white/90 transition-colors">
+              className="rave-btn-outline inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold">
               General Inquiries
             </a>
           </div>

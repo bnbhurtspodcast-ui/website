@@ -180,3 +180,449 @@
     line-height: 1.5;
   }
 }
+
+/* ============================================================
+   EDM RAVE DESIGN SYSTEM — BNB Hurts Podcast
+   ============================================================ */
+
+/* Waveform bar animations */
+@keyframes rave-pulse {
+  0%, 100% { opacity: 0.7; transform: scaleY(0.6); }
+  50%       { opacity: 1;   transform: scaleY(1); }
+}
+@keyframes rave-pulse-2 {
+  0%, 100% { opacity: 0.5; transform: scaleY(0.4); }
+  50%       { opacity: 0.9; transform: scaleY(0.85); }
+}
+@keyframes rave-pulse-3 {
+  0%, 100% { opacity: 0.6; transform: scaleY(0.8); }
+  50%       { opacity: 1;   transform: scaleY(1); }
+}
+
+/* Ambient pulse for logo glow */
+@keyframes ambient-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(1.08); }
+}
+
+/* Scanline scroll */
+@keyframes scanline-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 4px; }
+}
+
+/* ============================================================
+   EDM Hover Effect Utility Classes (for server components)
+   ============================================================ */
+
+.rave-card {
+  background: rgba(10,22,40,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(250,162,27,0.18);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.rave-card:hover {
+  border-color: rgba(250,162,27,0.65);
+  box-shadow: 0 0 28px rgba(250,162,27,0.16), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.rave-card-lift:hover {
+  transform: translateY(-4px);
+}
+
+.rave-panel {
+  background: rgba(10,22,40,0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(250,162,27,0.2);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+
+.rave-btn {
+  background-color: #FAA21B;
+  color: #112B4F;
+  transition: box-shadow 0.25s;
+}
+.rave-btn:hover {
+  box-shadow: 0 0 22px rgba(250,162,27,0.6);
+}
+
+.rave-btn-outline {
+  border: 1px solid rgba(250,162,27,0.45);
+  background: rgba(250,162,27,0.07);
+  color: white;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.rave-btn-outline:hover {
+  border-color: rgba(250,162,27,0.85);
+  background: rgba(250,162,27,0.12);
+}
+
+.rave-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(250,162,27,0.28);
+  color: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.rave-input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+.rave-input:focus {
+  border-color: #FAA21B;
+  box-shadow: 0 0 0 3px rgba(250,162,27,0.12);
+  outline: none;
+}
+.rave-input option {
+  background-color: #112B4F;
+  color: white;
+}
+
+.rave-icon-box {
+  background: rgba(250,162,27,0.1);
+  border: 1px solid rgba(250,162,27,0.3);
+}
+
+.rave-cta-box {
+  background: linear-gradient(135deg, rgba(250,162,27,0.1) 0%, rgba(250,162,27,0.05) 100%);
+  border: 1px solid rgba(250,162,27,0.35);
+  box-shadow: 0 0 40px rgba(250,162,27,0.08);
+}
+
+.rave-nav-link {
+  color: rgba(255,255,255,0.55);
+  transition: color 0.2s;
+}
+.rave-nav-link:hover {
+  color: #FAA21B;
+}
+
+/* ============================================================
+   ADMIN CMS DARK THEME — BNB Hurts Podcast
+   Tailwind v4 @theme tokens + @utility classes
+   ============================================================ */
+
+@theme {
+  /* Admin brand color tokens (OKLCH) */
+  --color-gold:               oklch(70% 0.15 75);
+  --color-admin-bg:           oklch(8% 0.02 240);
+  --color-admin-surface:      oklch(16% 0.03 240);
+  --color-admin-danger:       oklch(60% 0.2 27);
+
+  /* Admin entry animations */
+  --animate-modal-in: modal-in 0.18s ease-out;
+  --animate-card-in:  card-in  0.22s ease-out;
+
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.97) translateY(-6px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Dot-grid admin shell background */
+@utility admin-dot-grid {
+  background-color: var(--color-admin-bg);
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--color-gold) 7%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  color-scheme: dark;
+}
+
+/* Primary glass card */
+@utility admin-card {
+  background: color-mix(in oklab, var(--color-admin-surface) 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 15%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 4px 32px oklch(0% 0 0 / 0.35), inset 0 1px 0 oklch(100% 0 0 / 0.04);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  &:hover {
+    border-color: color-mix(in oklab, var(--color-gold) 32%, transparent);
+    box-shadow:
+      0 0 28px color-mix(in oklab, var(--color-gold) 9%, transparent),
+      0 8px 40px oklch(0% 0 0 / 0.45);
+  }
+}
+
+/* Stat card — lifts on hover */
+@utility admin-stat-card {
+  background: linear-gradient(
+    135deg,
+    oklch(18% 0.03 240 / 0.9) 0%,
+    oklch(16% 0.03 240 / 0.85) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 18%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px oklch(0% 0 0 / 0.3), inset 0 1px 0 oklch(100% 0 0 / 0.06);
+  transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s;
+  &:hover {
+    border-color: color-mix(in oklab, var(--color-gold) 50%, transparent);
+    box-shadow:
+      0 0 28px color-mix(in oklab, var(--color-gold) 14%, transparent),
+      0 12px 40px oklch(0% 0 0 / 0.5);
+    transform: translateY(-2px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.22s, box-shadow 0.22s;
+    &:hover { transform: none; }
+  }
+}
+
+/* Dark glass modal */
+@utility admin-modal {
+  background: oklch(12% 0.025 240 / 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 20%, transparent);
+  border-radius: 16px;
+  box-shadow: 0 25px 80px oklch(0% 0 0 / 0.7), inset 0 1px 0 oklch(100% 0 0 / 0.04);
+  overscroll-behavior: contain;
+  animation: var(--animate-modal-in);
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+/* Sidebar nav item */
+@utility admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  color: oklch(100% 0 0 / 0.5);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: color 0.18s, background-color 0.18s, border-color 0.18s;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+  &:hover {
+    background: color-mix(in oklab, var(--color-gold) 7%, transparent);
+    color: oklch(100% 0 0 / 0.85);
+    border-left-color: color-mix(in oklab, var(--color-gold) 30%, transparent);
+  }
+  &.active {
+    background: color-mix(in oklab, var(--color-gold) 10%, transparent);
+    color: var(--color-gold);
+    border-left-color: var(--color-gold);
+    font-weight: 600;
+  }
+}
+
+/* Sidebar section label */
+@utility admin-nav-section {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.25);
+  padding: 0 14px;
+  margin-top: 20px;
+  margin-bottom: 4px;
+}
+
+/* Dark form input with proper focus-visible ring */
+@utility admin-input {
+  background: oklch(100% 0 0 / 0.04);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 22%, transparent);
+  border-radius: 8px;
+  color: oklch(100% 0 0 / 0.9);
+  padding: 9px 14px;
+  width: 100%;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  font-size: 0.875rem;
+  &::placeholder { color: oklch(100% 0 0 / 0.28); }
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-gold) 10%, transparent);
+  }
+  &:read-only {
+    background: oklch(100% 0 0 / 0.02);
+    color: oklch(100% 0 0 / 0.4);
+    cursor: default;
+  }
+  option {
+    background: oklch(14% 0.025 240);
+    color: white;
+  }
+}
+
+/* Uppercase field label */
+@utility admin-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.45);
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Gold primary action button */
+@utility admin-btn-primary {
+  background: var(--color-gold);
+  color: oklch(20% 0.04 240);
+  font-weight: 700;
+  padding: 9px 20px;
+  border-radius: 8px;
+  transition: box-shadow 0.22s, transform 0.15s;
+  &:hover {
+    box-shadow: 0 0 22px color-mix(in oklab, var(--color-gold) 50%, transparent);
+    transform: translateY(-1px);
+  }
+  &:disabled { opacity: 0.45; transform: none; }
+  &:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover { transform: none; }
+  }
+}
+
+/* Ghost outline button */
+@utility admin-btn-ghost {
+  background: oklch(100% 0 0 / 0.04);
+  border: 1px solid oklch(100% 0 0 / 0.12);
+  color: oklch(100% 0 0 / 0.7);
+  font-weight: 600;
+  padding: 9px 20px;
+  border-radius: 8px;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  &:hover {
+    background: oklch(100% 0 0 / 0.08);
+    border-color: oklch(100% 0 0 / 0.25);
+    color: white;
+  }
+  &:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
+/* Danger section card */
+@utility admin-danger-card {
+  background: color-mix(in oklab, var(--color-admin-danger) 6%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-admin-danger) 25%, transparent);
+  border-radius: 12px;
+}
+
+/* Gold decorative divider line */
+@utility admin-gold-line {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--color-gold) 35%, transparent) 50%,
+    transparent
+  );
+}
+
+/* Sidebar user block */
+@utility admin-user-block {
+  background: color-mix(in oklab, var(--color-gold) 6%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 15%, transparent);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+/* Status badge base */
+@utility admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Badge color variants */
+@utility admin-badge-new {
+  background: color-mix(in oklab, oklch(70% 0.15 75) 12%, transparent);
+  color: oklch(70% 0.15 75);
+  border: 1px solid color-mix(in oklab, oklch(70% 0.15 75) 30%, transparent);
+}
+@utility admin-badge-reviewed {
+  background: color-mix(in oklab, oklch(65% 0.12 220) 10%, transparent);
+  color: oklch(65% 0.12 220);
+  border: 1px solid color-mix(in oklab, oklch(65% 0.12 220) 25%, transparent);
+}
+@utility admin-badge-responded {
+  background: color-mix(in oklab, oklch(68% 0.15 150) 10%, transparent);
+  color: oklch(68% 0.15 150);
+  border: 1px solid color-mix(in oklab, oklch(68% 0.15 150) 25%, transparent);
+}
+@utility admin-badge-pending {
+  background: color-mix(in oklab, oklch(70% 0.15 75) 12%, transparent);
+  color: oklch(70% 0.15 75);
+  border: 1px solid color-mix(in oklab, oklch(70% 0.15 75) 30%, transparent);
+}
+@utility admin-badge-reviewing {
+  background: color-mix(in oklab, oklch(60% 0.01 264) 10%, transparent);
+  color: oklch(65% 0.01 264);
+  border: 1px solid color-mix(in oklab, oklch(65% 0.01 264) 22%, transparent);
+}
+@utility admin-badge-approved {
+  background: color-mix(in oklab, oklch(68% 0.15 150) 10%, transparent);
+  color: oklch(68% 0.15 150);
+  border: 1px solid color-mix(in oklab, oklch(68% 0.15 150) 25%, transparent);
+}
+@utility admin-badge-rejected {
+  background: color-mix(in oklab, oklch(60% 0.2 27) 10%, transparent);
+  color: oklch(65% 0.2 27);
+  border: 1px solid color-mix(in oklab, oklch(60% 0.2 27) 25%, transparent);
+}
+@utility admin-badge-scheduled {
+  background: color-mix(in oklab, oklch(65% 0.12 260) 10%, transparent);
+  color: oklch(68% 0.12 260);
+  border: 1px solid color-mix(in oklab, oklch(65% 0.12 260) 25%, transparent);
+}
+@utility admin-badge-negotiating {
+  background: color-mix(in oklab, oklch(65% 0.15 300) 10%, transparent);
+  color: oklch(68% 0.15 300);
+  border: 1px solid color-mix(in oklab, oklch(65% 0.15 300) 25%, transparent);
+}
+@utility admin-badge-accepted {
+  background: color-mix(in oklab, oklch(68% 0.15 150) 10%, transparent);
+  color: oklch(68% 0.15 150);
+  border: 1px solid color-mix(in oklab, oklch(68% 0.15 150) 25%, transparent);
+}
+@utility admin-badge-declined {
+  background: color-mix(in oklab, oklch(60% 0.2 27) 10%, transparent);
+  color: oklch(65% 0.2 27);
+  border: 1px solid color-mix(in oklab, oklch(60% 0.2 27) 25%, transparent);
+}
+
+/* Dark table — descendant selector (can't use @utility for child selectors) */
+.admin-table-header th {
+  background: oklch(8% 0.02 240 / 0.8);
+  color: color-mix(in oklab, var(--color-gold) 70%, transparent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-gold) 12%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.admin-table-row {
+  border-bottom: 1px solid oklch(100% 0 0 / 0.04);
+  transition: background-color 0.15s;
+}
+.admin-table-row:hover {
+  background: color-mix(in oklab, var(--color-gold) 4%, transparent);
+}
+.admin-table-row td {
+  padding: 14px 20px;
+  color: oklch(100% 0 0 / 0.8);
+  font-size: 0.875rem;
+}

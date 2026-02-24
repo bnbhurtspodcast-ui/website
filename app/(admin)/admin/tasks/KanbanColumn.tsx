@@ -1,67 +1,51 @@
 'use client'
 
 import { Plus } from 'lucide-react'
-import type { Task, KanbanColumn as KanbanColumnType, AuthUser } from '@/types'
-import { COLUMN_COLOR_MAP } from './constants'
+import type { Task, KanbanColumn as KanbanColumnType } from '@/types'
+import { COLUMN_TOP_COLOR_MAP } from './constants'
 import { TaskCard } from './TaskCard'
-import { AddTaskForm, type AddForm } from './AddTaskForm'
 
 type KanbanColumnProps = {
   column: KanbanColumnType
   tasks: Task[]
-  users: AuthUser[]
   onDrop: (e: React.DragEvent, colId: string) => void
   onDragOver: (e: React.DragEvent) => void
   onDeleteTask: (id: string) => void
   onTaskClick: (task: Task) => void
-  addingTo: string | null
   onStartAdding: (colId: string) => void
-  onCancelAdding: () => void
-  onAddTask: (colId: string) => void
-  form: AddForm
-  onFormChange: (patch: Partial<AddForm>) => void
-  onAssigneePick: (userId: string) => void
-  isPending: boolean
 }
 
 export function KanbanColumn({
   column,
   tasks,
-  users,
   onDrop,
   onDragOver,
   onDeleteTask,
   onTaskClick,
-  addingTo,
   onStartAdding,
-  onCancelAdding,
-  onAddTask,
-  form,
-  onFormChange,
-  onAssigneePick,
-  isPending,
 }: KanbanColumnProps) {
-  const borderClass = COLUMN_COLOR_MAP[column.color] ?? 'border-gray-400'
-  const isAdding = addingTo === column.id
+  const dotColor = COLUMN_TOP_COLOR_MAP[column.color] ?? 'bg-gray-400'
 
   return (
     <div
-      className="flex flex-col w-72 flex-shrink-0 bg-white/5 backdrop-blur-sm rounded-xl border-2 border-white/10"
+      className="flex flex-col w-72 flex-shrink-0 rounded-xl border border-white/[0.07] bg-[#0a1628]/60 backdrop-blur-sm"
       onDrop={(e) => onDrop(e, column.id)}
       onDragOver={onDragOver}
     >
       {/* Column Header */}
-      <div className={`flex items-center justify-between p-3 border-b-4 ${borderClass}`}>
-        <div className="flex items-center gap-2">
-          <h2 className="text-base font-bold text-white">{column.name}</h2>
-          <span className="text-xs font-bold text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+      <div className="flex items-center justify-between px-3 py-3 border-b border-white/[0.07]">
+        <div className="flex items-center gap-2.5">
+          {/* Colored dot indicator */}
+          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor} shadow-[0_0_6px_currentColor]`} />
+          <h2 className="text-sm font-semibold text-white/90 tracking-wide">{column.name}</h2>
+          <span className="text-[10px] font-bold text-white/40 bg-white/8 px-1.5 py-0.5 rounded-full tabular-nums">
             {tasks.length}
           </span>
         </div>
       </div>
 
       {/* Tasks — scrollable */}
-      <div className="flex-1 p-3 space-y-2 overflow-y-auto max-h-[calc(100vh-220px)]">
+      <div className="flex-1 p-2.5 space-y-2 overflow-y-auto max-h-[calc(100vh-220px)]">
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
@@ -71,27 +55,17 @@ export function KanbanColumn({
           />
         ))}
 
-        {/* Add task form / button */}
-        {isAdding ? (
-          <AddTaskForm
-            colId={column.id}
-            form={form}
-            users={users}
-            isPending={isPending}
-            onChange={onFormChange}
-            onAssigneePick={onAssigneePick}
-            onSubmit={() => onAddTask(column.id)}
-            onCancel={onCancelAdding}
-          />
-        ) : (
-          <button
-            onClick={() => onStartAdding(column.id)}
-            className="w-full py-3 bg-white/10 backdrop-blur-sm border-2 border-dashed border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40 transition-all flex items-center justify-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Add Task
-          </button>
-        )}
+        {/* Add Task button — opens drawer */}
+        <button
+          onClick={() => onStartAdding(column.id)}
+          className="w-full py-2.5 mt-1 rounded-lg border border-dashed border-[#FAA21B]/25
+                     text-[#FAA21B]/50 hover:border-[#FAA21B]/60 hover:text-[#FAA21B]
+                     hover:bg-[#FAA21B]/5 transition-all duration-200
+                     flex items-center justify-center gap-2 text-xs font-medium"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add Task
+        </button>
       </div>
     </div>
   )

@@ -10,7 +10,7 @@ import {
   SheetFooter,
 } from '@/components/ui/sheet'
 import type { Task, AuthUser } from '@/types'
-import { LABEL_COLOR_MAP, PRIORITY_COLOR } from './constants'
+import { LABEL_COLOR_MAP, PRIORITY_GLOW } from './constants'
 
 type EditForm = {
   title: string
@@ -44,8 +44,13 @@ type TaskDetailModalProps = {
   onDelete: (id: string) => void
 }
 
-const inputCls = 'w-full px-3 py-2 rounded border-2 border-gray-200 focus:border-[#FAA21B] outline-none text-sm'
-const labelCls = 'block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide'
+const inputCls = [
+  'w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none transition-all duration-200',
+  'bg-white/5 border border-white/10 focus:border-[#FAA21B]/60',
+  'focus:shadow-[0_0_0_3px_rgba(250,162,27,0.08)]',
+].join(' ')
+
+const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tracking-widest'
 
 export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: TaskDetailModalProps) {
   const [form, setForm] = useState<EditForm>(task ? taskToForm(task) : taskToForm({
@@ -100,26 +105,28 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
     <Sheet open={task !== null} onOpenChange={(open) => { if (!open) onClose() }}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md flex flex-col p-0 gap-0 bg-white"
+        className="w-full sm:max-w-md flex flex-col p-0 gap-0 bg-[#08111e] border-l border-white/10"
       >
-        <SheetHeader className="px-5 pt-5 pb-4 border-b border-gray-100">
+        {/* Header */}
+        <SheetHeader className="px-5 pt-5 pb-4 border-b border-white/10">
           <div className="pr-6">
             <input
               type="text"
               value={form.title}
               onChange={(e) => patch({ title: e.target.value })}
-              className="w-full text-base font-bold text-[#112B4F] border-0 border-b-2 border-transparent focus:border-[#FAA21B] outline-none pb-1 bg-transparent"
+              className="w-full text-base font-bold text-white border-0 border-b-2 border-transparent
+                         focus:border-[#FAA21B]/60 outline-none pb-1 bg-transparent placeholder-white/30"
               placeholder="Task title"
             />
           </div>
           <SheetTitle className="sr-only">Edit task</SheetTitle>
-          <span className={`self-start mt-1 text-xs font-bold px-2 py-0.5 rounded-full border ${PRIORITY_COLOR[form.priority] ?? ''}`}>
+          <span className={`self-start mt-2 text-[10px] font-bold px-2.5 py-1 rounded-full ${PRIORITY_GLOW[form.priority] ?? ''}`}>
             {form.priority}
           </span>
         </SheetHeader>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
 
           {/* Description */}
           <div>
@@ -140,11 +147,11 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               <select
                 value={form.priority}
                 onChange={(e) => patch({ priority: e.target.value as EditForm['priority'] })}
-                className={inputCls}
+                className={`${inputCls} appearance-none`}
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="low" className="bg-[#08111e]">Low</option>
+                <option value="medium" className="bg-[#08111e]">Medium</option>
+                <option value="high" className="bg-[#08111e]">High</option>
               </select>
             </div>
             <div>
@@ -152,11 +159,11 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               <select
                 value={form.label_color}
                 onChange={(e) => patch({ label_color: e.target.value })}
-                className={inputCls}
+                className={`${inputCls} appearance-none`}
               >
-                <option value="">None</option>
+                <option value="" className="bg-[#08111e]">None</option>
                 {Object.keys(LABEL_COLOR_MAP).map((color) => (
-                  <option key={color} value={color}>{color}</option>
+                  <option key={color} value={color} className="bg-[#08111e]">{color}</option>
                 ))}
               </select>
             </div>
@@ -165,11 +172,11 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               <select
                 value={form.assignee_user_id}
                 onChange={(e) => handleAssigneePick(e.target.value)}
-                className={inputCls}
+                className={`${inputCls} appearance-none`}
               >
-                <option value="">No assignee</option>
+                <option value="" className="bg-[#08111e]">No assignee</option>
                 {users.map((u) => (
-                  <option key={u.id} value={u.id}>{u.name || u.email}</option>
+                  <option key={u.id} value={u.id} className="bg-[#08111e]">{u.name || u.email}</option>
                 ))}
               </select>
             </div>
@@ -179,7 +186,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
                 type="date"
                 value={form.due_date}
                 onChange={(e) => patch({ due_date: e.target.value })}
-                className={inputCls}
+                className={`${inputCls} [color-scheme:dark]`}
               />
             </div>
           </div>
@@ -197,7 +204,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
             {tagList.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {tagList.map((tag, i) => (
-                  <span key={i} className="inline-flex items-center gap-1 text-xs bg-[#FAA21B]/10 text-[#FAA21B] px-2 py-0.5 rounded">
+                  <span key={i} className="inline-flex items-center gap-1 text-[10px] bg-[#FAA21B]/10 text-[#FAA21B] px-2 py-0.5 rounded-md border border-[#FAA21B]/20">
                     <Tag className="h-3 w-3" />{tag}
                   </span>
                 ))}
@@ -208,23 +215,26 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
           {/* Comments placeholder */}
           <div>
             <label className={labelCls}>Comments</label>
-            <div className="flex items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-400">
+            <div className="flex items-center gap-2 p-4 border border-dashed border-white/10 rounded-lg text-sm text-white/25">
               <MessageSquare className="h-4 w-4 flex-shrink-0" />
               Comments coming soon
             </div>
           </div>
         </div>
 
-        <SheetFooter className="px-5 py-4 border-t border-gray-100 flex-row gap-2">
+        {/* Footer */}
+        <SheetFooter className="px-5 py-4 border-t border-white/10 flex-row gap-2">
           <button
             onClick={handleDelete}
-            className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded font-semibold text-sm hover:bg-red-100 transition-colors"
+            className="px-4 py-2.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30
+                       hover:bg-red-500/20 hover:border-red-500/50 transition-all text-sm font-semibold"
           >
             Delete
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-2 bg-[#FAA21B] text-[#112B4F] rounded font-bold text-sm hover:bg-[#FAA21B]/90 transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-[#FAA21B] text-[#0a1628] font-bold text-sm
+                       hover:bg-[#FAA21B]/90 hover:shadow-[0_0_20px_rgba(250,162,27,0.35)] transition-all duration-200"
           >
             Save Changes
           </button>

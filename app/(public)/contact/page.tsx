@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Send } from 'lucide-react'
+import { Mail, MapPin, Send } from 'lucide-react'
 import { submitContactForm } from './actions'
 
 export default async function ContactPage({
@@ -12,120 +12,98 @@ export default async function ContactPage({
     <div className="py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {success === 'true' && (
-          <div className="mb-8 px-5 py-4 rounded-xl bg-green-100 border-2 border-green-400 text-green-800 font-medium">
+          <div className="mb-8 px-5 py-4 rounded-xl font-medium"
+            style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.35)', color: 'rgb(134,239,172)' }}>
             Your message was sent successfully. We&apos;ll get back to you soon!
           </div>
         )}
         {error && (
-          <div className="mb-8 px-5 py-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-800 font-medium">
+          <div className="mb-8 px-5 py-4 rounded-xl font-medium"
+            style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.35)', color: 'rgb(252,165,165)' }}>
             {decodeURIComponent(error)}
           </div>
         )}
 
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>
-          <p className="text-xl text-[#FAA21B] font-medium">
+          <h1 className="font-black uppercase leading-none tracking-tight mb-4"
+            style={{ fontFamily: 'var(--font-barlow), sans-serif', fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', color: 'white' }}>
+            Contact Us
+          </h1>
+          <p className="text-xl font-medium" style={{ color: '#FAA21B' }}>
             Got questions? We&apos;d love to hear from you.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
-            <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">
-              <Mail className="h-6 w-6 text-[#112B4F]" />
+          {[
+            {
+              Icon: Mail,
+              title: 'Email',
+              content: (
+                <a href="mailto:info@bnbhurtspodcast.com" className="text-[#FAA21B] hover:underline">
+                  info@bnbhurtspodcast.com
+                </a>
+              ),
+            },
+            {
+              Icon: MapPin,
+              title: 'Location',
+              content: <p style={{ color: '#FAA21B' }}>Toronto, ON</p>,
+            },
+          ].map(({ Icon, title, content }) => (
+            <div key={title} className="rave-card p-6 rounded-xl">
+              <div className="rave-icon-box w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <Icon className="h-6 w-6 text-[#FAA21B]" />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">{title}</h3>
+              {content}
             </div>
-            <h3 className="text-white font-bold text-lg mb-2">Email</h3>
-            <a href="mailto:info@bnbhurtspodcast.com" className="text-[#FAA21B] hover:underline">
-              info@bnbhurtspodcast.com
-            </a>
-          </div>
-
-          {/* <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
-            <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">
-              <Phone className="h-6 w-6 text-[#112B4F]" />
-            </div>
-            <h3 className="text-white font-bold text-lg mb-2">Phone</h3>
-            <a href="tel:+14161234567" className="text-[#FAA21B] hover:underline">
-              (416) 123-4567
-            </a>
-          </div> */}
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border-2 border-[#FAA21B]/20 hover:border-[#FAA21B] transition-colors">
-            <div className="w-12 h-12 bg-[#FAA21B] rounded-full flex items-center justify-center mb-4">
-              <MapPin className="h-6 w-6 text-[#112B4F]" />
-            </div>
-            <h3 className="text-white font-bold text-lg mb-2">Location</h3>
-            <p className="text-[#FAA21B]">Toronto, ON</p>
-          </div>
+          ))}
         </div>
 
         {/* Contact Form */}
-        <div className="bg-white rounded-2xl p-8 shadow-xl">
-          <h2 className="text-2xl font-bold text-[#112B4F] mb-6">Send us a message</h2>
+        <div className="rave-panel rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>
+            Send us a message
+          </h2>
 
           <form action={submitContactForm} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#112B4F] mb-2">
+                <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>
                   Your Name
                 </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="John Doe"
-                />
+                <input type="text" id="name" name="name" required placeholder="John Doe"
+                  className="rave-input w-full px-4 py-3 rounded-lg" />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#112B4F] mb-2">
+                <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>
                   Email Address
                 </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                  placeholder="john@example.com"
-                />
+                <input type="email" id="email" name="email" required placeholder="john@example.com"
+                  className="rave-input w-full px-4 py-3 rounded-lg" />
               </div>
             </div>
 
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-[#112B4F] mb-2">
+              <label htmlFor="subject" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 Subject
               </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                required
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all"
-                placeholder="How can we help?"
-              />
+              <input type="text" id="subject" name="subject" required placeholder="How can we help?"
+                className="rave-input w-full px-4 py-3 rounded-lg" />
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-[#112B4F] mb-2">
+              <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 Message
               </label>
-              <textarea
-                id="message"
-                name="message"
-                required
-                rows={6}
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#FAA21B] focus:ring-2 focus:ring-[#FAA21B]/20 outline-none transition-all resize-none"
-                placeholder="Tell us what's on your mind..."
-              />
+              <textarea id="message" name="message" required rows={6} placeholder="Tell us what's on your mind..."
+                className="rave-input w-full px-4 py-3 rounded-lg resize-none" />
             </div>
 
-            <button
-              type="submit"
-              className="w-full md:w-auto px-8 py-4 bg-[#FAA21B] text-[#112B4F] rounded-full font-bold hover:bg-[#FAA21B]/90 transition-colors shadow-lg inline-flex items-center justify-center gap-2"
-            >
+            <button type="submit"
+              className="rave-btn w-full md:w-auto px-8 py-4 rounded-full font-bold inline-flex items-center justify-center gap-2 shadow-lg">
               <Send className="h-5 w-5" />
               Send Message
             </button>

@@ -5,7 +5,7 @@ import type { Task, KanbanColumn, AuthUser } from '@/types'
 import { updateTaskColumn, createTask, deleteTask, getUsers, updateTask } from '../actions'
 import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn'
 import { TaskDetailModal } from './TaskDetailModal'
-import { type AddForm, emptyForm } from './AddTaskForm'
+import { AddTaskDrawer, type AddForm, emptyForm } from './AddTaskForm'
 
 export function TaskBoard({
   tasks: initialTasks,
@@ -15,7 +15,7 @@ export function TaskBoard({
   columns: KanbanColumn[]
 }) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
-  const [addingTo, setAddingTo] = useState<string | null>(null)
+  const [addingToColumn, setAddingToColumn] = useState<KanbanColumn | null>(null)
   const [form, setForm] = useState<AddForm>(emptyForm)
   const [users, setUsers] = useState<AuthUser[]>([])
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
@@ -47,8 +47,9 @@ export function TaskBoard({
     }))
   }
 
-  const handleAdd = (colId: string) => {
-    if (!form.title.trim()) return
+  const handleAdd = () => {
+    if (!addingToColumn || !form.title.trim()) return
+    const colId = addingToColumn.id
     const tempTask: Task = {
       id:               Math.random().toString(),
       title:            form.title,
@@ -64,7 +65,7 @@ export function TaskBoard({
     }
     setTasks((prev) => [...prev, tempTask])
     setForm(emptyForm)
-    setAddingTo(null)
+    setAddingToColumn(null)
     startTransition(async () => {
       await createTask({
         title:            form.title,
@@ -93,6 +94,12 @@ export function TaskBoard({
     startTransition(() => updateTask(id, data))
   }
 
+  const handleStartAdding = (colId: string) => {
+    const col = columns.find((c) => c.id === colId) ?? null
+    setForm(emptyForm)
+    setAddingToColumn(col)
+  }
+
   return (
     <div className="h-full flex flex-col">
       <div className="mb-6">
@@ -107,24 +114,31 @@ export function TaskBoard({
               key={col.id}
               column={col}
               tasks={tasksForColumn(col.id)}
-              users={users}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDeleteTask={handleDelete}
               onTaskClick={handleTaskClick}
-              addingTo={addingTo}
-              onStartAdding={(colId) => { setAddingTo(colId); setForm(emptyForm) }}
-              onCancelAdding={() => setAddingTo(null)}
-              onAddTask={handleAdd}
-              form={form}
-              onFormChange={(patch) => setForm((f) => ({ ...f, ...patch }))}
-              onAssigneePick={handleAssigneePick}
-              isPending={isPending}
+              onStartAdding={handleStartAdding}
             />
           ))}
         </div>
       </div>
 
+      {/* Add Task Drawer */}
+      <AddTaskDrawer
+        open={addingToColumn !== null}
+        columnName={addingToColumn?.name ?? ''}
+        colId={addingToColumn?.id ?? ''}
+        form={form}
+        users={users}
+        isPending={isPending}
+        onChange={(patch) => setForm((f) => ({ ...f, ...patch }))}
+        onAssigneePick={handleAssigneePick}
+        onSubmit={handleAdd}
+        onCancel={() => { setAddingToColumn(null); setForm(emptyForm) }}
+      />
+
+      {/* Task Detail Drawer */}
       <TaskDetailModal
         task={selectedTask}
         users={users}

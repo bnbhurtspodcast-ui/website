@@ -8,11 +8,11 @@ import { createClient } from '@/lib/supabase/client'
 import { updateSponsorshipStatus, reviewSponsorshipInquiry, deleteSponsorshipInquiry } from '../actions'
 
 const statusColor: Record<string, string> = {
-  new: 'bg-[#FAA21B] text-[#112B4F]',
-  reviewing: 'bg-blue-500 text-white',
-  negotiating: 'bg-purple-500 text-white',
-  accepted: 'bg-green-500 text-white',
-  declined: 'bg-red-500 text-white',
+  new:         'admin-badge admin-badge-new',
+  reviewing:   'admin-badge admin-badge-reviewing',
+  negotiating: 'admin-badge admin-badge-negotiating',
+  accepted:    'admin-badge admin-badge-accepted',
+  declined:    'admin-badge admin-badge-declined',
 }
 
 const budgetLabel: Record<string, string> = {
@@ -78,65 +78,68 @@ export function SponsorshipsClient({ sponsorships: initialSponsorships }: { spon
     <div>
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Sponsorship Inquiries</h1>
-          <p className="text-[#FAA21B]">Manage and track sponsorship opportunities</p>
+          <h1 className="text-3xl font-bold text-white tracking-tight mb-1">Sponsorship Inquiries</h1>
+          <p className="text-sm text-white/45">Manage and track sponsorship opportunities</p>
         </div>
         <button
           onClick={() => startTransition(() => router.refresh())}
           disabled={isPending}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-[#112B4F] rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
-          title="Refresh"
+          aria-label="Refresh submissions"
+          className="admin-btn-ghost flex items-center gap-2 px-4 py-2 rounded-lg text-sm disabled:opacity-50"
         >
-          <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} aria-hidden="true" />
           Refresh
         </button>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-[#112B4F]">{sponsorships.length}</div>
-          <div className="text-sm text-gray-600">Total Inquiries</div>
+        <div className="admin-card p-4 border-l-2 border-l-white/20">
+          <div className="text-2xl font-black text-white">{sponsorships.length}</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Total</div>
         </div>
-        <div className="bg-red-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-[#FAA21B]">
+        <div className="admin-card p-4 border-l-2 border-l-[#FAA21B]">
+          <div className="text-2xl font-black text-[#FAA21B]">
             {sponsorships.filter((s) => s.status === 'new').length}
           </div>
-          <div className="text-sm text-[#112B4F]">New</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">New</div>
         </div>
-        <div className="bg-purple-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-purple-600">
+        <div className="admin-card p-4 border-l-2 border-l-violet-400/70">
+          <div className="text-2xl font-black text-violet-400">
             {sponsorships.filter((s) => s.status === 'negotiating').length}
           </div>
-          <div className="text-sm text-gray-600">Negotiating</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Negotiating</div>
         </div>
-        <div className="bg-green-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-green-600">
+        <div className="admin-card p-4 border-l-2 border-l-emerald-400/70">
+          <div className="text-2xl font-black text-emerald-400">
             {sponsorships.filter((s) => s.status === 'accepted').length}
           </div>
-          <div className="text-sm text-gray-600">Accepted</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Accepted</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-4 shadow-lg mb-6">
+      <div className="admin-card p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/25" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Search by company, contact, or email..."
+              placeholder="Search by company, contact, or email…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all"
+              aria-label="Search sponsorships"
+              autoComplete="off"
+              className="admin-input pl-10"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-gray-400" />
+            <Filter className="size-4 text-white/30 flex-shrink-0" aria-hidden="true" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all"
+              aria-label="Filter by status"
+              className="admin-input px-4 py-2 w-auto"
             >
               <option value="all">All Status</option>
               <option value="new">New</option>
@@ -150,81 +153,82 @@ export function SponsorshipsClient({ sponsorships: initialSponsorships }: { spon
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="w-full" aria-label="Sponsorship inquiries">
+            <thead className="admin-table-header">
               <tr>
                 {['Company', 'Contact', 'Package', 'Budget', 'Date', 'Status', 'Reviewed By', 'Actions'].map((h) => (
-                  <th key={h} className="px-6 py-3 text-left text-xs font-bold text-[#112B4F] uppercase tracking-wider">
-                    {h}
-                  </th>
+                  <th key={h} scope="col">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody aria-live="polite">
               {filtered.map((s) => (
                 <tr
                   key={s.id}
-                  className="hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="admin-table-row cursor-pointer"
                   onClick={() => openModal(s)}
                 >
-                  <td className="px-6 py-4">
+                  <td>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Briefcase className="h-5 w-5 text-green-600" />
+                      <div className="size-9 bg-emerald-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Briefcase className="size-4 text-emerald-400" aria-hidden="true" />
                       </div>
-                      <div className="text-sm font-medium text-gray-900">{s.company_name}</div>
+                      <div className="text-sm font-medium text-white/85">{s.company_name}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">{s.contact_name}</div>
-                    <div className="text-xs text-gray-500">{s.email}</div>
+                  <td>
+                    <div className="text-sm text-white/80">{s.contact_name}</div>
+                    <div className="text-xs text-white/40">{s.email}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     {s.package_interest && (
-                      <span className="inline-flex px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                      <span className="inline-flex px-2 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded text-xs font-medium">
                         {s.package_interest}
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     {s.budget && (
-                      <div className="flex items-center gap-1 text-sm font-medium text-gray-900">
-                        <DollarSign className="h-4 w-4 text-green-600" />
+                      <div className="flex items-center gap-1 text-sm font-medium text-white/80">
+                        <DollarSign className="size-3.5 text-emerald-400" aria-hidden="true" />
                         {budgetLabel[s.budget] ?? s.budget}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {new Date(s.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${statusColor[s.status] ?? 'bg-gray-200 text-gray-700'}`}>
+                  <td className="text-white/40">{new Date(s.created_at).toLocaleDateString()}</td>
+                  <td>
+                    <span className={statusColor[s.status] ?? 'admin-badge'}>
                       {s.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{s.reviewed_by ?? '—'}</td>
-                  <td className="px-6 py-4">
+                  <td className="text-white/55">{s.reviewed_by ?? '—'}</td>
+                  <td>
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => openModal(s)}
+                        aria-label={`View inquiry from ${s.company_name}`}
                         className="p-2 text-[#FAA21B] hover:bg-[#FAA21B]/10 rounded-lg transition-colors"
-                        title="View"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="size-4" aria-hidden="true" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(s)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete"
+                        aria-label={`Delete inquiry from ${s.company_name}`}
+                        className="p-2 text-red-400/70 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" aria-hidden="true" />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="text-center py-12 text-white/30">No inquiries match your filter.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -233,51 +237,85 @@ export function SponsorshipsClient({ sponsorships: initialSponsorships }: { spon
       {/* View Modal */}
       {selected && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-white rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sponsorship-modal-title"
+            className="admin-modal p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <Briefcase className="h-8 w-8 text-green-600" />
+                <div className="size-14 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/20">
+                  <Briefcase className="size-7 text-emerald-400" aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-[#112B4F]">{selected.company_name}</h2>
-                  <p className="text-gray-600">{selected.contact_name}</p>
+                  <h2 id="sponsorship-modal-title" className="text-2xl font-bold text-white">{selected.company_name}</h2>
+                  <p className="text-sm text-white/50">{selected.contact_name}</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Close"
+                aria-label="Close"
+                className="p-1.5 text-white/30 hover:text-white/70 hover:bg-white/8 rounded-lg transition-colors"
               >
-                <X className="h-5 w-5" />
+                <X className="size-5" aria-hidden="true" />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div><label className="text-sm font-medium text-gray-600 block mb-1">Email</label><p className="text-gray-900">{selected.email}</p></div>
-              <div><label className="text-sm font-medium text-gray-600 block mb-1">Date</label><p className="text-gray-900">{new Date(selected.created_at).toLocaleDateString()}</p></div>
-              {selected.package_interest && <div><label className="text-sm font-medium text-gray-600 block mb-1">Package</label><span className="inline-flex px-3 py-1 bg-blue-100 text-blue-700 rounded font-medium text-sm">{selected.package_interest}</span></div>}
-              {selected.budget && <div><label className="text-sm font-medium text-gray-600 block mb-1">Budget</label><p className="text-gray-900 font-medium flex items-center gap-1"><DollarSign className="h-4 w-4 text-green-600" />{budgetLabel[selected.budget] ?? selected.budget}</p></div>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+              <div>
+                <label className="admin-label">Email</label>
+                <p className="text-white/80 text-sm">{selected.email}</p>
+              </div>
+              <div>
+                <label className="admin-label">Date</label>
+                <p className="text-white/80 text-sm">{new Date(selected.created_at).toLocaleDateString()}</p>
+              </div>
+              {selected.package_interest && (
+                <div>
+                  <label className="admin-label">Package</label>
+                  <span className="inline-flex px-3 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded font-medium text-sm">
+                    {selected.package_interest}
+                  </span>
+                </div>
+              )}
+              {selected.budget && (
+                <div>
+                  <label className="admin-label">Budget</label>
+                  <p className="text-white/80 text-sm font-medium flex items-center gap-1">
+                    <DollarSign className="size-4 text-emerald-400" aria-hidden="true" />
+                    {budgetLabel[selected.budget] ?? selected.budget}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-4 mb-6">
-              <div><label className="text-sm font-medium text-gray-600 block mb-2">Campaign Goals</label><p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selected.goals}</p></div>
-              {selected.message && <div><label className="text-sm font-medium text-gray-600 block mb-2">Message</label><p className="text-gray-900 bg-gray-50 p-4 rounded-lg leading-relaxed">{selected.message}</p></div>}
+              <div>
+                <label className="admin-label">Campaign Goals</label>
+                <p className="text-white/75 text-sm bg-white/4 border border-white/8 p-4 rounded-lg leading-relaxed">{selected.goals}</p>
+              </div>
+              {selected.message && (
+                <div>
+                  <label className="admin-label">Message</label>
+                  <p className="text-white/75 text-sm bg-white/4 border border-white/8 p-4 rounded-lg leading-relaxed">{selected.message}</p>
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-white/8">
               <div className="flex-1">
-                <label className="text-sm font-medium text-gray-600 block mb-1">Status</label>
+                <label className="admin-label" htmlFor="sponsorship-status-select">Status</label>
                 <select
+                  id="sponsorship-status-select"
                   value={selected.status}
                   onChange={(e) => handleStatusChange(e.target.value as SponsorshipInquiry['status'])}
-                  className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all text-sm"
+                  aria-label="Update status"
+                  className="admin-input text-sm"
                 >
                   <option value="new">New</option>
                   <option value="reviewing">Reviewing</option>
@@ -287,8 +325,8 @@ export function SponsorshipsClient({ sponsorships: initialSponsorships }: { spon
                 </select>
               </div>
               <div className="flex-1">
-                <label className="text-sm font-medium text-gray-600 block mb-1">Reviewed by</label>
-                <p className="text-sm text-gray-700">{selected.reviewed_by ?? '—'}</p>
+                <label className="admin-label">Reviewed by</label>
+                <p className="text-sm text-white/60">{selected.reviewed_by ?? '—'}</p>
               </div>
             </div>
           </div>
@@ -298,27 +336,31 @@ export function SponsorshipsClient({ sponsorships: initialSponsorships }: { spon
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           onClick={() => setDeleteTarget(null)}
         >
           <div
-            className="bg-white rounded-2xl p-8 max-w-md w-full"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-modal-title"
+            className="admin-modal p-8 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-bold text-[#112B4F] mb-2">Delete Inquiry</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete the inquiry from <span className="font-semibold">{deleteTarget.company_name}</span>? This cannot be undone.
+            <h2 id="delete-modal-title" className="text-xl font-bold text-white mb-2">Delete Inquiry</h2>
+            <p className="text-white/55 mb-6">
+              Are you sure you want to delete the inquiry from{' '}
+              <span className="font-semibold text-white/80">{deleteTarget.company_name}</span>? This cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-3 admin-btn-ghost rounded-lg font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                className="flex-1 px-6 py-3 bg-red-500/90 text-white rounded-lg font-semibold hover:bg-red-500 transition-colors border border-red-500/50"
               >
                 Delete
               </button>

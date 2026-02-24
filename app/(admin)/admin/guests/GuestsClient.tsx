@@ -8,11 +8,11 @@ import { createClient } from '@/lib/supabase/client'
 import { updateGuestStatus, reviewGuestApplication, deleteGuestApplication } from '../actions'
 
 const statusColor: Record<string, string> = {
-  pending: 'bg-[#FAA21B] text-[#112B4F]',
-  reviewing: 'bg-gray-400 text-white',
-  approved: 'bg-green-500 text-white',
-  rejected: 'bg-red-500 text-white',
-  scheduled: 'bg-blue-500 text-white',
+  pending:   'admin-badge admin-badge-pending',
+  reviewing: 'admin-badge admin-badge-reviewing',
+  approved:  'admin-badge admin-badge-approved',
+  rejected:  'admin-badge admin-badge-rejected',
+  scheduled: 'admin-badge admin-badge-scheduled',
 }
 
 export function GuestsClient({ guests: initialGuests }: { guests: GuestApplication[] }) {
@@ -71,65 +71,68 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
     <div>
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Guest Applications</h1>
-          <p className="text-[#FAA21B]">Review and manage potential podcast guests</p>
+          <h1 className="text-3xl font-bold text-white tracking-tight mb-1">Guest Applications</h1>
+          <p className="text-sm text-white/45">Review and manage potential podcast guests</p>
         </div>
         <button
           onClick={() => startTransition(() => router.refresh())}
           disabled={isPending}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-[#112B4F] rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
-          title="Refresh"
+          aria-label="Refresh submissions"
+          className="admin-btn-ghost flex items-center gap-2 px-4 py-2 rounded-lg text-sm disabled:opacity-50"
         >
-          <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} aria-hidden="true" />
           Refresh
         </button>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-[#112B4F]">{guests.length}</div>
-          <div className="text-sm text-gray-600">Total Applications</div>
+        <div className="admin-card p-4 border-l-2 border-l-white/20">
+          <div className="text-2xl font-black text-white">{guests.length}</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Total</div>
         </div>
-        <div className="bg-red-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-[#FAA21B]">
+        <div className="admin-card p-4 border-l-2 border-l-[#FAA21B]">
+          <div className="text-2xl font-black text-[#FAA21B]">
             {guests.filter((g) => g.status === 'pending').length}
           </div>
-          <div className="text-sm text-[#112B4F]">Pending Review</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Pending</div>
         </div>
-        <div className="bg-green-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-green-600">
+        <div className="admin-card p-4 border-l-2 border-l-emerald-400/70">
+          <div className="text-2xl font-black text-emerald-400">
             {guests.filter((g) => g.status === 'approved').length}
           </div>
-          <div className="text-sm text-gray-600">Approved</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Approved</div>
         </div>
-        <div className="bg-blue-50 rounded-xl p-4 shadow">
-          <div className="text-2xl font-bold text-blue-600">
+        <div className="admin-card p-4 border-l-2 border-l-blue-400/70">
+          <div className="text-2xl font-black text-blue-400">
             {guests.filter((g) => g.status === 'scheduled').length}
           </div>
-          <div className="text-sm text-gray-600">Scheduled</div>
+          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Scheduled</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-4 shadow-lg mb-6">
+      <div className="admin-card p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/25" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Search by name, email, or expertise..."
+              placeholder="Search by name, email, or expertise…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all"
+              aria-label="Search applications"
+              autoComplete="off"
+              className="admin-input pl-10"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-gray-400" />
+            <Filter className="size-4 text-white/30 flex-shrink-0" aria-hidden="true" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all"
+              aria-label="Filter by status"
+              className="admin-input px-4 py-2 w-auto"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -143,67 +146,68 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="w-full" aria-label="Guest applications">
+            <thead className="admin-table-header">
               <tr>
                 {['Name', 'Expertise', 'Topic Idea', 'Date Applied', 'Status', 'Reviewed By', 'Actions'].map((h) => (
-                  <th key={h} className="px-6 py-3 text-left text-xs font-bold text-[#112B4F] uppercase tracking-wider">
-                    {h}
-                  </th>
+                  <th key={h} scope="col">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody aria-live="polite">
               {filtered.map((g) => (
                 <tr
                   key={g.id}
-                  className="hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="admin-table-row cursor-pointer"
                   onClick={() => openModal(g)}
                 >
-                  <td className="px-6 py-4">
+                  <td>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#FAA21B]/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <User className="h-5 w-5 text-[#FAA21B]" />
+                      <div className="size-9 bg-[#FAA21B]/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <User className="size-4 text-[#FAA21B]" aria-hidden="true" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{g.name}</div>
-                        <div className="text-xs text-gray-500">{g.email}</div>
+                        <div className="text-sm font-medium text-white/85">{g.name}</div>
+                        <div className="text-xs text-white/40">{g.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{g.expertise}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{g.topic_idea}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {new Date(g.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${statusColor[g.status] ?? 'bg-gray-200 text-gray-700'}`}>
+                  <td className="text-white/80">{g.expertise}</td>
+                  <td className="text-white/80 max-w-xs truncate">{g.topic_idea}</td>
+                  <td className="text-white/40">{new Date(g.created_at).toLocaleDateString()}</td>
+                  <td>
+                    <span className={statusColor[g.status] ?? 'admin-badge'}>
                       {g.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{g.reviewed_by ?? '—'}</td>
-                  <td className="px-6 py-4">
+                  <td className="text-white/55">{g.reviewed_by ?? '—'}</td>
+                  <td>
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => openModal(g)}
+                        aria-label={`View application from ${g.name}`}
                         className="p-2 text-[#FAA21B] hover:bg-[#FAA21B]/10 rounded-lg transition-colors"
-                        title="View"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="size-4" aria-hidden="true" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(g)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete"
+                        aria-label={`Delete application from ${g.name}`}
+                        className="p-2 text-red-400/70 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" aria-hidden="true" />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-white/30">No applications match your filter.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -212,51 +216,78 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
       {/* View Modal */}
       {selected && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-white rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="guest-modal-title"
+            className="admin-modal p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-[#FAA21B]/10 rounded-full flex items-center justify-center">
-                  <User className="h-8 w-8 text-[#FAA21B]" />
+                <div className="size-14 bg-[#FAA21B]/10 rounded-full flex items-center justify-center border border-[#FAA21B]/20">
+                  <User className="size-7 text-[#FAA21B]" aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-[#112B4F]">{selected.name}</h2>
-                  <p className="text-gray-600">{selected.expertise}</p>
+                  <h2 id="guest-modal-title" className="text-2xl font-bold text-white">{selected.name}</h2>
+                  <p className="text-sm text-white/50">{selected.expertise}</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Close"
+                aria-label="Close"
+                className="p-1.5 text-white/30 hover:text-white/70 hover:bg-white/8 rounded-lg transition-colors"
               >
-                <X className="h-5 w-5" />
+                <X className="size-5" aria-hidden="true" />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div><label className="text-sm font-medium text-gray-600 block mb-1">Email</label><p className="text-gray-900">{selected.email}</p></div>
-              {selected.social_media && <div><label className="text-sm font-medium text-gray-600 block mb-1">Social Media</label><p className="text-gray-900">{selected.social_media}</p></div>}
-              <div><label className="text-sm font-medium text-gray-600 block mb-1">Applied</label><p className="text-gray-900">{new Date(selected.created_at).toLocaleDateString()}</p></div>
-              {selected.availability && <div><label className="text-sm font-medium text-gray-600 block mb-1">Availability</label><p className="text-gray-900">{selected.availability}</p></div>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+              <div>
+                <label className="admin-label">Email</label>
+                <p className="text-white/80 text-sm">{selected.email}</p>
+              </div>
+              {selected.social_media && (
+                <div>
+                  <label className="admin-label">Social Media</label>
+                  <p className="text-white/80 text-sm">{selected.social_media}</p>
+                </div>
+              )}
+              <div>
+                <label className="admin-label">Applied</label>
+                <p className="text-white/80 text-sm">{new Date(selected.created_at).toLocaleDateString()}</p>
+              </div>
+              {selected.availability && (
+                <div>
+                  <label className="admin-label">Availability</label>
+                  <p className="text-white/80 text-sm">{selected.availability}</p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-4 mb-6">
-              <div><label className="text-sm font-medium text-gray-600 block mb-2">Proposed Topic</label><p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selected.topic_idea}</p></div>
-              <div><label className="text-sm font-medium text-gray-600 block mb-2">Bio</label><p className="text-gray-900 bg-gray-50 p-4 rounded-lg leading-relaxed">{selected.bio}</p></div>
+              <div>
+                <label className="admin-label">Proposed Topic</label>
+                <p className="text-white/75 text-sm bg-white/4 border border-white/8 p-4 rounded-lg leading-relaxed">{selected.topic_idea}</p>
+              </div>
+              <div>
+                <label className="admin-label">Bio</label>
+                <p className="text-white/75 text-sm bg-white/4 border border-white/8 p-4 rounded-lg leading-relaxed">{selected.bio}</p>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-white/8">
               <div className="flex-1">
-                <label className="text-sm font-medium text-gray-600 block mb-1">Status</label>
+                <label className="admin-label" htmlFor="guest-status-select">Status</label>
                 <select
+                  id="guest-status-select"
                   value={selected.status}
                   onChange={(e) => handleStatusChange(e.target.value as GuestApplication['status'])}
-                  className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none transition-all text-sm"
+                  aria-label="Update status"
+                  className="admin-input text-sm"
                 >
                   <option value="pending">Pending</option>
                   <option value="reviewing">Reviewing</option>
@@ -266,8 +297,8 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
                 </select>
               </div>
               <div className="flex-1">
-                <label className="text-sm font-medium text-gray-600 block mb-1">Reviewed by</label>
-                <p className="text-sm text-gray-700">{selected.reviewed_by ?? '—'}</p>
+                <label className="admin-label">Reviewed by</label>
+                <p className="text-sm text-white/60">{selected.reviewed_by ?? '—'}</p>
               </div>
             </div>
           </div>
@@ -277,27 +308,31 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           onClick={() => setDeleteTarget(null)}
         >
           <div
-            className="bg-white rounded-2xl p-8 max-w-md w-full"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-modal-title"
+            className="admin-modal p-8 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-bold text-[#112B4F] mb-2">Delete Application</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete the application from <span className="font-semibold">{deleteTarget.name}</span>? This cannot be undone.
+            <h2 id="delete-modal-title" className="text-xl font-bold text-white mb-2">Delete Application</h2>
+            <p className="text-white/55 mb-6">
+              Are you sure you want to delete the application from{' '}
+              <span className="font-semibold text-white/80">{deleteTarget.name}</span>? This cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-3 admin-btn-ghost rounded-lg font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                className="flex-1 px-6 py-3 bg-red-500/90 text-white rounded-lg font-semibold hover:bg-red-500 transition-colors border border-red-500/50"
               >
                 Delete
               </button>

@@ -40,41 +40,53 @@ export default function ChangePasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+        <label className="admin-label" htmlFor="current-password">Current Password</label>
         <input
+          id="current-password"
           type="password"
           required
           value={current}
           onChange={e => setCurrent(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none"
+          autoComplete="current-password"
+          className="admin-input"
           placeholder="••••••••"
+          spellCheck={false}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+        <label className="admin-label" htmlFor="new-password">New Password</label>
         <input
+          id="new-password"
           type="password"
           required
           value={next}
           onChange={e => setNext(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none"
+          autoComplete="new-password"
+          className="admin-input"
           placeholder="••••••••"
+          spellCheck={false}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+        <label className="admin-label" htmlFor="confirm-password">Confirm Password</label>
         <input
+          id="confirm-password"
           type="password"
           required
           value={confirm}
           onChange={e => setConfirm(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#FAA21B] outline-none"
+          autoComplete="new-password"
+          className="admin-input"
           placeholder="••••••••"
+          spellCheck={false}
         />
       </div>
 
       {status && (
-        <p className={`text-sm font-medium ${status.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+        <p
+          role="alert"
+          className={`text-sm font-medium ${status.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}
+        >
           {status.message}
         </p>
       )}
@@ -82,7 +94,7 @@ export default function ChangePasswordForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-6 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-6 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2"
       >
         {loading ? 'Changing…' : 'Change Password'}
       </button>
