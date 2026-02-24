@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getEpisodes } from '@/lib/rss'
 import { Mail, User, Briefcase, FileText, Calendar } from 'lucide-react'
 import Link from 'next/link'
 
@@ -12,6 +13,7 @@ export default async function DashboardPage() {
     { data: recentContacts },
     { data: recentGuests },
     { data: recentSponsors },
+    episodes,
   ] = await Promise.all([
     supabase.from('contact_submissions').select('*', { count: 'exact', head: true }),
     supabase.from('guest_applications').select('*', { count: 'exact', head: true }),
@@ -31,13 +33,14 @@ export default async function DashboardPage() {
       .select('id, company_name, created_at')
       .order('created_at', { ascending: false })
       .limit(2),
+    getEpisodes().catch(() => []),
   ])
 
   const stats = [
     { label: 'Contact Submissions', value: contactCount ?? 0, icon: Mail, path: '/admin/contacts' },
     { label: 'Guest Applications', value: guestCount ?? 0, icon: User, path: '/admin/guests' },
     { label: 'Sponsorship Inquiries', value: sponsorCount ?? 0, icon: Briefcase, path: '/admin/sponsorships' },
-    { label: 'RSS Episodes', value: '58+', icon: FileText, path: '/admin/content' },
+    { label: 'RSS Episodes', value: episodes.length, icon: FileText, path: '/admin/content' },
   ]
 
   type ActivityItem = { type: 'contact' | 'guest' | 'sponsorship'; name: string; action: string; time: string }
