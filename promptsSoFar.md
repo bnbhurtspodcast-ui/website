@@ -124,3 +124,20 @@ I would like to create another page listing under workspace, for a calendar usin
    2. I would like to do a CRON job on a weekly basis to be saved in a new database table, have an array slot to fit hosts
    3. In the APi docs, we need to provide any changes to the Events that are updated
 3. These events are linked to calendar provided
+
+
+----
+
+
+Calendar has been designed, are some tweaks and feature changes to it.
+
+1. When there are more than 3 events in calendar, I can't view the rest but it only views the one directly under it
+2. The host name assign is obtained from the hosts table can be listed as a dropdown
+3. For the task board column `Events` would like to have custom functionality to it that we can just search and pick the event from calendar to be imported, and when hosts are assign it needs to be reflected
+
+
+----
+
+I would like to create a routing error page or a 404 using the guidelines of the skills we have installed including, frontend-design, web-design-guidelines, and tailwind
+
+----
