@@ -87,6 +87,7 @@ export interface Task {
   created_at: string
   trello_card_id?: string
   archived_at?: string | null
+  event_id?: string | null      // FK to events.id — set when task is created from a calendar event
 }
 
 export interface Host {
@@ -136,7 +137,7 @@ export interface CalendarEvent {
 
 export interface EdmtrainEvent {
   id: number
-  name: string
+  name: string | null
   link: string
   date: string
   startTime: string | null
@@ -151,12 +152,12 @@ export interface EdmtrainEvent {
     lat: number
     lng: number
   }
-  artists: Array<{
+  artistList: Array<{
     id: number
     name: string
     link: string
     b2bInd: boolean
-  }>
+  }> | null
 }
 
 export interface EdmtrainApiResponse {

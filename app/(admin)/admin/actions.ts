@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import type { Task, KanbanColumn } from "@/types";
+import type { Task, KanbanColumn, CalendarEvent } from "@/types";
 import { sendDiscordNotification } from "@/lib/discord";
 
 export async function updateContactStatus(
@@ -133,6 +133,7 @@ export async function createTask(data: {
 	assignee_user_id?: string;
 	due_date?: string;
 	label_color?: string;
+	event_id?: string;
 }) {
 	const supabase = await createClient();
 	const { data: column } = await supabase
@@ -149,6 +150,7 @@ export async function createTask(data: {
 		assignee_user_id: data.assignee_user_id ?? null,
 		due_date: data.due_date ?? null,
 		label_color: data.label_color ?? null,
+		event_id: data.event_id ?? null,
 		tags: [],
 		sort_order: 0,
 	});
@@ -349,6 +351,30 @@ export async function updateEventHosts(id: string, hosts: string[]) {
 		.update({ hosts, updated_at: new Date().toISOString() })
 		.eq("id", id);
 	revalidatePath("/admin/calendar");
+}
+
+export async function getHosts(): Promise<{ id: string; name: string }[]> {
+	const supabase = await createClient();
+	const { data } = await supabase
+		.from("hosts")
+		.select("id, name")
+		.order("sort_order", { ascending: true });
+	return data ?? [];
+}
+
+export async function getEvents(
+	query: string,
+): Promise<
+	Pick<CalendarEvent, "id" | "name" | "event_date" | "venue_name" | "hosts">[]
+> {
+	const supabase = await createClient();
+	const { data } = await supabase
+		.from("events")
+		.select("id, name, event_date, venue_name, hosts")
+		.ilike("name", `%${query}%`)
+		.order("event_date", { ascending: false })
+		.limit(20);
+	return data ?? [];
 }
 
 export async function changePassword(

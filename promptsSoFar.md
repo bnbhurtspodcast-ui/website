@@ -112,3 +112,15 @@ For the Kanban task board. Need a few more task to be implemented:
 
 
 ----
+
+I would like to create another page listing under workspace, for a calendar using the guidelines of the skills we have installed including, frontend-design, web-design-guidelines, and tailwind
+
+1. have a page that displays a calendar that will have the ability of
+   1. Able to navigate different months and years
+   2. The week starts with Monday to Sunday
+   3. The box is big enough to view details within
+2. Would like to implement a new API from `https://edmtrain.com/api-documentation`
+   1. I will provide api key in `EDMTRAIN_API_KEY`
+   2. I would like to do a CRON job on a weekly basis to be saved in a new database table, have an array slot to fit hosts
+   3. In the APi docs, we need to provide any changes to the Events that are updated
+3. These events are linked to calendar provided

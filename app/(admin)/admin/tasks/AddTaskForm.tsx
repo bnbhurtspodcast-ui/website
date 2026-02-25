@@ -1,7 +1,9 @@
 'use client'
 
-import { LayoutList } from 'lucide-react'
+import { useState, useEffect, useTransition } from 'react'
+import { LayoutList, Calendar, Search, X } from 'lucide-react'
 import type { AuthUser } from '@/types'
+import { getEvents } from '../actions'
 import {
   Sheet,
   SheetContent,
@@ -17,6 +19,7 @@ export type AddForm = {
   assignee: string
   assignee_user_id: string
   due_date: string
+  event_id: string
 }
 
 export const emptyForm: AddForm = {
@@ -26,6 +29,7 @@ export const emptyForm: AddForm = {
   assignee: '',
   assignee_user_id: '',
   due_date: '',
+  event_id: '',
 }
 
 type AddTaskDrawerProps = {
@@ -49,6 +53,14 @@ const inputCls = [
 
 const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tracking-widest'
 
+type EventResult = {
+  id: string
+  name: string
+  event_date: string
+  venue_name: string | null
+  hosts: string[]
+}
+
 export function AddTaskDrawer({
   open,
   columnName,
@@ -60,6 +72,52 @@ export function AddTaskDrawer({
   onSubmit,
   onCancel,
 }: AddTaskDrawerProps) {
+  const isEventsColumn = columnName === 'Events'
+  const [eventQuery, setEventQuery] = useState('')
+  const [eventResults, setEventResults] = useState<EventResult[]>([])
+  const [isSearching, startSearch] = useTransition()
+
+  // Reset search state when drawer closes
+  useEffect(() => {
+    if (!open) {
+      setEventQuery('')
+      setEventResults([])
+    }
+  }, [open])
+
+  // Debounced event search
+  useEffect(() => {
+    if (!isEventsColumn) return
+    if (eventQuery.trim().length < 2) {
+      setEventResults([])
+      return
+    }
+    const timer = setTimeout(() => {
+      startSearch(async () => {
+        const results = await getEvents(eventQuery)
+        setEventResults(results as EventResult[])
+      })
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [eventQuery, isEventsColumn])
+
+  function handleEventPick(ev: EventResult) {
+    const firstHost = ev.hosts?.[0] ?? ''
+    onChange({
+      title: ev.name,
+      description: [ev.venue_name, ev.event_date].filter(Boolean).join(' — '),
+      assignee: firstHost,
+      assignee_user_id: '',
+      event_id: ev.id,
+    })
+    setEventQuery('')
+    setEventResults([])
+  }
+
+  function clearLinkedEvent() {
+    onChange({ title: '', description: '', assignee: '', assignee_user_id: '', event_id: '' })
+  }
+
   return (
     <Sheet open={open} onOpenChange={(isOpen) => { if (!isOpen) onCancel() }}>
       <SheetContent
@@ -82,6 +140,65 @@ export function AddTaskDrawer({
         {/* Scrollable form body */}
         <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
 
+          {/* Event picker — only for "Events" column */}
+          {isEventsColumn && (
+            <div>
+              <label className={labelCls}>
+                <Calendar className="inline h-3 w-3 mr-1 mb-0.5 text-[#FAA21B]" aria-hidden="true" />
+                Link Event
+              </label>
+
+              {/* Linked event banner */}
+              {form.event_id ? (
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#FAA21B]/10 border border-[#FAA21B]/30">
+                  <span className="text-xs text-[#FAA21B]/90 font-semibold truncate">{form.title}</span>
+                  <button
+                    onClick={clearLinkedEvent}
+                    className="text-white/30 hover:text-white/70 ml-2 flex-shrink-0 transition-colors"
+                    aria-label="Clear linked event"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/30" aria-hidden="true" />
+                    <input
+                      type="text"
+                      placeholder="Search events by name…"
+                      value={eventQuery}
+                      onChange={(e) => setEventQuery(e.target.value)}
+                      className={`${inputCls} pl-8`}
+                    />
+                  </div>
+
+                  {isSearching && (
+                    <p className="text-[11px] text-white/30 mt-1.5 px-1">Searching…</p>
+                  )}
+
+                  {!isSearching && eventResults.length > 0 && (
+                    <div className="mt-1.5 rounded-lg border border-white/10 bg-[#080f1a] overflow-hidden max-h-48 overflow-y-auto">
+                      {eventResults.map((ev) => (
+                        <button
+                          key={ev.id}
+                          type="button"
+                          onClick={() => handleEventPick(ev)}
+                          className="w-full text-left px-3 py-2.5 hover:bg-white/6 transition-colors border-b border-white/5 last:border-0"
+                        >
+                          <p className="text-sm text-white/80 font-medium truncate">{ev.name}</p>
+                          <p className="text-[11px] text-white/40 mt-0.5">
+                            {ev.event_date}{ev.venue_name ? ` · ${ev.venue_name}` : ''}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
           {/* Title */}
           <div>
             <label className={labelCls}>Title <span className="text-[#FAA21B]">*</span></label>
@@ -91,7 +208,7 @@ export function AddTaskDrawer({
               value={form.title}
               onChange={(e) => onChange({ title: e.target.value })}
               className={inputCls}
-              autoFocus
+              autoFocus={!isEventsColumn}
             />
           </div>
 
@@ -123,18 +240,25 @@ export function AddTaskDrawer({
             </div>
             <div>
               <label className={labelCls}>Assignee</label>
-              <select
-                value={form.assignee_user_id}
-                onChange={(e) => onAssigneePick(e.target.value)}
-                className={`${inputCls} appearance-none`}
-              >
-                <option value="" className="bg-[#08111e]">No assignee</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.id} className="bg-[#08111e]">
-                    {u.name || u.email}
-                  </option>
-                ))}
-              </select>
+              {form.event_id && form.assignee && !form.assignee_user_id ? (
+                // Host name from event — show as read-only chip
+                <div className={`${inputCls} flex items-center gap-1.5`}>
+                  <span className="text-[#FAA21B]/80 truncate">{form.assignee}</span>
+                </div>
+              ) : (
+                <select
+                  value={form.assignee_user_id}
+                  onChange={(e) => onAssigneePick(e.target.value)}
+                  className={`${inputCls} appearance-none`}
+                >
+                  <option value="" className="bg-[#08111e]">No assignee</option>
+                  {users.map((u) => (
+                    <option key={u.id} value={u.id} className="bg-[#08111e]">
+                      {u.name || u.email}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
 

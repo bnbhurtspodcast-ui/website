@@ -9,12 +9,13 @@ import { updateEventHosts } from '../actions'
 export function EventDetailModal({
   event,
   onClose,
+  hosts,
 }: {
   event: CalendarEvent | null
   onClose: () => void
+  hosts: { id: string; name: string }[]
 }) {
   const [editingHosts, setEditingHosts] = useState(false)
-  const [hostInput, setHostInput] = useState('')
   const [localHosts, setLocalHosts] = useState<string[]>([])
   const [isPending, startTransition] = useTransition()
 
@@ -28,18 +29,19 @@ export function EventDetailModal({
   const displayHosts = localHosts.length > 0 ? localHosts : event.hosts
 
   function openHostEdit() {
-    setHostInput(displayHosts.join(', '))
+    setLocalHosts(displayHosts)
     setEditingHosts(true)
   }
 
+  function toggleHost(name: string) {
+    setLocalHosts((prev) =>
+      prev.includes(name) ? prev.filter((h) => h !== name) : [...prev, name]
+    )
+  }
+
   function handleHostsSave() {
-    const hosts = hostInput
-      .split(',')
-      .map((h) => h.trim())
-      .filter(Boolean)
     startTransition(async () => {
-      await updateEventHosts(event!.id, hosts)
-      setLocalHosts(hosts)
+      await updateEventHosts(event!.id, localHosts)
       setEditingHosts(false)
     })
   }
@@ -147,23 +149,37 @@ export function EventDetailModal({
                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
                   Hosts
                 </span>
-                <button
-                  onClick={openHostEdit}
-                  className="text-xs text-[#FAA21B]/70 hover:text-[#FAA21B] transition-colors"
-                >
-                  {displayHosts.length > 0 ? 'Edit' : 'Assign'}
-                </button>
+                {!editingHosts && (
+                  <button
+                    onClick={openHostEdit}
+                    className="text-xs text-[#FAA21B]/70 hover:text-[#FAA21B] transition-colors"
+                  >
+                    {displayHosts.length > 0 ? 'Edit' : 'Assign'}
+                  </button>
+                )}
               </div>
               {editingHosts ? (
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={hostInput}
-                    onChange={(e) => setHostInput(e.target.value)}
-                    className="admin-input text-sm w-full"
-                    placeholder="Host names, comma-separated"
-                    autoFocus
-                  />
+                  {hosts.length > 0 ? (
+                    <div className="space-y-0.5 max-h-40 overflow-y-auto">
+                      {hosts.map((h) => (
+                        <label
+                          key={h.id}
+                          className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-white/5 transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={localHosts.includes(h.name)}
+                            onChange={() => toggleHost(h.name)}
+                            className="accent-[#FAA21B] w-3.5 h-3.5 flex-shrink-0"
+                          />
+                          <span className="text-sm text-white/75">{h.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-white/30 text-xs px-2">No hosts in the system yet.</p>
+                  )}
                   <div className="flex gap-2">
                     <button
                       onClick={() => setEditingHosts(false)}

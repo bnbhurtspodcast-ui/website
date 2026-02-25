@@ -15,10 +15,12 @@ export function CalendarClient({
   events,
   year,
   month,
+  hosts,
 }: {
   events: CalendarEvent[]
   year: number
   month: number
+  hosts: { id: string; name: string }[]
 }) {
   const router = useRouter()
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
@@ -118,6 +120,7 @@ export function CalendarClient({
       <EventDetailModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+        hosts={hosts}
       />
     </div>
   )

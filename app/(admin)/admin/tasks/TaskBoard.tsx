@@ -107,6 +107,7 @@ export function TaskBoard({
       assignee:         form.assignee || undefined,
       assignee_user_id: form.assignee_user_id || undefined,
       due_date:         form.due_date || undefined,
+      event_id:         form.event_id || undefined,
       tags:             [],
       sort_order:       0,
       created_at:       new Date().toISOString(),
@@ -123,6 +124,7 @@ export function TaskBoard({
         assignee:         form.assignee || undefined,
         assignee_user_id: form.assignee_user_id || undefined,
         due_date:         form.due_date || undefined,
+        event_id:         form.event_id || undefined,
       })
     })
   }

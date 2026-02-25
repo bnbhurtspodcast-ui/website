@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { format } from 'date-fns'
 import { EventChip } from './EventChip'
 import type { CalendarEvent } from '@/types'
@@ -19,7 +20,9 @@ export function CalendarCell({
   isToday: boolean
   onEventClick: (event: CalendarEvent) => void
 }) {
-  const visible = events.slice(0, MAX_VISIBLE)
+  const [expanded, setExpanded] = useState(false)
+
+  const displayed = expanded ? events : events.slice(0, MAX_VISIBLE)
   const overflowCount = events.length - MAX_VISIBLE
 
   return (
@@ -44,20 +47,29 @@ export function CalendarCell({
 
       {/* Event chips */}
       <div className="flex flex-col gap-0.5 flex-1">
-        {visible.map((event) => (
+        {displayed.map((event) => (
           <EventChip
             key={event.id}
             event={event}
             onClick={() => onEventClick(event)}
           />
         ))}
-        {overflowCount > 0 && (
+        {!expanded && overflowCount > 0 && (
           <button
             className="text-[10px] text-white/35 hover:text-white/70 text-left px-1 py-0.5 transition-colors"
-            onClick={() => onEventClick(events[MAX_VISIBLE])}
-            aria-label={`${overflowCount} more events on ${format(day, 'MMMM d')}`}
+            onClick={() => setExpanded(true)}
+            aria-label={`Show ${overflowCount} more events on ${format(day, 'MMMM d')}`}
           >
             +{overflowCount} more
+          </button>
+        )}
+        {expanded && overflowCount > 0 && (
+          <button
+            className="text-[10px] text-white/35 hover:text-white/70 text-left px-1 py-0.5 transition-colors"
+            onClick={() => setExpanded(false)}
+            aria-label="Show fewer events"
+          >
+            Show less
           </button>
         )}
       </div>
