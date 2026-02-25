@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   const supabase = createAdminClient()
   const now = new Date().toISOString()
 
-  const rows = apiData.data.map((e: EdmtrainEvent) => ({
+  const rows = apiData.data.filter((e: EdmtrainEvent) => e.name && e.date).map((e: EdmtrainEvent) => ({
     edmtrain_id:    e.id,
     name:           e.name,
     link:           e.link ?? null,
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     venue_address:  e.venue?.address ?? null,
     venue_lat:      e.venue?.lat ?? null,
     venue_lng:      e.venue?.lng ?? null,
-    artists: e.artists.map((a) => ({
+    artists: (e.artists ?? []).map((a) => ({
       id:      a.id,
       name:    a.name,
       link:    a.link,
