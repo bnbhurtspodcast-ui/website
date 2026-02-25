@@ -14,6 +14,7 @@ import {
   X,
   Trello,
   Users,
+  CalendarDays,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -24,6 +25,7 @@ const navGroups = [
     items: [
       { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Task Board', path: '/admin/tasks', icon: Trello },
+      { name: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
     ],
   },
   {

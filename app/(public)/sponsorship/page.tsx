@@ -4,19 +4,19 @@ import { submitSponsorshipInquiry } from './actions'
 const packages = [
   {
     tier: 'Bronze',
-    price: '$500',
+    price: '$100',
     features: ['30-second mid-roll ad', 'Mention in show notes', 'Social media mention'],
     popular: false,
   },
   {
     tier: 'Silver',
-    price: '$1,200',
+    price: '$250',
     features: ['60-second pre-roll ad', '30-second mid-roll ad', 'Featured in show notes', 'Multiple social posts', 'Website banner placement'],
     popular: true,
   },
   {
     tier: 'Gold',
-    price: '$2,500',
+    price: '$500',
     features: ['Exclusive episode sponsor', 'Host-read advertisements', 'Custom integration', 'All Silver benefits', 'Dedicated email feature', 'Analytics & reporting'],
     popular: false,
   },

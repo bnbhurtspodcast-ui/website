@@ -342,6 +342,15 @@ export async function deleteHost(id: string) {
 	revalidatePath("/about");
 }
 
+export async function updateEventHosts(id: string, hosts: string[]) {
+	const supabase = await createClient();
+	await supabase
+		.from("events")
+		.update({ hosts, updated_at: new Date().toISOString() })
+		.eq("id", id);
+	revalidatePath("/admin/calendar");
+}
+
 export async function changePassword(
 	currentPassword: string,
 	newPassword: string,

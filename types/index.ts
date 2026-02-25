@@ -100,3 +100,66 @@ export interface Host {
   created_at: string
   updated_at: string
 }
+
+// ── EDMTrain / Calendar types ──────────────────────────────────────────────────
+
+export interface EventArtist {
+  id: number
+  name: string
+  link?: string
+  b2b_ind?: boolean
+}
+
+export interface CalendarEvent {
+  id: string
+  edmtrain_id?: number | null
+  name: string
+  link?: string | null
+  event_date: string          // "YYYY-MM-DD"
+  start_time?: string | null  // "HH:MM:SS"
+  end_time?: string | null
+  ages?: string | null
+  festival_ind: boolean
+  livestream_ind: boolean
+  venue_name?: string | null
+  venue_location?: string | null
+  venue_address?: string | null
+  venue_lat?: number | null
+  venue_lng?: number | null
+  artists: EventArtist[]
+  hosts: string[]
+  notes?: string | null
+  synced_at?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface EdmtrainEvent {
+  id: number
+  name: string
+  link: string
+  date: string
+  startTime: string | null
+  endTime: string | null
+  ages: string | null
+  festivalInd: boolean
+  livestreamInd: boolean
+  venue: {
+    name: string
+    location: string
+    address: string
+    lat: number
+    lng: number
+  }
+  artists: Array<{
+    id: number
+    name: string
+    link: string
+    b2bInd: boolean
+  }>
+}
+
+export interface EdmtrainApiResponse {
+  success: boolean
+  data: EdmtrainEvent[]
+}
