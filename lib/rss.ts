@@ -5,7 +5,7 @@ const RSS_FEED_URL = process.env.RSS_FEED_URL ?? 'https://anchor.fm/s/ee3c58cc/p
 const YOUTUBE_FEED_URL =
   'https://www.youtube.com/feeds/videos.xml?channel_id=UCZRn7RdXN8MdFmGotY1E_zA'
 
-const CHANNEL_IMAGE =
+export const CHANNEL_IMAGE =
   'https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/39869323/39869323-1702863954938-4037a7dc2fade.jpg'
 
 const parser = new XMLParser({

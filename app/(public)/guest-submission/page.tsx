@@ -1,5 +1,24 @@
+import type { Metadata } from 'next'
 import { Mic, Users, Calendar, Send } from 'lucide-react'
 import { submitGuestApplication } from './actions'
+
+export const metadata: Metadata = {
+  title: 'Be a Guest',
+  description:
+    "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
+  openGraph: {
+    title: "Be a Guest | Back n' Body Hurts",
+    description:
+      "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
+    url: '/guest-submission',
+  },
+  twitter: {
+    card: 'summary',
+    title: "Be a Guest | Back n' Body Hurts",
+    description:
+      "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
+  },
+}
 
 export default async function GuestSubmissionPage({
   searchParams,

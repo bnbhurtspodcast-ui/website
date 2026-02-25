@@ -1,6 +1,25 @@
+import type { Metadata } from 'next'
 import { Mail, Twitter, Instagram, Linkedin, Youtube, Music, Link, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import type { Host } from '@/types'
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description:
+    "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
+  openGraph: {
+    title: "About Us | Back n' Body Hurts",
+    description:
+      "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
+    url: '/about',
+  },
+  twitter: {
+    card: 'summary',
+    title: "About Us | Back n' Body Hurts",
+    description:
+      "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
+  },
+}
 
 function SocialIcon({ platform }: { platform: string }) {
   const p = platform.toLowerCase()

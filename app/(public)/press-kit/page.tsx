@@ -1,5 +1,24 @@
+import type { Metadata } from 'next'
 import { Download, FileText, Newspaper } from 'lucide-react'
 import { getEpisodes } from '@/lib/rss'
+
+export const metadata: Metadata = {
+  title: 'Press Kit',
+  description:
+    "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
+  openGraph: {
+    title: "Press Kit | Back n' Body Hurts",
+    description:
+      "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
+    url: '/press-kit',
+  },
+  twitter: {
+    card: 'summary',
+    title: "Press Kit | Back n' Body Hurts",
+    description:
+      "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
+  },
+}
 
 export default async function PressKitPage() {
   const allEpisodes = await getEpisodes()

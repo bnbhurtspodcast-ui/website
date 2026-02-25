@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
@@ -6,6 +7,46 @@ import { EpisodePlayButton } from '@/components/EpisodePlayButton'
 import { EpisodeDescription } from '@/components/EpisodeDescription'
 
 export const revalidate = 1800
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const id = decodeURIComponent(slug)
+  const episodes = await getEpisodes()
+  const episode = episodes.find((ep) => ep.id === id)
+
+  if (!episode) {
+    return { title: 'Episode Not Found' }
+  }
+
+  const plain = episode.description
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160)
+
+  return {
+    title: episode.title,
+    description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
+    openGraph: {
+      title: episode.title,
+      description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
+      url: `/episodes/${slug}`,
+      type: 'article',
+      publishedTime: episode.publishedAt,
+      images: [{ url: episode.imageUrl, width: 1400, height: 1400, alt: episode.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: episode.title,
+      description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
+      images: [episode.imageUrl],
+    },
+  }
+}
 
 export async function generateStaticParams() {
   const episodes = await getEpisodes()

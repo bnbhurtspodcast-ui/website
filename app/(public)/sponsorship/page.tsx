@@ -1,5 +1,24 @@
+import type { Metadata } from 'next'
 import { TrendingUp, Target, Users, Zap, Send } from 'lucide-react'
 import { submitSponsorshipInquiry } from './actions'
+
+export const metadata: Metadata = {
+  title: 'Sponsorship',
+  description:
+    "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
+  openGraph: {
+    title: "Sponsorship | Back n' Body Hurts",
+    description:
+      "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
+    url: '/sponsorship',
+  },
+  twitter: {
+    card: 'summary',
+    title: "Sponsorship | Back n' Body Hurts",
+    description:
+      "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
+  },
+}
 
 const packages = [
   {

@@ -1,5 +1,24 @@
+import type { Metadata } from 'next'
 import { Mail, MapPin, Send } from 'lucide-react'
 import { submitContactForm } from './actions'
+
+export const metadata: Metadata = {
+  title: 'Contact',
+  description:
+    "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions — we'd love to hear from you.",
+  openGraph: {
+    title: "Contact | Back n' Body Hurts",
+    description:
+      "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions.",
+    url: '/contact',
+  },
+  twitter: {
+    card: 'summary',
+    title: "Contact | Back n' Body Hurts",
+    description:
+      "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions.",
+  },
+}
 
 export default async function ContactPage({
   searchParams,
