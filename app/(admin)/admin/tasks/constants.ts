@@ -57,3 +57,10 @@ export const PRIORITY_GLOW: Record<string, string> = {
   medium: 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.3)]',
   low:    'bg-green-500/20 text-green-400 border border-green-500/40 shadow-[0_0_8px_rgba(34,197,94,0.3)]',
 }
+
+// Left-edge stripe color per priority
+export const PRIORITY_STRIPE: Record<string, string> = {
+  high:   'bg-red-500',
+  medium: 'bg-amber-500',
+  low:    'bg-green-500',
+}

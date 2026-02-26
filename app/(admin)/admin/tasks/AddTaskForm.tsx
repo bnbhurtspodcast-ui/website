@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useTransition, useRef } from 'react'
 import { LayoutList, Calendar, Search, X } from 'lucide-react'
 import { getEvents } from '../actions'
 import {
@@ -45,9 +45,8 @@ type AddTaskDrawerProps = {
 }
 
 const inputCls = [
-  'w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none transition-all duration-200',
-  'bg-white/5 border border-white/10 focus:border-[#FAA21B]/60 focus:bg-white/8',
-  'focus:shadow-[0_0_0_3px_rgba(250,162,27,0.08)]',
+  'w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none',
+  'bg-white/5 border border-white/10 focus:border-[#FAA21B]/60',
 ].join(' ')
 
 const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tracking-widest'
@@ -75,6 +74,21 @@ export function AddTaskDrawer({
   const [eventQuery, setEventQuery] = useState('')
   const [eventResults, setEventResults] = useState<EventResult[]>([])
   const [isSearching, startSearch] = useTransition()
+
+  // Local text state — avoids re-rendering TaskBoard on every keystroke
+  const [localTitle, setLocalTitle] = useState(form.title)
+  const [localDescription, setLocalDescription] = useState(form.description)
+  // Keep refs so the submit handler can read the latest value synchronously
+  const localTitleRef = useRef(localTitle)
+  const localDescRef = useRef(localDescription)
+  localTitleRef.current = localTitle
+  localDescRef.current = localDescription
+
+  // Sync local text when the parent resets the form (e.g. event picked, drawer reopened)
+  useEffect(() => {
+    setLocalTitle(form.title)
+    setLocalDescription(form.description)
+  }, [form.title, form.description])
 
   // Reset search state when drawer closes
   useEffect(() => {
@@ -108,6 +122,7 @@ export function AddTaskDrawer({
       assignee: firstHost,
       assignee_user_id: '',
       event_id: ev.id,
+      due_date: ev.event_date ?? '',
     })
     setEventQuery('')
     setEventResults([])
@@ -115,6 +130,13 @@ export function AddTaskDrawer({
 
   function clearLinkedEvent() {
     onChange({ title: '', description: '', assignee: '', assignee_user_id: '', event_id: '' })
+  }
+
+  function handleSubmit() {
+    // Flush local text to parent before submit
+    onChange({ title: localTitleRef.current, description: localDescRef.current })
+    // Let React flush the state update, then submit
+    setTimeout(onSubmit, 0)
   }
 
   return (
@@ -204,8 +226,9 @@ export function AddTaskDrawer({
             <input
               type="text"
               placeholder="What needs to be done?"
-              value={form.title}
-              onChange={(e) => onChange({ title: e.target.value })}
+              value={localTitle}
+              onChange={(e) => setLocalTitle(e.target.value)}
+              onBlur={(e) => onChange({ title: e.target.value })}
               className={inputCls}
               autoFocus={!isEventsColumn}
             />
@@ -216,8 +239,9 @@ export function AddTaskDrawer({
             <label className={labelCls}>Description</label>
             <textarea
               placeholder="Add more context or details..."
-              value={form.description}
-              onChange={(e) => onChange({ description: e.target.value })}
+              value={localDescription}
+              onChange={(e) => setLocalDescription(e.target.value)}
+              onBlur={(e) => onChange({ description: e.target.value })}
               className={`${inputCls} resize-none`}
               rows={3}
             />
@@ -239,25 +263,18 @@ export function AddTaskDrawer({
             </div>
             <div>
               <label className={labelCls}>Assignee</label>
-              {form.event_id && form.assignee && !form.assignee_user_id ? (
-                // Host name from event — show as read-only chip
-                <div className={`${inputCls} flex items-center gap-1.5`}>
-                  <span className="text-[#FAA21B]/80 truncate">{form.assignee}</span>
-                </div>
-              ) : (
-                <select
-                  value={form.assignee_user_id}
-                  onChange={(e) => onAssigneePick(e.target.value)}
-                  className={`${inputCls} appearance-none`}
-                >
-                  <option value="" className="bg-[#08111e]">No assignee</option>
-                  {users.map((u) => (
-                    <option key={u.id} value={u.id} className="bg-[#08111e]">
-                      {u.name}
-                    </option>
-                  ))}
-                </select>
-              )}
+              <select
+                value={form.assignee_user_id}
+                onChange={(e) => onAssigneePick(e.target.value)}
+                className={`${inputCls} appearance-none`}
+              >
+                <option value="" className="bg-[#08111e]">No assignee</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.user_id ?? u.id} className="bg-[#08111e]">
+                    {u.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -282,8 +299,8 @@ export function AddTaskDrawer({
             Cancel
           </button>
           <button
-            onClick={onSubmit}
-            disabled={isPending || !form.title.trim()}
+            onClick={handleSubmit}
+            disabled={isPending || !localTitle.trim()}
             className="flex-1 px-4 py-2.5 rounded-lg bg-[#FAA21B] text-[#0a1628] font-bold text-sm
                        hover:bg-[#FAA21B]/90 hover:shadow-[0_0_20px_rgba(250,162,27,0.35)]
                        disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"

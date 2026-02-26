@@ -45,9 +45,8 @@ type TaskDetailModalProps = {
 }
 
 const inputCls = [
-  'w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none transition-all duration-200',
+  'w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none',
   'bg-white/5 border border-white/10 focus:border-[#FAA21B]/60',
-  'focus:shadow-[0_0_0_3px_rgba(250,162,27,0.08)]',
 ].join(' ')
 
 const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tracking-widest'
@@ -64,14 +63,14 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
 
   const patch = (partial: Partial<EditForm>) => setForm((f) => ({ ...f, ...partial }))
 
-  const handleAssigneePick = (hostId: string) => {
-    if (!hostId) {
+  const handleAssigneePick = (val: string) => {
+    if (!val) {
       patch({ assignee_user_id: '', assignee: '' })
       return
     }
-    const host = users.find((h) => h.id === hostId)
+    const host = users.find((h) => (h.user_id ?? h.id) === val)
     patch({
-      assignee_user_id: host?.user_id ?? '',
+      assignee_user_id: val,
       assignee: host?.name ?? '',
     })
   }
@@ -115,7 +114,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               value={form.title}
               onChange={(e) => patch({ title: e.target.value })}
               className="w-full text-base font-bold text-white border-0 border-b-2 border-transparent
-                         focus:border-[#FAA21B]/60 outline-none pb-1 bg-transparent placeholder-white/30"
+                         focus:border-[#FAA21B]/60 outline-none pb-1 bg-transparent placeholder-white/30 transition-none"
               placeholder="Task title"
             />
           </div>
@@ -176,7 +175,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               >
                 <option value="" className="bg-[#08111e]">No assignee</option>
                 {users.map((u) => (
-                  <option key={u.id} value={u.id} className="bg-[#08111e]">{u.name}</option>
+                  <option key={u.id} value={u.user_id ?? u.id} className="bg-[#08111e]">{u.name}</option>
                 ))}
               </select>
             </div>

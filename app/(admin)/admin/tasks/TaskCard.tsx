@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { Calendar, Trash2, Tag, MoreHorizontal } from 'lucide-react'
 import type { Task, KanbanColumn } from '@/types'
-import { LABEL_COLOR_MAP, PRIORITY_GLOW, COLUMN_TOP_COLOR_MAP } from './constants'
+import { PRIORITY_STRIPE, COLUMN_TOP_COLOR_MAP } from './constants'
 import { getInitials, getAvatarColor, formatDueDate } from './taskUtils'
 import {
   DropdownMenu,
@@ -43,10 +43,7 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
   }
 
   const dueDate = task.due_date ? formatDueDate(task.due_date) : null
-  const labelBg = task.label_color && LABEL_COLOR_MAP[task.label_color]
-    ? LABEL_COLOR_MAP[task.label_color]
-    : null
-
+  const priorityStripe = PRIORITY_STRIPE[task.priority] ?? 'bg-gray-500'
   const otherColumns = columns.filter((c) => c.id !== task.column_id)
 
   return (
@@ -63,21 +60,17 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
         dragging ? 'opacity-50 scale-[0.97] shadow-none' : 'opacity-100',
       ].join(' ')}
     >
-      {/* Label color stripe — left edge */}
-      {labelBg && (
-        <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-full ${labelBg}`} />
-      )}
+      {/* Priority stripe — left edge */}
+      <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-full ${priorityStripe}`} />
 
-      {/* Top row: priority glow pill + ellipsis menu */}
-      <div className="flex items-start justify-between mb-2">
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${PRIORITY_GLOW[task.priority] ?? ''}`}>
-          {task.priority}
-        </span>
+      {/* Title row: title + ellipsis menu */}
+      <div className="grid grid-cols-[1fr_auto] items-start gap-1 mb-1">
+        <h3 className="text-sm font-semibold text-white leading-snug">{task.title}</h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               onMouseDown={(e) => e.stopPropagation()}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white/70 ml-1"
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white/70 mt-0.5"
             >
               <MoreHorizontal className="h-3.5 w-3.5" />
             </button>
@@ -108,9 +101,6 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* Title */}
-      <h3 className="text-sm font-semibold text-white mb-1 leading-snug">{task.title}</h3>
 
       {/* Description */}
       {task.description && (

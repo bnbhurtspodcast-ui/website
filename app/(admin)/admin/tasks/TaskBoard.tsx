@@ -84,15 +84,16 @@ export function TaskBoard({
     startTransition(() => updateTaskColumn(taskId, colId))
   }
 
-  const handleAssigneePick = (hostId: string) => {
-    if (!hostId) {
+  const handleAssigneePick = (val: string) => {
+    if (!val) {
       setForm((f) => ({ ...f, assignee_user_id: '', assignee: '' }))
       return
     }
-    const host = users.find((h) => h.id === hostId)
+    // val is user_id (auth UUID) — match on that field
+    const host = users.find((h) => (h.user_id ?? h.id) === val)
     setForm((f) => ({
       ...f,
-      assignee_user_id: host?.user_id ?? '',
+      assignee_user_id: val,
       assignee: host?.name ?? '',
     }))
   }
