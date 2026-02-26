@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Play, Calendar, Clock } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useAudioPlayer } from './AudioPlayerContext'
+import { useAudioPlayer } from '@/components/AudioPlayerContext'
 import type { Episode } from '@/types'
 
 interface EpisodeCardProps {

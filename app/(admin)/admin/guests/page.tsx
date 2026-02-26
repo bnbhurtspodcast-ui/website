@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { GuestsClient } from './GuestsClient'
+import { GuestsClient } from '@/app/(admin)/admin/guests/GuestsClient'
 
 export default async function GuestsPage() {
   const supabase = await createClient()

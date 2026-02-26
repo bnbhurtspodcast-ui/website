@@ -10,7 +10,7 @@ import {
   SheetFooter,
 } from '@/components/ui/sheet'
 import type { Task } from '@/types'
-import { LABEL_COLOR_MAP, PRIORITY_GLOW } from './constants'
+import { LABEL_COLOR_MAP, PRIORITY_GLOW } from '@/app/(admin)/admin/tasks/constants'
 
 type EditForm = {
   title: string
@@ -153,7 +153,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
                 <option value="high" className="bg-[#08111e]">High</option>
               </select>
             </div>
-            <div>
+            {/* <div>
               <label className={labelCls}>Label Color</label>
               <select
                 value={form.label_color}
@@ -165,7 +165,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
                   <option key={color} value={color} className="bg-[#08111e]">{color}</option>
                 ))}
               </select>
-            </div>
+            </div> */}
             <div>
               <label className={labelCls}>Assignee</label>
               <select

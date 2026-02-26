@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition, useRef } from 'react'
 import { LayoutList, Calendar, Search, X } from 'lucide-react'
-import { getEvents } from '../actions'
+import { getEvents } from '@/app/(admin)/admin/actions'
 import {
   Sheet,
   SheetContent,

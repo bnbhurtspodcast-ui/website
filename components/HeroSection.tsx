@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Play, ExternalLink, Mic2, MapPin, CalendarDays } from 'lucide-react'
 import { motion } from 'motion/react'
-import { WaveformDecoration } from './WaveformDecoration'
+import { WaveformDecoration } from '@/components/WaveformDecoration'
 
 interface HeroSectionProps {
   episodeCount: number

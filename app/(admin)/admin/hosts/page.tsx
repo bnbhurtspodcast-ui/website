@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { HostsClient } from './HostsClient'
-import { getUsers } from '../actions'
+import { HostsClient } from '@/app/(admin)/admin/hosts/HostsClient'
+import { getUsers } from '@/app/(admin)/admin/actions'
 import type { Host } from '@/types'
 
 export default async function HostsPage() {

@@ -2,8 +2,8 @@
 
 import { Plus } from 'lucide-react'
 import type { Task, KanbanColumn as KanbanColumnType } from '@/types'
-import { COLUMN_TOP_COLOR_MAP } from './constants'
-import { TaskCard } from './TaskCard'
+import { COLUMN_TOP_COLOR_MAP } from '@/app/(admin)/admin/tasks/constants'
+import { TaskCard } from '@/app/(admin)/admin/tasks/TaskCard'
 
 type KanbanColumnProps = {
   column: KanbanColumnType

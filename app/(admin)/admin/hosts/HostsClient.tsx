@@ -3,7 +3,7 @@
 import { Users, Plus, Pencil, Trash2, X, Link } from 'lucide-react'
 import { useState, useRef } from 'react'
 import type { Host } from '@/types'
-import { createHost, updateHost, deleteHost } from '../actions'
+import { createHost, updateHost, deleteHost } from '@/app/(admin)/admin/actions'
 import { createClient } from '@/lib/supabase/client'
 
 type SocialLink = { platform: string; url: string }

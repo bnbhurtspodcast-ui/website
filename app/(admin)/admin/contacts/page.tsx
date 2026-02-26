@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { ContactsClient } from './ContactsClient'
+import { ContactsClient } from '@/app/(admin)/admin/contacts/ContactsClient'
 
 export default async function ContactsPage() {
   const supabase = await createClient()

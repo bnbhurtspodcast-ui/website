@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { SponsorshipsClient } from './SponsorshipsClient'
+import { SponsorshipsClient } from '@/app/(admin)/admin/sponsorships/SponsorshipsClient'
 
 export default async function SponsorshipsPage() {
   const supabase = await createClient()

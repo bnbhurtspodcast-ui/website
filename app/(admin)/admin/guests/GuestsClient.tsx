@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { User, Search, Filter, Eye, Trash2, X, RefreshCw } from 'lucide-react'
 import type { GuestApplication } from '@/types'
 import { createClient } from '@/lib/supabase/client'
-import { updateGuestStatus, reviewGuestApplication, deleteGuestApplication } from '../actions'
+import { updateGuestStatus, reviewGuestApplication, deleteGuestApplication } from '@/app/(admin)/admin/actions'
 
 const statusColor: Record<string, string> = {
   pending:   'admin-badge admin-badge-pending',

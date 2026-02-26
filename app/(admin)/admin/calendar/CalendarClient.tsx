@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { format, addMonths, subMonths } from 'date-fns'
-import { CalendarGrid } from './CalendarGrid'
-import { EventDetailModal } from './EventDetailModal'
-import { groupEventsByDate } from './calendarUtils'
+import { CalendarGrid } from '@/app/(admin)/admin/calendar/CalendarGrid'
+import { EventDetailModal } from '@/app/(admin)/admin/calendar/EventDetailModal'
+import { groupEventsByDate } from '@/app/(admin)/admin/calendar/calendarUtils'
 import type { CalendarEvent } from '@/types'
 
 const DAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

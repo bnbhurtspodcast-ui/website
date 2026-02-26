@@ -6,8 +6,8 @@ import {
   format,
 } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
-import { CalendarClient } from './CalendarClient'
-import { getHosts } from '../actions'
+import { CalendarClient } from '@/app/(admin)/admin/calendar/CalendarClient'
+import { getHosts } from '@/app/(admin)/admin/actions'
 import type { CalendarEvent } from '@/types'
 
 export const revalidate = 0

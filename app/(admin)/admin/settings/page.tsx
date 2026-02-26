@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Settings as SettingsIcon, User, Lock } from 'lucide-react'
-import ChangePasswordForm from './ChangePasswordForm'
+import ChangePasswordForm from '@/app/(admin)/admin/settings/ChangePasswordForm'
 
 export default async function SettingsPage() {
   const supabase = await createClient()

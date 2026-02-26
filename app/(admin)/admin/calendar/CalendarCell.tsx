@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { format } from 'date-fns'
-import { EventChip } from './EventChip'
+import { EventChip } from '@/app/(admin)/admin/calendar/EventChip'
 import type { CalendarEvent } from '@/types'
 
 const MAX_VISIBLE = 3

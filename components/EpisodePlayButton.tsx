@@ -1,7 +1,7 @@
 'use client'
 
 import { Play } from 'lucide-react'
-import { useAudioPlayer } from './AudioPlayerContext'
+import { useAudioPlayer } from '@/components/AudioPlayerContext'
 import type { Episode } from '@/types'
 
 export function EpisodePlayButton({ episode }: { episode: Episode }) {

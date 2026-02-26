@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { X, MapPin, Clock, Users, ExternalLink, Music } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import type { CalendarEvent } from '@/types'
-import { updateEventHosts } from '../actions'
+import { updateEventHosts } from '@/app/(admin)/admin/actions'
 
 export function EventDetailModal({
   event,

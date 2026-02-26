@@ -3,8 +3,8 @@
 import { useRef, useState } from 'react'
 import { Calendar, Trash2, Tag, MoreHorizontal } from 'lucide-react'
 import type { Task, KanbanColumn } from '@/types'
-import { PRIORITY_STRIPE, COLUMN_TOP_COLOR_MAP } from './constants'
-import { getInitials, getAvatarColor, formatDueDate } from './taskUtils'
+import { PRIORITY_STRIPE, COLUMN_TOP_COLOR_MAP } from '@/app/(admin)/admin/tasks/constants'
+import { getInitials, getAvatarColor, formatDueDate } from '@/app/(admin)/admin/tasks/taskUtils'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -23,6 +23,7 @@ type TaskCardProps = {
 
 export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: TaskCardProps) {
   const isDragging = useRef(false)
+  const dropdownOpen = useRef(false)
   const [dragging, setDragging] = useState(false)
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -37,7 +38,7 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
   }
 
   const handleMouseUp = () => {
-    if (!isDragging.current) {
+    if (!isDragging.current && !dropdownOpen.current) {
       onClick(task)
     }
   }
@@ -66,7 +67,7 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
       {/* Title row: title + ellipsis menu */}
       <div className="grid grid-cols-[1fr_auto] items-start gap-1 mb-1">
         <h3 className="text-sm font-semibold text-white leading-snug">{task.title}</h3>
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={(open) => { dropdownOpen.current = open }}>
           <DropdownMenuTrigger asChild>
             <button
               onMouseDown={(e) => e.stopPropagation()}
@@ -83,7 +84,10 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
             {otherColumns.map((col) => (
               <DropdownMenuItem
                 key={col.id}
-                onSelect={() => onMoveToColumn(task.id, col.id)}
+                onSelect={(e) => {
+                  e.stopPropagation()
+                  onMoveToColumn(task.id, col.id)
+                }}
                 className="text-white/70 hover:text-white focus:text-white cursor-pointer"
               >
                 <span className={`w-2 h-2 rounded-full mr-2 flex-shrink-0 ${COLUMN_TOP_COLOR_MAP[col.color] ?? 'bg-gray-400'}`} />

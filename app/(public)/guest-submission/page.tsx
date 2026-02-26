@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Mic, Users, Calendar, Send } from 'lucide-react'
-import { submitGuestApplication } from './actions'
+import { submitGuestApplication } from '@/app/(public)/guest-submission/actions'
 
 export const metadata: Metadata = {
   title: 'Be a Guest',

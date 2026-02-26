@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Briefcase, Search, Filter, Eye, Trash2, X, DollarSign, RefreshCw } from 'lucide-react'
 import type { SponsorshipInquiry } from '@/types'
 import { createClient } from '@/lib/supabase/client'
-import { updateSponsorshipStatus, reviewSponsorshipInquiry, deleteSponsorshipInquiry } from '../actions'
+import { updateSponsorshipStatus, reviewSponsorshipInquiry, deleteSponsorshipInquiry } from '@/app/(admin)/admin/actions'
 
 const statusColor: Record<string, string> = {
   new:         'admin-badge admin-badge-new',

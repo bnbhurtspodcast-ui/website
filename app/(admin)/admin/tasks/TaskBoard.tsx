@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useRef } from 'react'
 import { Settings } from 'lucide-react'
 import type { Task, KanbanColumn } from '@/types'
-import { updateTaskColumn, createTask, deleteTask, getHosts } from '../actions'
+import { updateTaskColumn, updateTask, createTask, deleteTask, getHosts } from '@/app/(admin)/admin/actions'
 import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn'
 import { TaskDetailModal } from './TaskDetailModal'
 import { AddTaskDrawer, type AddForm, emptyForm } from './AddTaskForm'
@@ -144,7 +144,7 @@ export function TaskBoard({
   const handleModalSave = (id: string, data: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => t.id === id ? { ...t, ...data } : t))
     setSelectedTask(null)
-    startTransition(() => import('../actions').then(({ updateTask }) => updateTask(id, data)))
+    startTransition(() => updateTask(id, data))
   }
 
   const handleStartAdding = (colId: string) => {

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import { TaskBoard } from './TaskBoard'
+import { TaskBoard } from '@/app/(admin)/admin/tasks/TaskBoard'
 import type { KanbanColumn, Task } from '@/types'
-import { archiveDoneTasks } from '../actions'
+import { archiveDoneTasks } from '@/app/(admin)/admin/actions'
 
 export default async function TasksPage() {
   const supabase = await createClient()

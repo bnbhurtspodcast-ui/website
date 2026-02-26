@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { TrendingUp, Target, Users, Zap, Send } from 'lucide-react'
-import { submitSponsorshipInquiry } from './actions'
+import { submitSponsorshipInquiry } from '@/app/(public)/sponsorship/actions'
 
 export const metadata: Metadata = {
   title: 'Sponsorship',

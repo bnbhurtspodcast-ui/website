@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
 import { motion } from 'motion/react'
-import { EpisodeCard } from './EpisodeCard'
+import { EpisodeCard } from '@/components/EpisodeCard'
 import type { Episode } from '@/types'
 
 type FilterType = 'all' | 'regular' | 'sts'

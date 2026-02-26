@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Mail, MapPin, Send } from 'lucide-react'
-import { submitContactForm } from './actions'
+import { submitContactForm } from '@/app/(public)/contact/actions'
 
 export const metadata: Metadata = {
   title: 'Contact',

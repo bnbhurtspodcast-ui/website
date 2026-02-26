@@ -1,7 +1,7 @@
 'use client'
 
-import { buildCalendarGrid, toDateKey, isSameMonth, isToday } from './calendarUtils'
-import { CalendarCell } from './CalendarCell'
+import { buildCalendarGrid, toDateKey, isSameMonth, isToday } from '@/app/(admin)/admin/calendar/calendarUtils'
+import { CalendarCell } from '@/app/(admin)/admin/calendar/CalendarCell'
 import type { CalendarEvent } from '@/types'
 
 export function CalendarGrid({

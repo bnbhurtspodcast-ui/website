@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react'
-import { useAudioPlayer } from './AudioPlayerContext'
+import { useAudioPlayer } from '@/components/AudioPlayerContext'
 
 export function AudioPlayer() {
   const { currentEpisode: episode } = useAudioPlayer()
