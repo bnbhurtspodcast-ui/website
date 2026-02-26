@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Oswald, DM_Sans } from 'next/font/google'
+import Script from 'next/script'
 import { CHANNEL_IMAGE } from '@/lib/rss'
 import './globals.css'
 
@@ -51,6 +52,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-B8H3ZHPQ89"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-B8H3ZHPQ89');
+          `}
+        </Script>
+      </head>
       <body className={`${oswald.variable} ${dmSans.variable}`} style={{ fontFamily: 'var(--font-dm-sans), system-ui, sans-serif' }}>
         {children}
       </body>

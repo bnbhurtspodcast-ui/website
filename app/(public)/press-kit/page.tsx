@@ -24,7 +24,7 @@ export default async function PressKitPage() {
   const allEpisodes = await getEpisodes()
 
   return (
-    <div className="py-12">
+    <div className="pt-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

@@ -80,7 +80,7 @@ export default async function AboutPage() {
   const hosts = (data as Host[]) ?? []
 
   return (
-    <div className="py-12">
+    <div className="pt-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Hero */}
         <div className="mb-16 text-center">

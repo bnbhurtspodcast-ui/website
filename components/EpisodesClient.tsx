@@ -32,7 +32,7 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
   const pillInactive = 'text-white/60 hover:text-white border'
 
   return (
-    <div className="py-12">
+    <div className="pt-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div

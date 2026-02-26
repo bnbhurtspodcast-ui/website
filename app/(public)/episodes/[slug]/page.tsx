@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
-import { getEpisodes, searchYouTubeByTitle } from '@/lib/rss'
+import { getEpisodes, searchYouTubeByTitle, CHANNEL_IMAGE } from '@/lib/rss'
 import { EpisodePlayButton } from '@/components/EpisodePlayButton'
 import { EpisodeDescription } from '@/components/EpisodeDescription'
 
@@ -28,6 +28,12 @@ export async function generateMetadata({
     .trim()
     .slice(0, 160)
 
+  // Use episode-specific art if it has one; otherwise fall back to /logo.png which is served
+  // from the app's own domain and is always crawlable by WhatsApp and other social crawlers.
+  const ogImage = (episode.imageUrl && episode.imageUrl !== CHANNEL_IMAGE)
+    ? episode.imageUrl
+    : '/logo.png'
+
   return {
     title: episode.title,
     description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
@@ -37,15 +43,16 @@ export async function generateMetadata({
       url: `/episodes/${slug}`,
       type: 'article',
       publishedTime: episode.publishedAt,
-      images: [{ url: episode.imageUrl, width: 1400, height: 1400, alt: episode.title }],
+      images: [{ url: ogImage, width: 1400, height: 1400, alt: episode.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: episode.title,
       description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
-      images: [episode.imageUrl],
+      images: [ogImage],
     },
   }
+
 }
 
 export async function generateStaticParams() {
@@ -77,7 +84,7 @@ export default async function EpisodeDetailPage({
   const episode = { ...found, youtubeVideoId: youtubeVideoId ?? undefined }
 
   return (
-    <div className="py-12">
+    <div className="pt-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Back link */}
         <Link
@@ -184,6 +191,51 @@ export default async function EpisodeDetailPage({
         {/* Description */}
         <EpisodeDescription html={episode.description} />
       </div>
+
+      {/* Listen on your favorite podcast app */}
+      <section
+        className="mt-16 py-16"
+        style={{
+          background: 'linear-gradient(180deg, transparent 0%, rgba(250,162,27,0.05) 50%, transparent 100%)',
+          borderTop: '1px solid rgba(250,162,27,0.15)',
+          borderBottom: '1px solid rgba(250,162,27,0.15)',
+        }}
+      >
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2
+            className="font-black uppercase mb-3"
+            style={{
+              fontFamily: 'var(--font-barlow), sans-serif',
+              fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
+              color: 'white',
+              textShadow: '0 0 40px rgba(250,162,27,0.25)',
+            }}
+          >
+            Listen on your favorite podcast app
+          </h2>
+          <p className="text-base mb-8" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            Subscribe to Back n&apos; Body Hurts wherever you listen
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            {[
+              { label: 'Apple Podcasts', href: 'https://podcasts.apple.com/us/podcast/back-n-body-hurts/id1722381103' },
+              { label: 'Spotify', href: 'https://open.spotify.com/show/7Evzpy1MHgZR8Yy9xDuxXY' },
+              { label: 'YouTube', href: 'https://www.youtube.com/@BnBHurtsPodcast/featured' },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-7 py-3.5 rounded-full font-bold transition-all hover:shadow-[0_0_22px_rgba(250,162,27,0.6)] hover:scale-105 active:scale-95"
+                style={{ backgroundColor: '#FAA21B', color: '#112B4F' }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

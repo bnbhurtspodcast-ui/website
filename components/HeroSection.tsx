@@ -22,7 +22,7 @@ export function HeroSection({ episodeCount }: HeroSectionProps) {
       <section
         className="relative overflow-hidden flex items-center"
         style={{
-          minHeight: '92vh',
+          minHeight: 'calc(100dvh - 80px)',
           background: 'linear-gradient(135deg, #0a1628 0%, #112B4F 55%, #0d2240 80%, #0a1628 100%)',
         }}
       >
@@ -60,7 +60,7 @@ export function HeroSection({ episodeCount }: HeroSectionProps) {
           <WaveformDecoration barCount={48} color="#FAA21B" className="opacity-25" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 md:py-32 w-full">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-32 pb-24 md:pb-32 w-full">
           <div className="text-center">
 
             {/* Logo */}
@@ -83,7 +83,7 @@ export function HeroSection({ episodeCount }: HeroSectionProps) {
                 <img
                   src="/logo.png"
                   alt="Back n' Body Hurts Podcast"
-                  className="w-44 h-44 md:w-60 md:h-60 relative z-10 drop-shadow-2xl"
+                  className="w-32 h-32 sm:w-44 sm:h-44 md:w-60 md:h-60 relative z-10 drop-shadow-2xl"
                 />
               </div>
             </motion.div>
