@@ -4,12 +4,15 @@ import Link from 'next/link'
 import { Play, ExternalLink, Mic2, MapPin, CalendarDays } from 'lucide-react'
 import { motion } from 'motion/react'
 import { WaveformDecoration } from '@/components/WaveformDecoration'
+import { EventGoingSection } from '@/components/EventGoingSection'
+import type { EventWithHosts } from '@/components/EventGoingSection'
 
 interface HeroSectionProps {
   episodeCount: number
+  upcomingEvents: EventWithHosts[]
 }
 
-export function HeroSection({ episodeCount }: HeroSectionProps) {
+export function HeroSection({ episodeCount, upcomingEvents }: HeroSectionProps) {
   const platforms = [
     { label: 'Apple Podcasts', href: 'https://podcasts.apple.com/us/podcast/back-n-body-hurts/id1722381103' },
     { label: 'Spotify', href: 'https://open.spotify.com/show/7Evzpy1MHgZR8Yy9xDuxXY' },
@@ -247,6 +250,8 @@ export function HeroSection({ episodeCount }: HeroSectionProps) {
           </motion.div>
         </div>
       </section>
+      {/* ── EVENT GOING SECTION ── */}
+      <EventGoingSection events={upcomingEvents} />
 
       {/* ── SUBSCRIBE SECTION ── */}
       <section

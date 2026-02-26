@@ -155,3 +155,13 @@ In Calendar, we can link the host to the event, but with the implementation to j
 Now using node v20.19.6 (npm v10.8.2)
 
 save this as memory to do a build check on it rather than older versions
+
+---
+
+I would like to create a section here with accented background colors to show the audience where the host will be going in the next 2 weeks of events that can be found in `Columns.Events`, only display events that have host attending. Use the skills we have to design a section that will satisfy the following:
+
+1. It needs to have a powered by EDMTRAIN and have a link to go to their site as their policy
+2. Users can see the events and can click to open up a popup to see more details and have a link to EDMTRAIN
+3. it needs to return a circular image of the host that are attending
+
+You will need to update some db policies where anon can read that event column and task within.

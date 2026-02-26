@@ -49,7 +49,7 @@ export default async function SponsorshipPage({
   const { success, error } = await searchParams
 
   return (
-    <div className="pt-12">
+    <div className="py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {success === 'true' && (
           <div className="mb-8 px-5 py-4 rounded-xl font-medium"
