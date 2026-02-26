@@ -304,6 +304,8 @@ type HostPayload = {
 	description: string | null;
 	social_links: { platform: string; url: string }[];
 	photo_url?: string;
+	user_id?: string;          // only passed on create; immutable after that
+	role: 'host' | 'team';
 };
 
 export async function createHost(payload: HostPayload) {
@@ -314,6 +316,8 @@ export async function createHost(payload: HostPayload) {
 		description: payload.description,
 		social_links: payload.social_links,
 		photo_url: payload.photo_url ?? null,
+		user_id: payload.user_id ?? null,
+		role: payload.role,
 		sort_order: 0,
 	});
 	revalidatePath("/admin/hosts");
@@ -327,6 +331,7 @@ export async function updateHost(id: string, payload: HostPayload) {
 		interests: payload.interests,
 		description: payload.description,
 		social_links: payload.social_links,
+		role: payload.role,
 		updated_at: new Date().toISOString(),
 	};
 	if (payload.photo_url !== undefined) {
@@ -353,13 +358,13 @@ export async function updateEventHosts(id: string, hosts: string[]) {
 	revalidatePath("/admin/calendar");
 }
 
-export async function getHosts(): Promise<{ id: string; name: string }[]> {
+export async function getHosts(): Promise<{ id: string; name: string; user_id: string | null }[]> {
 	const supabase = await createClient();
 	const { data } = await supabase
 		.from("hosts")
-		.select("id, name")
+		.select("id, name, user_id")
 		.order("sort_order", { ascending: true });
-	return data ?? [];
+	return (data ?? []).map((h) => ({ ...h, user_id: h.user_id ?? null }));
 }
 
 export async function getEvents(

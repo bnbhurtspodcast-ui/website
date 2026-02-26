@@ -13,6 +13,8 @@ type FormState = {
   interests: string
   description: string
   social_links: SocialLink[]
+  user_id: string        // only used on create; immutable after
+  role: 'host' | 'team'
 }
 
 const emptyForm: FormState = {
@@ -20,6 +22,8 @@ const emptyForm: FormState = {
   interests: '',
   description: '',
   social_links: [],
+  user_id: '',
+  role: 'host',
 }
 
 async function uploadPhoto(file: File): Promise<string | null> {
@@ -35,7 +39,13 @@ async function uploadPhoto(file: File): Promise<string | null> {
   return data.publicUrl
 }
 
-export function HostsClient({ hosts }: { hosts: Host[] }) {
+export function HostsClient({
+  hosts,
+  users,
+}: {
+  hosts: Host[]
+  users: { id: string; email: string; name: string }[]
+}) {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Host | null>(null)
   const [form, setForm] = useState<FormState>(emptyForm)
@@ -57,6 +67,8 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
       interests: host.interests ?? '',
       description: host.description ?? '',
       social_links: host.social_links ?? [],
+      user_id: '',    // not editable on update
+      role: host.role,
     })
     setError(null)
     setModalOpen(true)
@@ -88,6 +100,7 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name.trim()) { setError('Name is required'); return }
+    if (!editing && !form.user_id) { setError('Please select a linked user account'); return }
     setLoading(true)
     setError(null)
 
@@ -106,6 +119,8 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
         description: form.description || null,
         social_links: form.social_links.filter((l) => l.platform && l.url),
         photo_url,
+        role: form.role,
+        ...(!editing && { user_id: form.user_id }),
       }
 
       if (editing) {
@@ -125,6 +140,13 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
   async function handleDelete(id: string, name: string) {
     if (!confirm(`Delete host "${name}"? This cannot be undone.`)) return
     await deleteHost(id)
+  }
+
+  // Resolve a user_id to display string for edit form
+  function linkedUserLabel(userId: string | null | undefined) {
+    if (!userId) return 'None linked'
+    const u = users.find((u) => u.id === userId)
+    return u ? `${u.name} (${u.email})` : userId
   }
 
   return (
@@ -177,7 +199,16 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
                 )}
               </div>
 
-              <h3 className="text-white font-semibold text-base mb-0.5">{host.name}</h3>
+              <h3 className="text-white font-semibold text-base mb-1">{host.name}</h3>
+
+              {/* Role badge */}
+              <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2 ${
+                host.role === 'host'
+                  ? 'bg-[#FAA21B]/15 text-[#FAA21B]/80'
+                  : 'bg-white/8 text-white/40'
+              }`}>
+                {host.role}
+              </span>
 
               {host.interests && (
                 <p className="text-xs text-[#FAA21B]/70 mb-2 font-medium">{host.interests}</p>
@@ -269,6 +300,51 @@ export function HostsClient({ hosts }: { hosts: Host[] }) {
                   required
                   autoComplete="name"
                 />
+              </div>
+
+              {/* Linked User Account */}
+              {!editing ? (
+                <div>
+                  <label className="admin-label" htmlFor="host-user">
+                    Linked User Account <span className="text-[#FAA21B]">*</span>
+                  </label>
+                  <select
+                    id="host-user"
+                    value={form.user_id}
+                    onChange={(e) => setForm((f) => ({ ...f, user_id: e.target.value }))}
+                    className="admin-input"
+                    required
+                  >
+                    <option value="">Select a user…</option>
+                    {users.map((u) => (
+                      <option key={u.id} value={u.id} className="bg-[#08111e]">
+                        {u.name} ({u.email})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div>
+                  <label className="admin-label">Linked User Account</label>
+                  <p className="admin-input text-white/50 cursor-not-allowed select-none py-2.5">
+                    {linkedUserLabel(editing.user_id)}
+                  </p>
+                  <p className="text-xs text-white/30 mt-1">User account cannot be changed after creation.</p>
+                </div>
+              )}
+
+              {/* Role */}
+              <div>
+                <label className="admin-label" htmlFor="host-role">Role</label>
+                <select
+                  id="host-role"
+                  value={form.role}
+                  onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as 'host' | 'team' }))}
+                  className="admin-input"
+                >
+                  <option value="host" className="bg-[#08111e]">Host — shown on public About page</option>
+                  <option value="team" className="bg-[#08111e]">Team — internal only</option>
+                </select>
               </div>
 
               {/* Profile Photo */}

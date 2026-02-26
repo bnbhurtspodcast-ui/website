@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import { LayoutList, Calendar, Search, X } from 'lucide-react'
-import type { AuthUser } from '@/types'
 import { getEvents } from '../actions'
 import {
   Sheet,
@@ -37,7 +36,7 @@ type AddTaskDrawerProps = {
   columnName: string
   colId: string
   form: AddForm
-  users: AuthUser[]
+  users: { id: string; name: string; user_id: string | null }[]
   isPending: boolean
   onChange: (patch: Partial<AddForm>) => void
   onAssigneePick: (userId: string) => void
@@ -254,7 +253,7 @@ export function AddTaskDrawer({
                   <option value="" className="bg-[#08111e]">No assignee</option>
                   {users.map((u) => (
                     <option key={u.id} value={u.id} className="bg-[#08111e]">
-                      {u.name || u.email}
+                      {u.name}
                     </option>
                   ))}
                 </select>

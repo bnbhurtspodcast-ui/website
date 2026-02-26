@@ -2,8 +2,8 @@
 
 import { useState, useTransition, useEffect, useRef } from 'react'
 import { Settings } from 'lucide-react'
-import type { Task, KanbanColumn, AuthUser } from '@/types'
-import { updateTaskColumn, createTask, deleteTask, getUsers } from '../actions'
+import type { Task, KanbanColumn } from '@/types'
+import { updateTaskColumn, createTask, deleteTask, getHosts } from '../actions'
 import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn'
 import { TaskDetailModal } from './TaskDetailModal'
 import { AddTaskDrawer, type AddForm, emptyForm } from './AddTaskForm'
@@ -20,7 +20,7 @@ export function TaskBoard({
   const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns)
   const [addingToColumn, setAddingToColumn] = useState<KanbanColumn | null>(null)
   const [form, setForm] = useState<AddForm>(emptyForm)
-  const [users, setUsers] = useState<AuthUser[]>([])
+  const [users, setUsers] = useState<{ id: string; name: string; user_id: string | null }[]>([])
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [columnManagerOpen, setColumnManagerOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -31,9 +31,7 @@ export function TaskBoard({
   const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
-    getUsers().then((result) => {
-      if (result.users) setUsers(result.users)
-    })
+    getHosts().then((data) => setUsers(data))
   }, [])
 
   const tasksForColumn = (colId: string) => tasks.filter((t) => t.column_id === colId)
@@ -86,12 +84,16 @@ export function TaskBoard({
     startTransition(() => updateTaskColumn(taskId, colId))
   }
 
-  const handleAssigneePick = (userId: string) => {
-    const user = users.find((u) => u.id === userId)
+  const handleAssigneePick = (hostId: string) => {
+    if (!hostId) {
+      setForm((f) => ({ ...f, assignee_user_id: '', assignee: '' }))
+      return
+    }
+    const host = users.find((h) => h.id === hostId)
     setForm((f) => ({
       ...f,
-      assignee_user_id: userId,
-      assignee: user ? (user.name || user.email) : '',
+      assignee_user_id: host?.user_id ?? '',
+      assignee: host?.name ?? '',
     }))
   }
 

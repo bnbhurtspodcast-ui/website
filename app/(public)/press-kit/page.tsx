@@ -146,9 +146,9 @@ export default async function PressKitPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { icon: FileText, title: 'Media Kit PDF', desc: 'Complete press kit with all information and assets', label: 'Download PDF' },
-              { icon: FileText, title: 'Host Photos', desc: 'High-resolution professional headshots', label: 'Download ZIP' },
-              { icon: FileText, title: 'Cover Art', desc: 'Podcast cover art in various sizes', label: 'Download ZIP' },
-              { icon: FileText, title: 'Promo Videos', desc: 'Short promotional clips for social media', label: 'Download ZIP' },
+              // { icon: FileText, title: 'Host Photos', desc: 'High-resolution professional headshots', label: 'Download ZIP' },
+              // { icon: FileText, title: 'Cover Art', desc: 'Podcast cover art in various sizes', label: 'Download ZIP' },
+              // { icon: FileText, title: 'Promo Videos', desc: 'Short promotional clips for social media', label: 'Download ZIP' },
             ].map(({ icon: Icon, title, desc, label }) => (
               <div key={title} className="rave-card p-6 rounded-xl">
                 <Icon className="h-10 w-10 text-[#FAA21B] mb-4" />

@@ -141,3 +141,17 @@ Calendar has been designed, are some tweaks and feature changes to it.
 I would like to create a routing error page or a 404 using the guidelines of the skills we have installed including, frontend-design, web-design-guidelines, and tailwind
 
 ----
+
+I would like to connect the `hosts` to link with user data that is signed in, so that the calender and tasks will connect to the said host to do. When creating a host, it is a mandatory requirement to link a host to an account. this value is immutable, and put yikern as `host`
+
+And add a role category, under the category `hosts` for user to choose between `team` or `host`. So we can create different type of experience further down the line.
+
+and in the front end `/public/about` will only display users that have `host`
+
+In Calendar, we can link the host to the event, but with the implementation to join these hosts to real users created, everything will be linked.
+
+---
+
+Now using node v20.19.6 (npm v10.8.2)
+
+save this as memory to do a build check on it rather than older versions

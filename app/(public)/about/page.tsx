@@ -74,6 +74,7 @@ export default async function AboutPage() {
   const { data } = await supabase
     .from('hosts')
     .select('*')
+    .eq('role', 'host')
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true })
 

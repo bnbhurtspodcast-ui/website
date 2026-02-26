@@ -28,14 +28,17 @@ export function EventDetailModal({
 
   const displayHosts = localHosts.length > 0 ? localHosts : event.hosts
 
+  // Map host id → name for display
+  const hostMap = new Map(hosts.map((h) => [h.id, h.name]))
+
   function openHostEdit() {
     setLocalHosts(displayHosts)
     setEditingHosts(true)
   }
 
-  function toggleHost(name: string) {
+  function toggleHost(id: string) {
     setLocalHosts((prev) =>
-      prev.includes(name) ? prev.filter((h) => h !== name) : [...prev, name]
+      prev.includes(id) ? prev.filter((h) => h !== id) : [...prev, id]
     )
   }
 
@@ -169,8 +172,8 @@ export function EventDetailModal({
                         >
                           <input
                             type="checkbox"
-                            checked={localHosts.includes(h.name)}
-                            onChange={() => toggleHost(h.name)}
+                            checked={localHosts.includes(h.id)}
+                            onChange={() => toggleHost(h.id)}
                             className="accent-[#FAA21B] w-3.5 h-3.5 flex-shrink-0"
                           />
                           <span className="text-sm text-white/75">{h.name}</span>
@@ -198,12 +201,12 @@ export function EventDetailModal({
                 </div>
               ) : displayHosts.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {displayHosts.map((h) => (
+                  {displayHosts.map((hostId) => (
                     <span
-                      key={h}
+                      key={hostId}
                       className="px-2.5 py-1 text-xs bg-[#FAA21B]/10 border border-[#FAA21B]/25 text-[#FAA21B]/80 rounded-full"
                     >
-                      {h}
+                      {hostMap.get(hostId) ?? hostId}
                     </span>
                   ))}
                 </div>

@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetFooter,
 } from '@/components/ui/sheet'
-import type { Task, AuthUser } from '@/types'
+import type { Task } from '@/types'
 import { LABEL_COLOR_MAP, PRIORITY_GLOW } from './constants'
 
 type EditForm = {
@@ -38,7 +38,7 @@ function taskToForm(task: Task): EditForm {
 
 type TaskDetailModalProps = {
   task: Task | null
-  users: AuthUser[]
+  users: { id: string; name: string; user_id: string | null }[]
   onClose: () => void
   onSave: (id: string, data: Partial<Task>) => void
   onDelete: (id: string) => void
@@ -64,15 +64,15 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
 
   const patch = (partial: Partial<EditForm>) => setForm((f) => ({ ...f, ...partial }))
 
-  const handleAssigneePick = (userId: string) => {
-    if (!userId) {
+  const handleAssigneePick = (hostId: string) => {
+    if (!hostId) {
       patch({ assignee_user_id: '', assignee: '' })
       return
     }
-    const user = users.find((u) => u.id === userId)
+    const host = users.find((h) => h.id === hostId)
     patch({
-      assignee_user_id: userId,
-      assignee: user ? (user.name || user.email) : '',
+      assignee_user_id: host?.user_id ?? '',
+      assignee: host?.name ?? '',
     })
   }
 
@@ -176,7 +176,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
               >
                 <option value="" className="bg-[#08111e]">No assignee</option>
                 {users.map((u) => (
-                  <option key={u.id} value={u.id} className="bg-[#08111e]">{u.name || u.email}</option>
+                  <option key={u.id} value={u.id} className="bg-[#08111e]">{u.name}</option>
                 ))}
               </select>
             </div>

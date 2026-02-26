@@ -98,6 +98,8 @@ export interface Host {
   description?: string
   social_links: { platform: string; url: string }[]
   sort_order: number
+  user_id?: string | null   // uuid FK to auth.users; null for legacy rows
+  role: 'host' | 'team'    // 'host' = shown on public /about; 'team' = internal only
   created_at: string
   updated_at: string
 }
