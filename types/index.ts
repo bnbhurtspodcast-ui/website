@@ -77,8 +77,8 @@ export interface Task {
   title: string
   description: string
   column_id: string            // uuid FK to kanban_columns.id
-  assignee?: string            // display name
-  assignee_user_id?: string    // uuid FK to auth.users
+  assignee_names: string[]     // display names of all assignees
+  assignee_ids: string[]       // uuid FKs to auth.users
   due_date?: string            // YYYY-MM-DD
   priority: 'low' | 'medium' | 'high'
   tags: string[]

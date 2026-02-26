@@ -84,50 +84,44 @@ export function TaskBoard({
     startTransition(() => updateTaskColumn(taskId, colId))
   }
 
-  const handleAssigneePick = (val: string) => {
-    if (!val) {
-      setForm((f) => ({ ...f, assignee_user_id: '', assignee: '' }))
-      return
-    }
-    // val is user_id (auth UUID) — match on that field
-    const host = users.find((h) => (h.user_id ?? h.id) === val)
-    setForm((f) => ({
-      ...f,
-      assignee_user_id: val,
-      assignee: host?.name ?? '',
-    }))
+  const handleAssigneesChange = (ids: string[]) => {
+    setForm((f) => ({ ...f, assignee_ids: ids }))
   }
 
   const handleAdd = () => {
     if (!addingToColumn || !form.title.trim()) return
     const colId = addingToColumn.id
+    const assignee_names = form.assignee_ids.map((id) => {
+      const u = users.find((h) => (h.user_id ?? h.id) === id)
+      return u?.name ?? ''
+    }).filter(Boolean)
     const tempTask: Task = {
-      id:               Math.random().toString(),
-      title:            form.title,
-      description:      form.description,
-      column_id:        colId,
-      priority:         form.priority as Task['priority'],
-      assignee:         form.assignee || undefined,
-      assignee_user_id: form.assignee_user_id || undefined,
-      due_date:         form.due_date || undefined,
-      event_id:         form.event_id || undefined,
-      tags:             [],
-      sort_order:       0,
-      created_at:       new Date().toISOString(),
+      id:             Math.random().toString(),
+      title:          form.title,
+      description:    form.description,
+      column_id:      colId,
+      priority:       form.priority as Task['priority'],
+      assignee_ids:   form.assignee_ids,
+      assignee_names,
+      due_date:       form.due_date || undefined,
+      event_id:       form.event_id || undefined,
+      tags:           [],
+      sort_order:     0,
+      created_at:     new Date().toISOString(),
     }
     setTasks((prev) => [...prev, tempTask])
     setForm(emptyForm)
     setAddingToColumn(null)
     startTransition(async () => {
       await createTask({
-        title:            form.title,
-        description:      form.description,
-        column_id:        colId,
-        priority:         form.priority,
-        assignee:         form.assignee || undefined,
-        assignee_user_id: form.assignee_user_id || undefined,
-        due_date:         form.due_date || undefined,
-        event_id:         form.event_id || undefined,
+        title:          form.title,
+        description:    form.description,
+        column_id:      colId,
+        priority:       form.priority,
+        assignee_ids:   form.assignee_ids,
+        assignee_names,
+        due_date:       form.due_date || undefined,
+        event_id:       form.event_id || undefined,
       })
     })
   }
@@ -205,7 +199,7 @@ export function TaskBoard({
         users={users}
         isPending={isPending}
         onChange={(patch) => setForm((f) => ({ ...f, ...patch }))}
-        onAssigneePick={handleAssigneePick}
+        onAssigneesChange={handleAssigneesChange}
         onSubmit={handleAdd}
         onCancel={() => { setAddingToColumn(null); setForm(emptyForm) }}
       />

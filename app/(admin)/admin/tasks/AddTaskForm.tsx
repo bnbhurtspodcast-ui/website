@@ -10,13 +10,13 @@ import {
   SheetTitle,
   SheetFooter,
 } from '@/components/ui/sheet'
+import { getInitials, getAvatarColor } from '@/app/(admin)/admin/tasks/taskUtils'
 
 export type AddForm = {
   title: string
   description: string
   priority: string
-  assignee: string
-  assignee_user_id: string
+  assignee_ids: string[]
   due_date: string
   event_id: string
 }
@@ -25,8 +25,7 @@ export const emptyForm: AddForm = {
   title: '',
   description: '',
   priority: 'medium',
-  assignee: '',
-  assignee_user_id: '',
+  assignee_ids: [],
   due_date: '',
   event_id: '',
 }
@@ -39,7 +38,7 @@ type AddTaskDrawerProps = {
   users: { id: string; name: string; user_id: string | null }[]
   isPending: boolean
   onChange: (patch: Partial<AddForm>) => void
-  onAssigneePick: (userId: string) => void
+  onAssigneesChange: (ids: string[]) => void
   onSubmit: () => void
   onCancel: () => void
 }
@@ -66,7 +65,7 @@ export function AddTaskDrawer({
   users,
   isPending,
   onChange,
-  onAssigneePick,
+  onAssigneesChange,
   onSubmit,
   onCancel,
 }: AddTaskDrawerProps) {
@@ -115,12 +114,10 @@ export function AddTaskDrawer({
   }, [eventQuery, isEventsColumn])
 
   function handleEventPick(ev: EventResult) {
-    const firstHost = ev.hosts?.[0] ?? ''
     onChange({
       title: ev.name,
       description: [ev.venue_name, ev.event_date].filter(Boolean).join(' — '),
-      assignee: firstHost,
-      assignee_user_id: '',
+      assignee_ids: [],
       event_id: ev.id,
       due_date: ev.event_date ?? '',
     })
@@ -129,7 +126,7 @@ export function AddTaskDrawer({
   }
 
   function clearLinkedEvent() {
-    onChange({ title: '', description: '', assignee: '', assignee_user_id: '', event_id: '' })
+    onChange({ title: '', description: '', assignee_ids: [], event_id: '' })
   }
 
   function handleSubmit() {
@@ -137,6 +134,19 @@ export function AddTaskDrawer({
     onChange({ title: localTitleRef.current, description: localDescRef.current })
     // Let React flush the state update, then submit
     setTimeout(onSubmit, 0)
+  }
+
+  function toggleAssignee(val: string) {
+    const already = form.assignee_ids.includes(val)
+    onAssigneesChange(
+      already
+        ? form.assignee_ids.filter((id) => id !== val)
+        : [...form.assignee_ids, val],
+    )
+  }
+
+  function removeAssignee(val: string) {
+    onAssigneesChange(form.assignee_ids.filter((id) => id !== val))
   }
 
   return (
@@ -247,34 +257,86 @@ export function AddTaskDrawer({
             />
           </div>
 
-          {/* Priority + Assignee grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelCls}>Priority</label>
-              <select
-                value={form.priority}
-                onChange={(e) => onChange({ priority: e.target.value })}
-                className={`${inputCls} appearance-none`}
-              >
-                <option value="low" className="bg-[#08111e]">Low</option>
-                <option value="medium" className="bg-[#08111e]">Medium</option>
-                <option value="high" className="bg-[#08111e]">High</option>
-              </select>
-            </div>
-            <div>
-              <label className={labelCls}>Assignee</label>
-              <select
-                value={form.assignee_user_id}
-                onChange={(e) => onAssigneePick(e.target.value)}
-                className={`${inputCls} appearance-none`}
-              >
-                <option value="" className="bg-[#08111e]">No assignee</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.user_id ?? u.id} className="bg-[#08111e]">
-                    {u.name}
-                  </option>
-                ))}
-              </select>
+          {/* Priority */}
+          <div>
+            <label className={labelCls}>Priority</label>
+            <select
+              value={form.priority}
+              onChange={(e) => onChange({ priority: e.target.value })}
+              className={`${inputCls} appearance-none`}
+            >
+              <option value="low" className="bg-[#08111e]">Low</option>
+              <option value="medium" className="bg-[#08111e]">Medium</option>
+              <option value="high" className="bg-[#08111e]">High</option>
+            </select>
+          </div>
+
+          {/* Assignees multi-select */}
+          <div>
+            <label className={labelCls}>Assignees</label>
+
+            {/* Selected pills */}
+            {form.assignee_ids.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {form.assignee_ids.map((id) => {
+                  const u = users.find((h) => (h.user_id ?? h.id) === id)
+                  const name = u?.name ?? id
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-white/10 text-white border border-white/15"
+                    >
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${getAvatarColor(name)}`}>
+                        {getInitials(name)}
+                      </span>
+                      {name}
+                      <button
+                        type="button"
+                        onClick={() => removeAssignee(id)}
+                        className="text-white/40 hover:text-white/80 transition-colors ml-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Toggleable user list */}
+            <div className="rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+              {users.length === 0 && (
+                <p className="px-3 py-2.5 text-sm text-white/30">No team members found</p>
+              )}
+              {users.map((u) => {
+                const val = u.user_id ?? u.id
+                const selected = form.assignee_ids.includes(val)
+                return (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => toggleAssignee(val)}
+                    className={[
+                      'w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors border-b border-white/5 last:border-0',
+                      selected
+                        ? 'bg-[#FAA21B]/10 text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white',
+                    ].join(' ')}
+                  >
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${getAvatarColor(u.name)}`}>
+                      {getInitials(u.name)}
+                    </span>
+                    <span className="flex-1 text-left">{u.name}</span>
+                    {selected && (
+                      <span className="w-4 h-4 rounded-full bg-[#FAA21B] flex items-center justify-center flex-shrink-0">
+                        <svg className="w-2.5 h-2.5 text-[#08111e]" fill="none" viewBox="0 0 10 10" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2 5l2.5 2.5L8 3" />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </div>
           </div>
 

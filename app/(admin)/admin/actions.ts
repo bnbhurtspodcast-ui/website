@@ -129,8 +129,8 @@ export async function createTask(data: {
 	description: string;
 	column_id: string;
 	priority: string;
-	assignee?: string;
-	assignee_user_id?: string;
+	assignee_names?: string[];
+	assignee_ids?: string[];
 	due_date?: string;
 	label_color?: string;
 	event_id?: string;
@@ -146,8 +146,8 @@ export async function createTask(data: {
 		description: data.description,
 		column_id: data.column_id,
 		priority: data.priority,
-		assignee: data.assignee ?? null,
-		assignee_user_id: data.assignee_user_id ?? null,
+		assignee_names: data.assignee_names ?? [],
+		assignee_ids: data.assignee_ids ?? [],
 		due_date: data.due_date ?? null,
 		label_color: data.label_color ?? null,
 		event_id: data.event_id ?? null,
@@ -155,12 +155,13 @@ export async function createTask(data: {
 		sort_order: 0,
 	});
 	revalidatePath("/admin/tasks");
+	const assigneeStr = data.assignee_names?.join(", ");
 	const lines = [
 		`📋 **Task Created**`,
 		`**Title:** ${data.title}`,
 		`**Priority:** ${data.priority}`,
 		`**Column:** ${column?.name ?? data.column_id}`,
-		...(data.assignee ? [`**Assignee:** ${data.assignee}`] : []),
+		...(assigneeStr ? [`**Assignees:** ${assigneeStr}`] : []),
 		...(data.due_date ? [`**Due:** ${data.due_date}`] : []),
 	];
 	await sendDiscordNotification(lines.join("\n"));
@@ -174,8 +175,8 @@ export async function updateTask(
 			| "title"
 			| "description"
 			| "priority"
-			| "assignee"
-			| "assignee_user_id"
+			| "assignee_names"
+			| "assignee_ids"
 			| "due_date"
 			| "label_color"
 			| "column_id"

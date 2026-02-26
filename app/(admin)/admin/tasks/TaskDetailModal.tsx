@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MessageSquare, Tag } from 'lucide-react'
+import { MessageSquare, Tag, X } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -10,14 +10,14 @@ import {
   SheetFooter,
 } from '@/components/ui/sheet'
 import type { Task } from '@/types'
-import { LABEL_COLOR_MAP, PRIORITY_GLOW } from '@/app/(admin)/admin/tasks/constants'
+import { PRIORITY_GLOW } from '@/app/(admin)/admin/tasks/constants'
+import { getInitials, getAvatarColor } from '@/app/(admin)/admin/tasks/taskUtils'
 
 type EditForm = {
   title: string
   description: string
   priority: 'low' | 'medium' | 'high'
-  assignee: string
-  assignee_user_id: string
+  assignee_ids: string[]
   due_date: string
   label_color: string
   tags: string
@@ -25,14 +25,13 @@ type EditForm = {
 
 function taskToForm(task: Task): EditForm {
   return {
-    title:            task.title,
-    description:      task.description ?? '',
-    priority:         task.priority,
-    assignee:         task.assignee ?? '',
-    assignee_user_id: task.assignee_user_id ?? '',
-    due_date:         task.due_date ?? '',
-    label_color:      task.label_color ?? '',
-    tags:             task.tags.join(', '),
+    title:        task.title,
+    description:  task.description ?? '',
+    priority:     task.priority,
+    assignee_ids: task.assignee_ids ?? [],
+    due_date:     task.due_date ?? '',
+    label_color:  task.label_color ?? '',
+    tags:         task.tags.join(', '),
   }
 }
 
@@ -54,7 +53,7 @@ const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tra
 export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: TaskDetailModalProps) {
   const [form, setForm] = useState<EditForm>(task ? taskToForm(task) : taskToForm({
     id: '', title: '', description: '', column_id: '', priority: 'medium',
-    tags: [], sort_order: 0, created_at: '',
+    assignee_names: [], assignee_ids: [], tags: [], sort_order: 0, created_at: '',
   }))
 
   useEffect(() => {
@@ -63,16 +62,20 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
 
   const patch = (partial: Partial<EditForm>) => setForm((f) => ({ ...f, ...partial }))
 
-  const handleAssigneePick = (val: string) => {
-    if (!val) {
-      patch({ assignee_user_id: '', assignee: '' })
-      return
-    }
-    const host = users.find((h) => (h.user_id ?? h.id) === val)
-    patch({
-      assignee_user_id: val,
-      assignee: host?.name ?? '',
+  const toggleAssignee = (val: string) => {
+    setForm((f) => {
+      const already = f.assignee_ids.includes(val)
+      return {
+        ...f,
+        assignee_ids: already
+          ? f.assignee_ids.filter((id) => id !== val)
+          : [...f.assignee_ids, val],
+      }
     })
+  }
+
+  const removeAssignee = (val: string) => {
+    setForm((f) => ({ ...f, assignee_ids: f.assignee_ids.filter((id) => id !== val) }))
   }
 
   const handleSave = () => {
@@ -81,14 +84,18 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
+    const assignee_names = form.assignee_ids.map((id) => {
+      const u = users.find((h) => (h.user_id ?? h.id) === id)
+      return u?.name ?? ''
+    }).filter(Boolean)
     onSave(task.id, {
-      title:            form.title,
-      description:      form.description,
-      priority:         form.priority,
-      assignee:         form.assignee || undefined,
-      assignee_user_id: form.assignee_user_id || undefined,
-      due_date:         form.due_date || undefined,
-      label_color:      form.label_color || undefined,
+      title:          form.title,
+      description:    form.description,
+      priority:       form.priority,
+      assignee_ids:   form.assignee_ids,
+      assignee_names,
+      due_date:       form.due_date || undefined,
+      label_color:    form.label_color || undefined,
       tags,
     })
   }
@@ -139,7 +146,7 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
             />
           </div>
 
-          {/* Details grid */}
+          {/* Priority + Due Date grid */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Priority</label>
@@ -153,32 +160,6 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
                 <option value="high" className="bg-[#08111e]">High</option>
               </select>
             </div>
-            {/* <div>
-              <label className={labelCls}>Label Color</label>
-              <select
-                value={form.label_color}
-                onChange={(e) => patch({ label_color: e.target.value })}
-                className={`${inputCls} appearance-none`}
-              >
-                <option value="" className="bg-[#08111e]">None</option>
-                {Object.keys(LABEL_COLOR_MAP).map((color) => (
-                  <option key={color} value={color} className="bg-[#08111e]">{color}</option>
-                ))}
-              </select>
-            </div> */}
-            <div>
-              <label className={labelCls}>Assignee</label>
-              <select
-                value={form.assignee_user_id}
-                onChange={(e) => handleAssigneePick(e.target.value)}
-                className={`${inputCls} appearance-none`}
-              >
-                <option value="" className="bg-[#08111e]">No assignee</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.user_id ?? u.id} className="bg-[#08111e]">{u.name}</option>
-                ))}
-              </select>
-            </div>
             <div>
               <label className={labelCls}>Due Date</label>
               <input
@@ -187,6 +168,75 @@ export function TaskDetailModal({ task, users, onClose, onSave, onDelete }: Task
                 onChange={(e) => patch({ due_date: e.target.value })}
                 className={`${inputCls} [color-scheme:dark]`}
               />
+            </div>
+          </div>
+
+          {/* Assignees multi-select */}
+          <div>
+            <label className={labelCls}>Assignees</label>
+
+            {/* Selected pills */}
+            {form.assignee_ids.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {form.assignee_ids.map((id) => {
+                  const u = users.find((h) => (h.user_id ?? h.id) === id)
+                  const name = u?.name ?? id
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-white/10 text-white border border-white/15"
+                    >
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${getAvatarColor(name)}`}>
+                        {getInitials(name)}
+                      </span>
+                      {name}
+                      <button
+                        type="button"
+                        onClick={() => removeAssignee(id)}
+                        className="text-white/40 hover:text-white/80 transition-colors ml-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Toggleable user list */}
+            <div className="rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+              {users.length === 0 && (
+                <p className="px-3 py-2.5 text-sm text-white/30">No team members found</p>
+              )}
+              {users.map((u) => {
+                const val = u.user_id ?? u.id
+                const selected = form.assignee_ids.includes(val)
+                return (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => toggleAssignee(val)}
+                    className={[
+                      'w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors border-b border-white/5 last:border-0',
+                      selected
+                        ? 'bg-[#FAA21B]/10 text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white',
+                    ].join(' ')}
+                  >
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${getAvatarColor(u.name)}`}>
+                      {getInitials(u.name)}
+                    </span>
+                    <span className="flex-1 text-left">{u.name}</span>
+                    {selected && (
+                      <span className="w-4 h-4 rounded-full bg-[#FAA21B] flex items-center justify-center flex-shrink-0">
+                        <svg className="w-2.5 h-2.5 text-[#08111e]" fill="none" viewBox="0 0 10 10" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2 5l2.5 2.5L8 3" />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </div>
           </div>
 

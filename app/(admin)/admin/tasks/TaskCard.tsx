@@ -122,15 +122,32 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
         </div>
       )}
 
-      {/* Bottom row: avatar + due date */}
-      {(task.assignee || task.due_date) && (
+      {/* Bottom row: avatars + due date */}
+      {(task.assignee_names.length > 0 || task.due_date) && (
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
-          {task.assignee ? (
-            <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 ring-1 ring-white/20 ${getAvatarColor(task.assignee)}`}
-              title={task.assignee}
-            >
-              {getInitials(task.assignee)}
+          {task.assignee_names.length > 0 ? (
+            <div className="flex items-center">
+              {task.assignee_names.slice(0, 3).map((name, i) => (
+                <div
+                  key={i}
+                  className={[
+                    'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 ring-1 ring-[#08111e]',
+                    getAvatarColor(name),
+                    i > 0 ? '-ml-1.5' : '',
+                  ].join(' ')}
+                  title={name}
+                >
+                  {getInitials(name)}
+                </div>
+              ))}
+              {task.assignee_names.length > 3 && (
+                <div
+                  className="-ml-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white/70 flex-shrink-0 ring-1 ring-[#08111e] bg-white/15"
+                  title={task.assignee_names.slice(3).join(', ')}
+                >
+                  +{task.assignee_names.length - 3}
+                </div>
+              )}
             </div>
           ) : (
             <div />
