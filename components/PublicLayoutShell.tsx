@@ -4,6 +4,7 @@ import { AudioPlayerProvider } from '@/components/AudioPlayerContext'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { AudioPlayer } from '@/components/AudioPlayer'
+import { AudioPlayerSpacer } from '@/components/AudioPlayerSpacer'
 import { PageTransition } from '@/components/PageTransition'
 
 export function PublicLayoutShell({ children }: { children: React.ReactNode }) {
@@ -36,6 +37,7 @@ export function PublicLayoutShell({ children }: { children: React.ReactNode }) {
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />
+        <AudioPlayerSpacer />
         <AudioPlayer />
       </div>
     </AudioPlayerProvider>

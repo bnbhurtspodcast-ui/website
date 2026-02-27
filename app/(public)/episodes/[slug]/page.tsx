@@ -5,6 +5,7 @@ import { Calendar, Clock, ArrowLeft } from 'lucide-react'
 import { getEpisodes, searchYouTubeByTitle, CHANNEL_IMAGE } from '@/lib/rss'
 import { EpisodePlayButton } from '@/components/EpisodePlayButton'
 import { EpisodeDescription } from '@/components/EpisodeDescription'
+import { EpisodesRegistrar } from '@/components/EpisodesRegistrar'
 
 export const revalidate = 1800
 
@@ -85,6 +86,7 @@ export default async function EpisodeDetailPage({
 
   return (
     <div className="pt-12">
+      <EpisodesRegistrar episodes={episodes} />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Back link */}
         <Link
@@ -135,10 +137,11 @@ export default async function EpisodeDetailPage({
         {/* Video or artwork */}
         {episode.youtubeVideoId ? (
           <div
-            className="relative w-full aspect-video rounded-xl overflow-hidden mb-8"
+            className="w-full rounded-xl overflow-hidden mb-8"
             style={{
               border: '1px solid rgba(250,162,27,0.22)',
               boxShadow: '0 0 30px rgba(0,0,0,0.6)',
+              aspectRatio: '16 / 9',
             }}
           >
             <iframe
@@ -147,7 +150,8 @@ export default async function EpisodeDetailPage({
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               loading="lazy"
-              className="absolute inset-0 w-full h-full"
+              className="w-full h-full"
+              style={{ display: 'block' }}
             />
           </div>
         ) : (

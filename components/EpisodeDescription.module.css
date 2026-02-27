@@ -2,6 +2,9 @@
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.75;
   font-size: 0.9375rem;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .description p {
@@ -29,6 +32,11 @@
 
 .description a:hover {
   opacity: 0.75;
+}
+
+.description img {
+  max-width: 100%;
+  height: auto;
 }
 
 .description u {

@@ -215,6 +215,14 @@
    EDM Hover Effect Utility Classes (for server components)
    ============================================================ */
 
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 .rave-card {
   background: rgba(10,22,40,0.7);
   backdrop-filter: blur(12px);

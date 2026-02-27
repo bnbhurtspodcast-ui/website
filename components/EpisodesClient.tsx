@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search } from 'lucide-react'
 import { motion } from 'motion/react'
 import { EpisodeCard } from '@/components/EpisodeCard'
+import { useAudioPlayer } from '@/components/AudioPlayerContext'
 import type { Episode } from '@/types'
 
 type FilterType = 'all' | 'regular' | 'sts'
@@ -14,9 +15,14 @@ interface EpisodesClientProps {
 }
 
 export function EpisodesClient({ episodes }: EpisodesClientProps) {
+  const { setEpisodes } = useAudioPlayer()
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<FilterType>('all')
   const [sort, setSort] = useState<SortOrder>('newest')
+
+  useEffect(() => {
+    setEpisodes(episodes)
+  }, [episodes, setEpisodes])
 
   const filtered = episodes
     .filter((ep) => {
