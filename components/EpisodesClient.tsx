@@ -7,6 +7,7 @@ import { EpisodeCard } from '@/components/EpisodeCard'
 import type { Episode } from '@/types'
 
 type FilterType = 'all' | 'regular' | 'sts'
+type SortOrder = 'newest' | 'oldest'
 
 interface EpisodesClientProps {
   episodes: Episode[]
@@ -15,17 +16,23 @@ interface EpisodesClientProps {
 export function EpisodesClient({ episodes }: EpisodesClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<FilterType>('all')
+  const [sort, setSort] = useState<SortOrder>('newest')
 
-  const filtered = episodes.filter((ep) => {
-    const isSTS = /\bSTS\s*\d+/i.test(ep.title)
-    const typeMatch =
-      filter === 'all' ||
-      (filter === 'sts' && isSTS) ||
-      (filter === 'regular' && !isSTS)
-    const q = searchQuery.toLowerCase()
-    const textMatch = ep.title.toLowerCase().includes(q) || ep.description.toLowerCase().includes(q)
-    return typeMatch && textMatch
-  })
+  const filtered = episodes
+    .filter((ep) => {
+      const isSTS = /\bSTS\s*\d+/i.test(ep.title)
+      const typeMatch =
+        filter === 'all' ||
+        (filter === 'sts' && isSTS) ||
+        (filter === 'regular' && !isSTS)
+      const q = searchQuery.toLowerCase()
+      const textMatch = ep.title.toLowerCase().includes(q) || ep.description.toLowerCase().includes(q)
+      return typeMatch && textMatch
+    })
+    .sort((a, b) => {
+      const diff = new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+      return sort === 'newest' ? -diff : diff
+    })
 
   const pillBase = 'px-5 py-2 rounded-full text-sm transition-all cursor-pointer font-medium'
   const pillActive = 'text-[#112B4F] font-bold'
@@ -56,23 +63,43 @@ export function EpisodesClient({ episodes }: EpisodesClientProps) {
           </p>
         </motion.div>
 
-        {/* Filter Pills */}
-        <div className="flex gap-3 mb-8">
-          {(['all', 'regular', 'sts'] as FilterType[]).map((type) => (
-            <motion.button
-              key={type}
-              onClick={() => setFilter(type)}
-              whileTap={{ scale: 0.95 }}
-              className={`${pillBase} ${filter === type ? pillActive : pillInactive}`}
-              style={
-                filter === type
-                  ? { backgroundColor: '#FAA21B', border: '1px solid #FAA21B' }
-                  : { borderColor: 'rgba(250,162,27,0.3)', backgroundColor: 'transparent' }
-              }
-            >
-              {type === 'all' ? 'All' : type === 'sts' ? 'STS' : 'Regular'}
-            </motion.button>
-          ))}
+        {/* Filters + Sort */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+          <div className="flex gap-3">
+            {(['all', 'regular', 'sts'] as FilterType[]).map((type) => (
+              <motion.button
+                key={type}
+                onClick={() => setFilter(type)}
+                whileTap={{ scale: 0.95 }}
+                className={`${pillBase} ${filter === type ? pillActive : pillInactive}`}
+                style={
+                  filter === type
+                    ? { backgroundColor: '#FAA21B', border: '1px solid #FAA21B' }
+                    : { borderColor: 'rgba(250,162,27,0.3)', backgroundColor: 'transparent' }
+                }
+              >
+                {type === 'all' ? 'All' : type === 'sts' ? 'STS' : 'Regular'}
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            {(['newest', 'oldest'] as SortOrder[]).map((order) => (
+              <motion.button
+                key={order}
+                onClick={() => setSort(order)}
+                whileTap={{ scale: 0.95 }}
+                className={`${pillBase} ${sort === order ? pillActive : pillInactive}`}
+                style={
+                  sort === order
+                    ? { backgroundColor: '#FAA21B', border: '1px solid #FAA21B' }
+                    : { borderColor: 'rgba(250,162,27,0.3)', backgroundColor: 'transparent' }
+                }
+              >
+                {order === 'newest' ? 'Newest' : 'Oldest'}
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         {/* Search */}

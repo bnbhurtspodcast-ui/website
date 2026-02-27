@@ -168,7 +168,7 @@ export function HeroSection({ episodeCount, upcomingEvents }: HeroSectionProps) 
 
               <motion.div whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.97 }}>
                 <a
-                  href="#subscribe"
+                  href="https://www.youtube.com/@BnBHurtsPodcast/featured"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold border transition-all"
                   style={{
                     backgroundColor: 'rgba(250,162,27,0.07)',

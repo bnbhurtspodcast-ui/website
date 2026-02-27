@@ -91,7 +91,7 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:sticky lg:top-0 bottom-0 left-0 z-50 w-72 bg-[#0a1220]/95 border-r border-[#FAA21B]/15 backdrop-blur-md transition-transform duration-300 ease-in-out lg:h-screen`}
+          } lg:translate-x-0 fixed lg:sticky top-0 lg:top-0 bottom-0 left-0 z-50 w-72 bg-[#0a1220]/95 border-r border-[#FAA21B]/15 backdrop-blur-md transition-transform duration-300 ease-in-out lg:h-screen`}
         >
           <div className="flex flex-col h-full">
             {/* Logo */}

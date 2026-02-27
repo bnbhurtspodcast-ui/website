@@ -76,21 +76,21 @@ export function CalendarClient({
 
       {/* Calendar grid */}
       <div className="admin-card p-4">
-        {/* Day-of-week headers */}
-        <div className="grid grid-cols-7 mb-2">
-          {DAY_HEADERS.map((d) => (
-            <div
-              key={d}
-              className="text-center text-xs font-bold text-white/30 uppercase tracking-widest py-2"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-
         {/* Horizontally scrollable on small screens */}
         <div className="overflow-x-auto">
           <div className="min-w-[560px]">
+            {/* Day-of-week headers */}
+            <div className="grid grid-cols-7 mb-2">
+              {DAY_HEADERS.map((d) => (
+                <div
+                  key={d}
+                  className="text-center text-xs font-bold text-white/30 uppercase tracking-widest py-2"
+                >
+                  {d}
+                </div>
+              ))}
+            </div>
+
             <CalendarGrid
               year={year}
               month={month}

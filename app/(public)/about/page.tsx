@@ -35,7 +35,7 @@ function SocialIcon({ platform }: { platform: string }) {
 function HostCard({ host }: { host: Host }) {
   return (
     <div className="rave-card rave-card-lift rounded-2xl overflow-hidden flex flex-col">
-      <div className="h-56 overflow-hidden">
+      <div className="h-80 overflow-hidden">
         {host.photo_url ? (
           <img src={host.photo_url} alt={host.name} className="w-full h-full object-cover" />
         ) : (

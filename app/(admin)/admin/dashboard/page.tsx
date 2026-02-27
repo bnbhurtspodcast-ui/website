@@ -74,23 +74,23 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-4 gap-3 md:gap-6">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
             <Link
               key={stat.label}
               href={stat.path}
-              className="admin-stat-card p-6 block"
+              className="admin-stat-card p-3 md:p-6 block"
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2.5 bg-[#FAA21B]/10 border border-[#FAA21B]/20 rounded-lg">
-                  <Icon className="size-5 text-[#FAA21B]" aria-hidden="true" />
+              <div className="flex items-center justify-between mb-1 md:mb-2">
+                <div className="p-1.5 md:p-2.5 bg-[#FAA21B]/10 border border-[#FAA21B]/20 rounded-lg">
+                  <Icon className="size-3.5 md:size-5 text-[#FAA21B]" aria-hidden="true" />
                 </div>
               </div>
-              <div className="text-4xl font-black text-white tracking-tight mt-4 mb-1">{stat.value}</div>
-              <div className="text-xs text-white/45 font-medium uppercase tracking-wider">{stat.label}</div>
-              <div className="mt-4 h-0.5 bg-gradient-to-r from-[#FAA21B]/50 to-transparent rounded-full" aria-hidden="true" />
+              <div className="text-2xl md:text-4xl font-black text-white tracking-tight mt-2 md:mt-4 mb-0.5 md:mb-1">{stat.value}</div>
+              <div className="text-[9px] md:text-xs text-white/45 font-medium uppercase tracking-wider leading-tight line-clamp-2">{stat.label}</div>
+              <div className="mt-2 md:mt-4 h-0.5 bg-gradient-to-r from-[#FAA21B]/50 to-transparent rounded-full" aria-hidden="true" />
             </Link>
           )
         })}

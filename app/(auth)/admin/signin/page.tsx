@@ -35,7 +35,7 @@ export default function SignInPage() {
         <div className="text-center mb-8">
           <img src="/logo.png" alt="Back n' Body Hurts" className="w-24 h-24 mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-white mb-2">Admin Sign In</h1>
-          <p className="text-[#FAA21B]">Access your dashboard</p>
+          {/* <p className="text-[#FAA21B]">Access your dashboard</p> */}
         </div>
 
         {/* Sign In Form */}

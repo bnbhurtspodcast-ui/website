@@ -84,28 +84,28 @@ export function ContactsClient({ contacts: initialContacts }: { contacts: Contac
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="admin-card p-4 border-l-2 border-l-white/20">
-          <div className="text-2xl font-black text-white">{contacts.length}</div>
-          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Total</div>
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        <div className="admin-card p-3 md:p-4 border-l-2 border-l-white/20">
+          <div className="text-xl md:text-2xl font-black text-white">{contacts.length}</div>
+          <div className="text-[9px] md:text-xs text-white/40 uppercase tracking-wide mt-0.5">Total</div>
         </div>
-        <div className="admin-card p-4 border-l-2 border-l-[#FAA21B]">
-          <div className="text-2xl font-black text-[#FAA21B]">
+        <div className="admin-card p-3 md:p-4 border-l-2 border-l-[#FAA21B]">
+          <div className="text-xl md:text-2xl font-black text-[#FAA21B]">
             {contacts.filter((c) => c.status === 'new').length}
           </div>
-          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">New</div>
+          <div className="text-[9px] md:text-xs text-white/40 uppercase tracking-wide mt-0.5">New</div>
         </div>
-        <div className="admin-card p-4 border-l-2 border-l-blue-400/70">
-          <div className="text-2xl font-black text-blue-400">
+        <div className="admin-card p-3 md:p-4 border-l-2 border-l-blue-400/70">
+          <div className="text-xl md:text-2xl font-black text-blue-400">
             {contacts.filter((c) => c.status === 'reviewed').length}
           </div>
-          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Reviewed</div>
+          <div className="text-[9px] md:text-xs text-white/40 uppercase tracking-wide mt-0.5">Reviewed</div>
         </div>
-        <div className="admin-card p-4 border-l-2 border-l-emerald-400/70">
-          <div className="text-2xl font-black text-emerald-400">
+        <div className="admin-card p-3 md:p-4 border-l-2 border-l-emerald-400/70">
+          <div className="text-xl md:text-2xl font-black text-emerald-400">
             {contacts.filter((c) => c.status === 'responded').length}
           </div>
-          <div className="text-xs text-white/40 uppercase tracking-wide mt-0.5">Responded</div>
+          <div className="text-[9px] md:text-xs text-white/40 uppercase tracking-wide mt-0.5">Responded</div>
         </div>
       </div>
 
