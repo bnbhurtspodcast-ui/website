@@ -192,7 +192,7 @@ export default async function EpisodeDetailPage({
         <EpisodeDescription html={episode.description} />
       </div>
 
-      {/* Listen on your favorite podcast app */}
+      {/* Listen on your favourite podcast app */}
       <section
         className="mt-16 py-16"
         style={{
@@ -211,7 +211,7 @@ export default async function EpisodeDetailPage({
               textShadow: '0 0 40px rgba(250,162,27,0.25)',
             }}
           >
-            Listen on your favorite podcast app
+            Listen on your favourite podcast app
           </h2>
           <p className="text-base mb-8" style={{ color: 'rgba(255,255,255,0.55)' }}>
             Subscribe to Back n&apos; Body Hurts wherever you listen

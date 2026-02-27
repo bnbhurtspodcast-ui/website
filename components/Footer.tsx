@@ -108,7 +108,7 @@ export function Footer() {
                 { href: '/', label: 'Home' },
                 { href: '/episodes', label: 'Episodes' },
                 { href: '/about', label: 'About' },
-                { href: '/admin/signin', label: 'Admin Sign In' },
+                { href: '/admin/signin', label: 'Backstage Pass' },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link

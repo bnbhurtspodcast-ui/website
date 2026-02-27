@@ -280,7 +280,7 @@ export function HeroSection({ episodeCount, upcomingEvents }: HeroSectionProps) 
             Never Miss an Episode
           </motion.h2>
           <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Subscribe to Back n&apos; Body Hurts on your favorite platform
+            Subscribe to Back n&apos; Body Hurts on your favourite platform
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
