@@ -113,7 +113,7 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
 
       {/* Filters */}
       <div className="admin-card p-4 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-row gap-3">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/25" aria-hidden="true" />
             <input
@@ -132,7 +132,7 @@ export function GuestsClient({ guests: initialGuests }: { guests: GuestApplicati
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               aria-label="Filter by status"
-              className="admin-input px-4 py-2 w-auto"
+              className="admin-input pr-4 pl-2 py-2 md:w-auto w-[65px]"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>

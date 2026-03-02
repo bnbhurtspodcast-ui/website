@@ -37,7 +37,7 @@ export function FeaturedEpisodes({ episodes }: FeaturedEpisodesProps) {
         </div>
 
         {/* Mobile: horizontal scroll — desktop: 3-col grid */}
-        <div className="md:hidden -mx-4 px-4 overflow-x-auto scrollbar-none">
+        <div className="md:hidden -mx-4 px-4 overflow-x-auto scrollbar-none overflow-y-hidden">
           <div className="flex gap-4" style={{ width: 'max-content' }}>
             {episodes.map((episode) => (
               <div key={episode.id} className="w-72 flex-shrink-0">

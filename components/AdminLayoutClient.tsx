@@ -69,7 +69,7 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen admin-dot-grid flex flex-col">
       {/* Mobile Header */}
-      <div className="lg:hidden bg-[#080f1a] border-b border-[#FAA21B]/15 px-4 py-4">
+      <div className="lg:hidden sticky top-0 z-50 bg-[#080f1a] border-b border-[#FAA21B]/15 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="BNB Hurts Podcast logo" className="size-10" />
