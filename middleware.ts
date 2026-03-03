@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Protect all /admin/* routes except /admin/signin
-  if (!user && pathname.startsWith('/admin') && pathname !== '/admin/signin') {
+  if (!user && pathname.startsWith('/admin') && pathname !== '/admin/signin' && pathname !== '/admin/reset-password') {
     return NextResponse.redirect(new URL('/admin/signin', request.url))
   }
 

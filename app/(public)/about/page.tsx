@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Mail, Twitter, Instagram, Linkedin, Youtube, Music, Link, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import type { Host } from '@/types'
+import { ExpandableText } from '@/components/ExpandableText'
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -52,7 +53,7 @@ function HostCard({ host }: { host: Host }) {
           <p className="text-sm font-medium mb-3" style={{ color: '#FAA21B' }}>{host.interests}</p>
         )}
         {host.description && (
-          <p className="text-sm leading-relaxed flex-1" style={{ color: 'rgba(255,255,255,0.65)' }}>{host.description}</p>
+          <ExpandableText text={host.description} />
         )}
         {host.social_links && host.social_links.length > 0 && (
           <div className="flex gap-3 mt-4">
