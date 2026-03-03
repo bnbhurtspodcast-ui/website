@@ -33,7 +33,12 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Protect all /admin/* routes except /admin/signin
+  // Allow auth callback through unconditionally (token exchange must be unauthenticated)
+  if (pathname === '/auth/callback') {
+    return supabaseResponse
+  }
+
+  // Protect all /admin/* routes except public auth pages
   if (!user && pathname.startsWith('/admin') && pathname !== '/admin/signin' && pathname !== '/admin/reset-password') {
     return NextResponse.redirect(new URL('/admin/signin', request.url))
   }
