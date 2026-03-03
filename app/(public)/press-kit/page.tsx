@@ -145,19 +145,19 @@ export default async function PressKitPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { icon: FileText, title: 'Media Kit PDF', desc: 'Complete press kit with all information and assets', label: 'Download PDF' },
-              // { icon: FileText, title: 'Host Photos', desc: 'High-resolution professional headshots', label: 'Download ZIP' },
-              // { icon: FileText, title: 'Cover Art', desc: 'Podcast cover art in various sizes', label: 'Download ZIP' },
-              // { icon: FileText, title: 'Promo Videos', desc: 'Short promotional clips for social media', label: 'Download ZIP' },
-            ].map(({ icon: Icon, title, desc, label }) => (
+              { icon: FileText, title: 'Media Kit PDF', desc: 'Complete press kit with all information and assets', label: 'Download PDF', link: 'https://drive.google.com/file/d/1_RP40BaAHz5yp4TJN77W-jch5GsFoDXu/view?usp=sharing' },
+              // { icon: FileText, title: 'Host Photos', desc: 'High-resolution professional headshots', label: 'Download ZIP' , link: ''},
+              // { icon: FileText, title: 'Cover Art', desc: 'Podcast cover art in various sizes', label: 'Download ZIP' , link: ''},
+              // { icon: FileText, title: 'Promo Videos', desc: 'Short promotional clips for social media', label: 'Download ZIP' , link: ''},
+            ].map(({ icon: Icon, title, desc, label, link }) => (
               <div key={title} className="rave-card p-6 rounded-xl">
                 <Icon className="h-10 w-10 text-[#FAA21B] mb-4" />
                 <h3 className="text-white font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-barlow), sans-serif' }}>{title}</h3>
                 <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>{desc}</p>
-                <button className="rave-btn px-6 py-3 rounded-full font-bold inline-flex items-center gap-2">
+                <a href={link} target="_blank" rel="noopener noreferrer" className="rave-btn px-6 py-3 rounded-full font-bold inline-flex items-center gap-2">
                   <Download className="h-4 w-4" />
                   {label}
-                </button>
+                </a>
               </div>
             ))}
           </div>
