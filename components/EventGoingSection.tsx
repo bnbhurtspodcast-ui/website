@@ -8,6 +8,7 @@ import type { CalendarEvent, Host } from '@/types'
 
 export interface EventWithHosts extends CalendarEvent {
   attendingHosts: Host[]
+  taskDescription?: string | null
 }
 
 interface EventGoingSectionProps {
@@ -115,6 +116,13 @@ function EventCard({ event, onClick }: { event: EventWithHosts; onClick: () => v
         {event.name}
       </h3>
 
+      {/* Description */}
+      {event.taskDescription && (
+        <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          {event.taskDescription}
+        </p>
+      )}
+
       {/* Venue */}
       {event.venue_name && (
         <div className="flex items-start gap-1.5 text-sm mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
@@ -136,21 +144,6 @@ function EventCard({ event, onClick }: { event: EventWithHosts; onClick: () => v
         </div>
       )}
 
-      {/* Host avatars */}
-      {event.attendingHosts.length > 0 && (
-        <div className="flex items-center gap-2 mt-auto pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-          <div className="flex -space-x-2">
-            {event.attendingHosts.map((host) => (
-              <HostAvatar key={host.id} host={host} size="sm" />
-            ))}
-          </div>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            {event.attendingHosts.length === 1
-              ? `${event.attendingHosts[0].name} is going`
-              : `${event.attendingHosts.length} hosts going`}
-          </span>
-        </div>
-      )}
     </motion.button>
   )
 }
@@ -231,6 +224,18 @@ function EventModal({ event, onClose }: { event: EventWithHosts; onClose: () => 
             )}
           </div>
 
+          {/* Description */}
+          {event.taskDescription && (
+            <div>
+              <p className="text-xs uppercase tracking-widest font-bold mb-1.5" style={{ color: 'rgba(250,162,27,0.6)' }}>
+                Description
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {event.taskDescription}
+              </p>
+            </div>
+          )}
+
           {/* Venue */}
           {(event.venue_name || event.venue_location) && (
             <div>
@@ -290,23 +295,6 @@ function EventModal({ event, onClose }: { event: EventWithHosts; onClose: () => 
                     </span>
                   )
                 )}
-              </div>
-            </div>
-          )}
-
-          {/* Hosts attending */}
-          {event.attendingHosts.length > 0 && (
-            <div>
-              <p className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color: 'rgba(250,162,27,0.6)' }}>
-                Hosts Attending
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {event.attendingHosts.map((host) => (
-                  <div key={host.id} className="flex items-center gap-2.5">
-                    <HostAvatar host={host} size="md" />
-                    <span className="text-sm font-medium text-white">{host.name}</span>
-                  </div>
-                ))}
               </div>
             </div>
           )}

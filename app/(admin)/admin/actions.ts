@@ -406,3 +406,15 @@ export async function changePassword(
 
 	return { success: true };
 }
+
+export async function saveHighlightedEpisode(youtubeUrl: string): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const value = youtubeUrl.trim() || null;
+	const { error } = await supabase
+		.from("site_settings")
+		.upsert({ key: "highlighted_youtube_url", value, updated_at: new Date().toISOString() });
+	if (error) return { error: error.message };
+	revalidatePath("/");
+	revalidatePath("/admin/content");
+	return {};
+}
