@@ -165,3 +165,27 @@ I would like to create a section here with accented background colors to show th
 3. it needs to return a circular image of the host that are attending
 
 You will need to update some db policies where anon can read that event column and task within.
+
+
+---
+
+Can we add more filters for the episode, theres ` 'all' | 'regular' | 'sts' ` I would like to add timestamp asc and desc
+
+
+---
+
+This file needs rework, there has been feedback that the player is not centered enough, but I will list out the task to be done, use the skills (frontend-design, tailwind-design-system, web-design-guidelines) to guide :
+
+1. Player needs to be centered
+2. Right now the seek icon is not right, that is the next episode icon
+3. Have the ability to play go to the next episode, or the previous episode. the arrow needs to be dynamic to know if it is the first episode to not display the previous episode and the last episode to not display the next episode.
+4. The clicking on the title of the episode should take you to the episode page
+5. Mobile is not displaying which episode is being played
+6. Have a close button to remove the player
+7. On mobile, it needs to have buffer for the player, it is too close to action features on phones
+
+----
+
+
+I need a password reset page, I am using supabase password reset link to rest.
+Use the guideline skill to help design the page
