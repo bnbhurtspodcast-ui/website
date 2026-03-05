@@ -121,6 +121,7 @@ export async function updateTaskColumn(id: string, columnId: string) {
 	revalidatePath("/admin/tasks");
 	await sendDiscordNotification(
 		`🔀 **Task Moved**\n**Task:** ${task?.title ?? id}\n**To column:** ${column?.name ?? columnId}\n`,
+		"task",
 	);
 }
 
@@ -164,7 +165,7 @@ export async function createTask(data: {
 		...(assigneeStr ? [`**Assignees:** ${assigneeStr}`] : []),
 		...(data.due_date ? [`**Due:** ${data.due_date}`] : []),
 	];
-	await sendDiscordNotification(lines.join("\n"));
+	await sendDiscordNotification(lines.join("\n"), "task");
 }
 
 export async function updateTask(
@@ -195,6 +196,7 @@ export async function updateTask(
 	const changed = Object.keys(data).join(", ");
 	await sendDiscordNotification(
 		`✏️ **Task Updated**\n**Task:** ${existing?.title ?? id}\n**Fields changed:** ${changed}\n`,
+		"task",
 	);
 }
 
@@ -209,6 +211,7 @@ export async function deleteTask(id: string) {
 	revalidatePath("/admin/tasks");
 	await sendDiscordNotification(
 		`🗑️ **Task Deleted**\n**Title:** ${task?.title ?? id}\n`,
+		"task",
 	);
 }
 
@@ -248,6 +251,7 @@ export async function createColumn(data: {
 	revalidatePath("/admin/tasks");
 	await sendDiscordNotification(
 		`🗂️ **Column Created**\n**Name:** ${data.name}\n`,
+		"task",
 	);
 	return { id: col.id };
 }
@@ -276,7 +280,10 @@ export async function deleteColumn(id: string): Promise<{ error?: string }> {
 		return { error: error.message };
 	}
 	revalidatePath("/admin/tasks");
-	await sendDiscordNotification(`🗑️ **Column Deleted**\n**ID:** ${id}\n`);
+	await sendDiscordNotification(
+		`🗑️ **Column Deleted**\n**ID:** ${id}\n`,
+		"task",
+	);
 	return {};
 }
 
@@ -305,8 +312,8 @@ type HostPayload = {
 	description: string | null;
 	social_links: { platform: string; url: string }[];
 	photo_url?: string;
-	user_id?: string;          // only passed on create; immutable after that
-	role: 'host' | 'team';
+	user_id?: string; // only passed on create; immutable after that
+	role: "host" | "team";
 };
 
 export async function createHost(payload: HostPayload) {
@@ -359,7 +366,9 @@ export async function updateEventHosts(id: string, hosts: string[]) {
 	revalidatePath("/admin/calendar");
 }
 
-export async function getHosts(): Promise<{ id: string; name: string; user_id: string | null }[]> {
+export async function getHosts(): Promise<
+	{ id: string; name: string; user_id: string | null }[]
+> {
 	const supabase = await createClient();
 	const { data } = await supabase
 		.from("hosts")
@@ -407,12 +416,16 @@ export async function changePassword(
 	return { success: true };
 }
 
-export async function saveHighlightedEpisode(youtubeUrl: string): Promise<{ error?: string }> {
+export async function saveHighlightedEpisode(
+	youtubeUrl: string,
+): Promise<{ error?: string }> {
 	const supabase = await createClient();
 	const value = youtubeUrl.trim() || null;
-	const { error } = await supabase
-		.from("site_settings")
-		.upsert({ key: "highlighted_youtube_url", value, updated_at: new Date().toISOString() });
+	const { error } = await supabase.from("site_settings").upsert({
+		key: "highlighted_youtube_url",
+		value,
+		updated_at: new Date().toISOString(),
+	});
 	if (error) return { error: error.message };
 	revalidatePath("/");
 	revalidatePath("/admin/content");

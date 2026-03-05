@@ -8,17 +8,20 @@ export const metadata: Metadata = {
   title: 'About Us',
   description:
     "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
+  keywords: ['about BnB Hurts podcast', 'Toronto rave podcast hosts', 'EDM podcast team'],
   openGraph: {
     title: "About Us | Back n' Body Hurts",
     description:
       "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
     url: '/about',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
   },
   twitter: {
     card: 'summary',
     title: "About Us | Back n' Body Hurts",
     description:
       "Meet the hosts of Back n' Body Hurts — a Toronto-based EDM podcast with unscripted conversations about rave culture, events, wellness, and the music scene.",
+    images: ['/logo.png'],
   },
 }
 

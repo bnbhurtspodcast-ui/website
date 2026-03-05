@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getEpisodes } from '@/lib/rss'
 import { getHighlightedEpisode } from '@/lib/settings'
 import { HeroHero } from '@/components/HeroHero'
@@ -11,6 +12,40 @@ import type { CalendarEvent, Host } from '@/types'
 import type { EventWithHosts } from '@/components/EventGoingSection'
 
 export const revalidate = 3600 // 1 hour ISR
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Back n' Body Hurts Podcast | Toronto EDM & Rave Culture",
+  },
+  description:
+    "Back n' Body Hurts is Toronto's go-to EDM podcast. Opinionated guidance for ravers, DJs, and rave culture enthusiasts. New episodes every two weeks on Spotify, Apple Podcasts & YouTube.",
+  keywords: [
+    'Toronto EDM podcast',
+    'rave culture podcast',
+    'electronic music podcast',
+    'DJ interviews Toronto',
+    'rave scene podcast',
+    'EDM community Toronto',
+  ],
+  alternates: {
+    canonical: 'https://bnbhurtspodcast.com',
+  },
+  openGraph: {
+    title: "Back n' Body Hurts Podcast | Toronto EDM & Rave Culture",
+    description:
+      "Toronto's go-to EDM podcast. Opinionated guidance for ravers, DJs, and rave culture enthusiasts. New episodes every two weeks.",
+    url: '/',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@bnbhurtspodcast',
+    title: "Back n' Body Hurts Podcast | Toronto EDM & Rave Culture",
+    description:
+      "Toronto's go-to EDM podcast. Opinionated guidance for ravers, DJs, and rave culture enthusiasts. New episodes every two weeks.",
+    images: ['/logo.png'],
+  },
+}
 
 export default async function HomePage() {
   const [allEpisodes, highlightedUrl] = await Promise.all([

@@ -123,7 +123,7 @@ export function HeroHero() {
             className="text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
             style={{ color: 'rgba(255,255,255,0.6)' }}
           >
-            Opinionated guidance for all involved in the rave scene — from the host to the attendees
+            Opinionated guidance for ravers, DJs, and rave attendees in Toronto and beyond. New episodes every two weeks.
           </motion.p>
 
           {/* CTA Buttons */}

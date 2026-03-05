@@ -84,8 +84,42 @@ export default async function EpisodeDetailPage({
   const youtubeVideoId = await searchYouTubeByTitle(found.title)
   const episode = { ...found, youtubeVideoId: youtubeVideoId ?? undefined }
 
+  const plain = episode.description
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160)
+
+  const ogImage = (episode.imageUrl && episode.imageUrl !== CHANNEL_IMAGE)
+    ? episode.imageUrl
+    : 'https://bnbhurtspodcast.com/logo.png'
+
   return (
     <div className="pt-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'PodcastEpisode',
+            name: episode.title,
+            description: plain || `Listen to "${episode.title}" on Back n' Body Hurts.`,
+            url: `https://bnbhurtspodcast.com/episodes/${slug}`,
+            image: ogImage,
+            datePublished: episode.publishedAt,
+            inLanguage: 'en',
+            partOfSeries: {
+              '@type': 'PodcastSeries',
+              name: "Back n' Body Hurts Podcast",
+              url: 'https://bnbhurtspodcast.com',
+            },
+            author: {
+              '@type': 'Organization',
+              name: "Back n' Body Hurts Podcast",
+            },
+          }),
+        }}
+      />
       <EpisodesRegistrar episodes={episodes} />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Back link */}
@@ -164,7 +198,7 @@ export default async function EpisodeDetailPage({
           >
             <img
               src={episode.imageUrl}
-              alt={episode.title}
+              alt={`${episode.title} — Back n' Body Hurts Podcast Episode`}
               className="w-full h-full object-cover"
             />
           </div>

@@ -29,6 +29,7 @@ export async function submitContactForm(formData: FormData) {
 
 	await sendDiscordNotification(
 		`📬 **New Contact Submission**\n**Name:** ${name}\n**Email:** ${email}\n**Subject:** ${subject}\n`,
+		"inquiries",
 	);
 
 	redirect("/contact?success=true");

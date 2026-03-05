@@ -6,17 +6,20 @@ export const metadata: Metadata = {
   title: 'Be a Guest',
   description:
     "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
+  keywords: ['be a podcast guest', 'EDM podcast guest application'],
   openGraph: {
     title: "Be a Guest | Back n' Body Hurts",
     description:
       "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
     url: '/guest-submission',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
   },
   twitter: {
     card: 'summary',
     title: "Be a Guest | Back n' Body Hurts",
     description:
       "Apply to be a guest on Back n' Body Hurts. Share your expertise in DJing, event production, rave wellness, or EDM culture with our Toronto audience.",
+    images: ['/logo.png'],
   },
 }
 

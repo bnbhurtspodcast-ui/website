@@ -6,17 +6,20 @@ export const metadata: Metadata = {
   title: 'Sponsorship',
   description:
     "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
+  keywords: ['podcast sponsorship EDM', 'rave brand sponsorship', 'EDM podcast advertising'],
   openGraph: {
     title: "Sponsorship | Back n' Body Hurts",
     description:
       "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
     url: '/sponsorship',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
   },
   twitter: {
     card: 'summary',
     title: "Sponsorship | Back n' Body Hurts",
     description:
       "Sponsor Back n' Body Hurts and reach Toronto's engaged EDM community. View our Bronze, Silver, and Gold sponsorship packages.",
+    images: ['/logo.png'],
   },
 }
 

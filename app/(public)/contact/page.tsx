@@ -6,17 +6,20 @@ export const metadata: Metadata = {
   title: 'Contact',
   description:
     "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions — we'd love to hear from you.",
+  keywords: ['contact BnB Hurts', 'EDM podcast contact'],
   openGraph: {
     title: "Contact | Back n' Body Hurts",
     description:
       "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions.",
     url: '/contact',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
   },
   twitter: {
     card: 'summary',
     title: "Contact | Back n' Body Hurts",
     description:
       "Get in touch with the Back n' Body Hurts team. Send us your questions, feedback, or guest suggestions.",
+    images: ['/logo.png'],
   },
 }
 

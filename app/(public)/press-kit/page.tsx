@@ -6,17 +6,20 @@ export const metadata: Metadata = {
   title: 'Press Kit',
   description:
     "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
+  keywords: ['podcast press kit', 'EDM podcast media kit'],
   openGraph: {
     title: "Press Kit | Back n' Body Hurts",
     description:
       "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
     url: '/press-kit',
+    images: [{ url: '/logo.png', width: 1400, height: 1400, alt: "Back n' Body Hurts Podcast" }],
   },
   twitter: {
     card: 'summary',
     title: "Press Kit | Back n' Body Hurts",
     description:
       "Media resources and brand assets for Back n' Body Hurts Podcast. Download logos, cover art, host photos, and read our show overview.",
+    images: ['/logo.png'],
   },
 }
 
