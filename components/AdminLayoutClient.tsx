@@ -15,6 +15,7 @@ import {
   Trello,
   Users,
   CalendarDays,
+  Link2,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -41,6 +42,7 @@ const navGroups = [
     items: [
       { name: 'Content Management', path: '/admin/content', icon: FileText },
       { name: 'Hosts', path: '/admin/hosts', icon: Users },
+      { name: 'Affiliated Links', path: '/admin/affiliate-links', icon: Link2 },
       { name: 'Settings', path: '/admin/settings', icon: Settings },
     ],
   },

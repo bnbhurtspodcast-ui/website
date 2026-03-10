@@ -4,11 +4,12 @@ import { getHighlightedEpisode } from '@/lib/settings'
 import { HeroHero } from '@/components/HeroHero'
 import { StatsBar } from '@/components/StatsBar'
 import { EventGoingSection } from '@/components/EventGoingSection'
+import { AffiliateLinksSection } from '@/components/AffiliateLinksSection'
 import { SubscribeSection } from '@/components/SubscribeSection'
 import { FeaturedEpisodes } from '@/components/FeaturedEpisodes'
 import { HighlightedEpisode } from '@/components/HighlightedEpisode'
 import { createClient } from '@/lib/supabase/server'
-import type { CalendarEvent, Host } from '@/types'
+import type { CalendarEvent, Host, AffiliateLink } from '@/types'
 import type { EventWithHosts } from '@/components/EventGoingSection'
 
 export const revalidate = 3600 // 1 hour ISR
@@ -109,6 +110,13 @@ export default async function HomePage() {
     }
   }
 
+  // Fetch active, non-expired affiliate links (RLS policy filters on the DB side)
+  const { data: affiliateData } = await supabase
+    .from('affiliate_links')
+    .select('*')
+    .order('created_at', { ascending: false })
+  const affiliateLinks = (affiliateData as AffiliateLink[]) ?? []
+
   return (
     <div>
       <HeroHero />
@@ -116,6 +124,7 @@ export default async function HomePage() {
       <FeaturedEpisodes episodes={featuredEpisodes} />
       <StatsBar episodeCount={allEpisodes.length} />
       <EventGoingSection events={upcomingEvents} />
+      <AffiliateLinksSection links={affiliateLinks} />
       <SubscribeSection />
     </div>
   )

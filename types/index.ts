@@ -174,3 +174,21 @@ export interface SiteSetting {
   value: string | null
   updated_at: string
 }
+
+// ── affiliate_links ────────────────────────────────────────────────────────────
+
+export interface AffiliateLink {
+  id: string
+  name: string
+  description: string
+  image_url: string
+  type: 'link' | 'code'
+  value: string
+  tracking_url: string | null
+  terms: string | null
+  website_link: string | null
+  expires_at: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}

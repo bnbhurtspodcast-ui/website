@@ -186,6 +186,16 @@ This file needs rework, there has been feedback that the player is not centered 
 
 ----
 
-
 I need a password reset page, I am using supabase password reset link to rest.
 Use the guideline skill to help design the page
+
+
+----
+
+I would like to create a component here to show `highlightedEpisode` where it will be one video with 16:9 ratio, can be configured through the CMS on page `/admin/content` Make a separate tab here to change the view and have an input that will accept a youtube link. have a save button, and this needs to be remembered by the database so that we can retrieve it from the front end. 
+
+Have a preview video in the CMS as well so that we will know which video is being displayed.
+
+
+----
+
