@@ -10,7 +10,7 @@ import {
   parseISO,
 } from 'date-fns'
 
-import type { CalendarEvent } from '@/types'
+import type { CalendarEvent, SocialPost } from '@/types'
 
 // Returns the 35–42 day grid for a given month, Mon–Sun weeks
 export function buildCalendarGrid(year: number, month: number): Date[] {
@@ -34,6 +34,18 @@ export function groupEventsByDate(
     const key = event.event_date
     if (!acc[key]) acc[key] = []
     acc[key].push(event)
+    return acc
+  }, {})
+}
+
+// Groups social posts into a date-keyed map using scheduled_at
+export function groupSocialPostsByDate(
+  posts: SocialPost[]
+): Record<string, SocialPost[]> {
+  return posts.reduce<Record<string, SocialPost[]>>((acc, post) => {
+    const key = post.scheduled_at.slice(0, 10) // "YYYY-MM-DD"
+    if (!acc[key]) acc[key] = []
+    acc[key].push(post)
     return acc
   }, {})
 }

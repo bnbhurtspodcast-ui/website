@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import type { Task, KanbanColumn, CalendarEvent, AffiliateLink } from "@/types";
+import type { Task, KanbanColumn, CalendarEvent, AffiliateLink, SocialPost, SocialPostStatus, SocialPlatform, SocialPostType, PlatformSettings } from "@/types";
 import { sendDiscordNotification } from "@/lib/discord";
 
 export async function updateContactStatus(
@@ -506,4 +506,103 @@ export async function saveHighlightedEpisode(
 	revalidatePath("/");
 	revalidatePath("/admin/content");
 	return {};
+}
+
+// ── Social Posts ──────────────────────────────────────────────────────────────
+
+type SocialPostInsert = {
+	title?: string | null
+	description: string
+	post_type: SocialPostType
+	scheduled_at: string
+	status: SocialPostStatus
+	platforms: SocialPlatform[]
+	media_paths?: string[] | null
+	platform_settings: PlatformSettings
+}
+
+export async function createSocialPost(
+	data: SocialPostInsert,
+): Promise<{ id?: string; error?: string }> {
+	const supabase = await createClient();
+	const { data: row, error } = await supabase
+		.from("social_posts")
+		.insert(data)
+		.select("id")
+		.single();
+	if (error) return { error: error.message };
+	revalidatePath("/admin/social-media");
+	revalidatePath("/admin/calendar");
+	return { id: row.id };
+}
+
+export async function updateSocialPost(
+	id: string,
+	data: Partial<SocialPostInsert>,
+): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { error } = await supabase
+		.from("social_posts")
+		.update({ ...data, updated_at: new Date().toISOString() })
+		.eq("id", id);
+	if (error) return { error: error.message };
+	revalidatePath("/admin/social-media");
+	revalidatePath("/admin/calendar");
+	return {};
+}
+
+export async function deleteSocialPost(
+	id: string,
+): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { data: post } = await supabase
+		.from("social_posts")
+		.select("media_paths")
+		.eq("id", id)
+		.single();
+	if (post?.media_paths && post.media_paths.length > 0) {
+		await supabase.storage.from("social-media-uploads").remove(post.media_paths);
+	}
+	const { error } = await supabase.from("social_posts").delete().eq("id", id);
+	if (error) return { error: error.message };
+	revalidatePath("/admin/social-media");
+	revalidatePath("/admin/calendar");
+	return {};
+}
+
+export async function markPostAsPosted(
+	id: string,
+): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { data: post } = await supabase
+		.from("social_posts")
+		.select("media_paths")
+		.eq("id", id)
+		.single();
+	if (post?.media_paths && post.media_paths.length > 0) {
+		await supabase.storage.from("social-media-uploads").remove(post.media_paths);
+	}
+	const { error } = await supabase
+		.from("social_posts")
+		.update({ status: "posted", media_paths: null, updated_at: new Date().toISOString() })
+		.eq("id", id);
+	if (error) return { error: error.message };
+	revalidatePath("/admin/social-media");
+	revalidatePath("/admin/calendar");
+	return {};
+}
+
+export async function getSocialPostsForDateRange(
+	from: string,
+	to: string,
+): Promise<SocialPost[]> {
+	const supabase = await createClient();
+	const { data } = await supabase
+		.from("social_posts")
+		.select("*")
+		.gte("scheduled_at", from + "T00:00:00Z")
+		.lte("scheduled_at", to + "T23:59:59Z")
+		.in("status", ["scheduled", "posted"])
+		.order("scheduled_at", { ascending: true });
+	return (data as SocialPost[]) ?? [];
 }

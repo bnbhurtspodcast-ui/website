@@ -16,6 +16,7 @@ import {
   Users,
   CalendarDays,
   Link2,
+  Share2,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -27,6 +28,7 @@ const navGroups = [
       { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Task Board', path: '/admin/tasks', icon: Trello },
       { name: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
+      { name: 'Social Media', path: '/admin/social-media', icon: Share2 },
     ],
   },
   {

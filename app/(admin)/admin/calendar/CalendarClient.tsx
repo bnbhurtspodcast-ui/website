@@ -6,18 +6,20 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { format, addMonths, subMonths } from 'date-fns'
 import { CalendarGrid } from '@/app/(admin)/admin/calendar/CalendarGrid'
 import { EventDetailModal } from '@/app/(admin)/admin/calendar/EventDetailModal'
-import { groupEventsByDate } from '@/app/(admin)/admin/calendar/calendarUtils'
-import type { CalendarEvent } from '@/types'
+import { groupEventsByDate, groupSocialPostsByDate } from '@/app/(admin)/admin/calendar/calendarUtils'
+import type { CalendarEvent, SocialPost } from '@/types'
 
 const DAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export function CalendarClient({
   events,
+  socialPosts,
   year,
   month,
   hosts,
 }: {
   events: CalendarEvent[]
+  socialPosts: SocialPost[]
   year: number
   month: number
   hosts: { id: string; name: string }[]
@@ -27,6 +29,7 @@ export function CalendarClient({
 
   const currentDate = new Date(year, month, 1)
   const eventsByDate = groupEventsByDate(events)
+  const socialPostsByDate = groupSocialPostsByDate(socialPosts)
 
   function navigate(delta: 1 | -1) {
     const next = delta === 1 ? addMonths(currentDate, 1) : subMonths(currentDate, 1)
@@ -95,6 +98,7 @@ export function CalendarClient({
               year={year}
               month={month}
               eventsByDate={eventsByDate}
+              socialPostsByDate={socialPostsByDate}
               onEventClick={setSelectedEvent}
             />
           </div>
@@ -114,6 +118,10 @@ export function CalendarClient({
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-sm bg-blue-500/30 border border-blue-500/50" />
           Livestream
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-sm bg-red-500/30 border border-red-500/50" />
+          Social Post
         </span>
       </div>
 

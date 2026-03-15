@@ -3,19 +3,22 @@
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { EventChip } from '@/app/(admin)/admin/calendar/EventChip'
-import type { CalendarEvent } from '@/types'
+import { SocialPostChip } from '@/app/(admin)/admin/calendar/SocialPostChip'
+import type { CalendarEvent, SocialPost } from '@/types'
 
 const MAX_VISIBLE = 3
 
 export function CalendarCell({
   day,
   events,
+  socialPosts,
   isCurrentMonth,
   isToday,
   onEventClick,
 }: {
   day: Date
   events: CalendarEvent[]
+  socialPosts: SocialPost[]
   isCurrentMonth: boolean
   isToday: boolean
   onEventClick: (event: CalendarEvent) => void
@@ -47,6 +50,10 @@ export function CalendarCell({
 
       {/* Event chips */}
       <div className="flex flex-col gap-0.5 flex-1">
+        {/* Social post chips — shown first in red */}
+        {socialPosts.map((post) => (
+          <SocialPostChip key={post.id} post={post} />
+        ))}
         {displayed.map((event) => (
           <EventChip
             key={event.id}

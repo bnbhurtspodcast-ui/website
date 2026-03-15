@@ -221,10 +221,11 @@ export function AffiliateLinksClient({ links: initialLinks }: { links: Affiliate
                             onError={(e) => {
                               const el = e.currentTarget
                               el.style.display = 'none'
-                              el.nextElementSibling?.removeAttribute('hidden')
+                              const next = el.nextElementSibling as HTMLElement | null
+                              if (next) next.style.display = ''
                             }}
                           />
-                          <Tag className="size-4 text-white/20" hidden />
+                          <Tag className="size-4 text-white/20" style={{ display: 'none' }} />
                         </div>
                       </td>
 

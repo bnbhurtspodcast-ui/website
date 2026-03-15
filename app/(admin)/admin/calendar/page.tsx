@@ -8,7 +8,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { CalendarClient } from '@/app/(admin)/admin/calendar/CalendarClient'
 import { getHosts } from '@/app/(admin)/admin/actions'
-import type { CalendarEvent } from '@/types'
+import type { CalendarEvent, SocialPost } from '@/types'
 
 export const revalidate = 0
 
@@ -28,20 +28,30 @@ export default async function CalendarPage({
   const gridTo = endOfWeek(monthEnd, { weekStartsOn: 1 })
 
   const supabase = await createClient()
-  const [{ data }, hosts] = await Promise.all([
+  const gridFromStr = format(gridFrom, 'yyyy-MM-dd')
+  const gridToStr = format(gridTo, 'yyyy-MM-dd')
+  const [{ data }, { data: socialPostsData }, hosts] = await Promise.all([
     supabase
       .from('events')
       .select('*')
-      .gte('event_date', format(gridFrom, 'yyyy-MM-dd'))
-      .lte('event_date', format(gridTo, 'yyyy-MM-dd'))
+      .gte('event_date', gridFromStr)
+      .lte('event_date', gridToStr)
       .order('event_date', { ascending: true })
       .order('start_time', { ascending: true, nullsFirst: false }),
+    supabase
+      .from('social_posts')
+      .select('*')
+      .gte('scheduled_at', gridFromStr + 'T00:00:00Z')
+      .lte('scheduled_at', gridToStr + 'T23:59:59Z')
+      .in('status', ['scheduled', 'posted'])
+      .order('scheduled_at', { ascending: true }),
     getHosts(),
   ])
 
   return (
     <CalendarClient
       events={(data as CalendarEvent[]) ?? []}
+      socialPosts={(socialPostsData as SocialPost[]) ?? []}
       year={year}
       month={month}
       hosts={hosts}

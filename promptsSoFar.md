@@ -199,3 +199,32 @@ Have a preview video in the CMS as well so that we will know which video is bein
 
 ----
 
+On the Admin left list add a section under management to be Affiliated links. We will need to extend the database to accept.
+
+So for the inputs of the affiliated links will require (mandatory unless explicit instruction)
+- Name
+- Description
+- Image
+- Type [link or code]
+- Input for said type
+- Expiration date (optional)
+
+On the front end side, place a new section if theres any affiliated links, use front end design skills to create a component if theres any affiliated link to display, in a grid form. Place said component inbetween EventGoingSection and SubscribeSection
+
+
+----
+
+
+So far we are struggling with trying to keep up social media posting that we have, so under workspace section, we would like to create another section to post social media. label as `Social Media`, The social media platforms I would like are Youtube, Instagram, and Tiktok.
+
+There are a few things I would like to achieve with these proposition:
+- I would like to add in description, video or photo or multi post
+- Ability to schedule, and reflect on the calendar with red bg for nodes as the first entry of the array
+- It needs to be a step by step solution, from choosing type, to uploading, to filling up post settings
+- If there are different configurations for each of the platform I would like to have a way to fill them up individually
+- Set which platform to post but by default would be all three
+- Once we post, we will then delete the uploaded picture/video as it will take up space but save the description content in history
+
+These are the things I can think off right off my head we will add on as we go along
+
+

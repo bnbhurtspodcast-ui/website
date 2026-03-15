@@ -192,3 +192,44 @@ export interface AffiliateLink {
   created_at: string
   updated_at: string
 }
+
+// ── social_posts ───────────────────────────────────────────────────────────────
+
+export type SocialPostType = 'video' | 'photo' | 'multi'
+export type SocialPostStatus = 'draft' | 'scheduled' | 'posted' | 'failed'
+export type SocialPlatform = 'youtube' | 'instagram' | 'tiktok'
+
+export interface YouTubeSettings {
+  visibility: 'public' | 'unlisted' | 'private'
+}
+
+export interface InstagramSettings {
+  hashtags: string       // e.g. "#edm #rave"
+  location_tag: string
+}
+
+export interface TikTokSettings {
+  privacy: 'public' | 'friends' | 'private'
+  allow_duet: boolean
+  allow_stitch: boolean
+}
+
+export interface PlatformSettings {
+  youtube?: YouTubeSettings
+  instagram?: InstagramSettings
+  tiktok?: TikTokSettings
+}
+
+export interface SocialPost {
+  id: string
+  title: string | null
+  description: string
+  post_type: SocialPostType
+  scheduled_at: string          // ISO 8601 timestamptz
+  status: SocialPostStatus
+  platforms: SocialPlatform[]
+  media_paths: string[] | null  // null after posting (files deleted from storage)
+  platform_settings: PlatformSettings
+  created_at: string
+  updated_at: string
+}
