@@ -228,3 +228,16 @@ There are a few things I would like to achieve with these proposition:
 These are the things I can think off right off my head we will add on as we go along
 
 
+----
+
+I would like to create a terms and conditions page, and also a privacy policy page. Make it standard that will be compliant with meta and tiktok for content posting.
+
+Users are not allowed to create an account with our website as they are only for internal users which we will manually create account. Once we have a shop up, then we will allow users to create account and delete them.
+
+Details and content will not be saved as we are not managing social media content for other people but our own podcast content.
+
+
+----
+
+
+So for the taskboard, it is very robust. I would like it to be a little bit real time. so when users are logged in to view this task board. when there is update on one user, it will be reflected for other users

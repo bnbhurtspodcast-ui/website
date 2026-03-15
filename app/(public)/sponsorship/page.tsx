@@ -50,6 +50,7 @@ export default async function SponsorshipPage({
   searchParams: Promise<{ success?: string; error?: string }>
 }) {
   const { success, error } = await searchParams
+  const formToken = Buffer.from(Date.now().toString()).toString("base64")
 
   return (
     <div className="py-12">
@@ -163,6 +164,11 @@ export default async function SponsorshipPage({
             Request a Sponsorship Proposal
           </h2>
           <form action={submitSponsorshipInquiry} className="space-y-6">
+            {/* Spam protection: honeypot + time token */}
+            <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none', height: 0, overflow: 'hidden' }}>
+              <input type="text" name="website_url" tabIndex={-1} autoComplete="off" />
+            </div>
+            <input type="hidden" name="form_token" value={formToken} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="companyName" className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.75)' }}>Company Name *</label>

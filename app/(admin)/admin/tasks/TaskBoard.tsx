@@ -4,10 +4,15 @@ import { useState, useTransition, useEffect, useRef } from 'react'
 import { Settings } from 'lucide-react'
 import type { Task, KanbanColumn } from '@/types'
 import { updateTaskColumn, updateTask, createTask, deleteTask, getHosts } from '@/app/(admin)/admin/actions'
+import { createClient } from '@/lib/supabase/client'
 import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn'
 import { TaskDetailModal } from './TaskDetailModal'
 import { AddTaskDrawer, type AddForm, emptyForm } from './AddTaskForm'
 import { ColumnManagerSheet } from './ColumnManagerSheet'
+
+function isUUID(str: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str)
+}
 
 export function TaskBoard({
   tasks: initialTasks,
@@ -29,9 +34,71 @@ export function TaskBoard({
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const pointerXRef = useRef(0)
   const rafRef = useRef<number | null>(null)
+  const pendingMutations = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     getHosts().then((data) => setUsers(data))
+  }, [])
+
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel('taskboard-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tasks' }, (payload) => {
+        const newTask = payload.new as Task
+        setTasks((prev) => {
+          if (prev.some((t) => t.id === newTask.id)) return prev
+          const tempIdx = prev.findLastIndex((t) => t.column_id === newTask.column_id && !isUUID(t.id))
+          if (tempIdx !== -1) {
+            const updated = [...prev]
+            updated[tempIdx] = newTask
+            return updated
+          }
+          return [...prev, newTask]
+        })
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'tasks' }, (payload) => {
+        const updated = payload.new as Task
+        if (pendingMutations.current.has(updated.id)) {
+          pendingMutations.current.delete(updated.id)
+          return
+        }
+        if (updated.archived_at) {
+          setTasks((prev) => prev.filter((t) => t.id !== updated.id))
+          return
+        }
+        setTasks((prev) => prev.map((t) => t.id === updated.id ? updated : t))
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'tasks' }, (payload) => {
+        const deletedId = (payload.old as { id: string }).id
+        if (pendingMutations.current.has(deletedId)) {
+          pendingMutations.current.delete(deletedId)
+          return
+        }
+        setTasks((prev) => prev.filter((t) => t.id !== deletedId))
+        setSelectedTask((sel) => sel?.id === deletedId ? null : sel)
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'kanban_columns' }, (payload) => {
+        const col = payload.new as KanbanColumn
+        setColumns((prev) => {
+          if (prev.some((c) => c.id === col.id)) return prev
+          return [...prev, col].sort((a, b) => a.sort_order - b.sort_order)
+        })
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'kanban_columns' }, (payload) => {
+        const col = payload.new as KanbanColumn
+        setColumns((prev) =>
+          prev.map((c) => c.id === col.id ? col : c).sort((a, b) => a.sort_order - b.sort_order)
+        )
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'kanban_columns' }, (payload) => {
+        const deletedId = (payload.old as { id: string }).id
+        setColumns((prev) => prev.filter((c) => c.id !== deletedId))
+        setTasks((prev) => prev.filter((t) => t.column_id !== deletedId))
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   const tasksForColumn = (colId: string) => tasks.filter((t) => t.column_id === colId)
@@ -76,11 +143,13 @@ export function TaskBoard({
     stopAutoScroll()
     const taskId = e.dataTransfer.getData('taskId')
     setTasks((prev) => prev.map((t) => t.id === taskId ? { ...t, column_id: colId } : t))
+    pendingMutations.current.add(taskId)
     startTransition(() => updateTaskColumn(taskId, colId))
   }
 
   const handleMoveTask = (taskId: string, colId: string) => {
     setTasks((prev) => prev.map((t) => t.id === taskId ? { ...t, column_id: colId } : t))
+    pendingMutations.current.add(taskId)
     startTransition(() => updateTaskColumn(taskId, colId))
   }
 
@@ -129,6 +198,7 @@ export function TaskBoard({
   const handleDelete = (taskId: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== taskId))
     if (selectedTask?.id === taskId) setSelectedTask(null)
+    pendingMutations.current.add(taskId)
     startTransition(() => deleteTask(taskId))
   }
 
@@ -138,6 +208,7 @@ export function TaskBoard({
   const handleModalSave = (id: string, data: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => t.id === id ? { ...t, ...data } : t))
     setSelectedTask(null)
+    pendingMutations.current.add(id)
     startTransition(() => updateTask(id, data))
   }
 
