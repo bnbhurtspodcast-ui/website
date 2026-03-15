@@ -168,10 +168,30 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div
+          className="pt-8 border-t flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+          style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+        >
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
             &copy; 2026 Back n&apos; Body Hurts Podcast. All rights reserved.
           </p>
+          <div className="flex gap-4 text-xs">
+            {[
+              { href: '/terms', label: 'Terms & Conditions' },
+              { href: '/privacy', label: 'Privacy Policy' },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="transition-colors"
+                style={{ color: 'rgba(255,255,255,0.35)' }}
+                onMouseEnter={(e) => { ;(e.currentTarget as HTMLElement).style.color = '#FAA21B' }}
+                onMouseLeave={(e) => { ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.35)' }}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
