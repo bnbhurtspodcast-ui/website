@@ -55,6 +55,7 @@ export function KanbanColumn({
             key={task.id}
             task={task}
             columns={columns}
+            isDoneColumn={column.name === 'Done'}
             onDelete={onDeleteTask}
             onClick={onTaskClick}
             onMoveToColumn={onMoveTask}

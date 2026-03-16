@@ -87,6 +87,7 @@ export interface Task {
   created_at: string
   trello_card_id?: string
   archived_at?: string | null
+  done_at?: string | null       // set when task enters Done column; cleared when moved out
   event_id?: string | null      // FK to events.id — set when task is created from a calendar event
 }
 

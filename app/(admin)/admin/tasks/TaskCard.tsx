@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Calendar, Trash2, Tag, MoreHorizontal } from 'lucide-react'
+import { Calendar, Trash2, Tag, MoreHorizontal, Clock } from 'lucide-react'
 import type { Task, KanbanColumn } from '@/types'
 import { PRIORITY_STRIPE, COLUMN_TOP_COLOR_MAP } from '@/app/(admin)/admin/tasks/constants'
 import { getInitials, getAvatarColor, formatDueDate } from '@/app/(admin)/admin/tasks/taskUtils'
@@ -16,12 +16,13 @@ import {
 type TaskCardProps = {
   task: Task
   columns: KanbanColumn[]
+  isDoneColumn?: boolean
   onDelete: (id: string) => void
   onClick: (task: Task) => void
   onMoveToColumn: (taskId: string, colId: string) => void
 }
 
-export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: TaskCardProps) {
+export function TaskCard({ task, columns, isDoneColumn, onDelete, onClick, onMoveToColumn }: TaskCardProps) {
   const isDragging = useRef(false)
   const dropdownOpen = useRef(false)
   const [dragging, setDragging] = useState(false)
@@ -46,6 +47,17 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
   const dueDate = task.due_date ? formatDueDate(task.due_date) : null
   const priorityStripe = PRIORITY_STRIPE[task.priority] ?? 'bg-gray-500'
   const otherColumns = columns.filter((c) => c.id !== task.column_id)
+
+  const expiryLabel = (() => {
+    if (!isDoneColumn || !task.done_at) return null
+    const expiry = new Date(task.done_at)
+    expiry.setDate(expiry.getDate() + 7)
+    const now = new Date()
+    const daysLeft = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    if (daysLeft <= 0) return { label: 'Expires today', urgent: true }
+    if (daysLeft === 1) return { label: 'Expires tomorrow', urgent: true }
+    return { label: `Expires in ${daysLeft}d`, urgent: daysLeft <= 2 }
+  })()
 
   return (
     <div
@@ -109,6 +121,14 @@ export function TaskCard({ task, columns, onDelete, onClick, onMoveToColumn }: T
       {/* Description */}
       {task.description && (
         <p className="text-xs text-white/40 mb-2 line-clamp-1">{task.description}</p>
+      )}
+
+      {/* Expiry badge — shown only in Done column */}
+      {expiryLabel && (
+        <div className={`flex items-center gap-1 text-[10px] mb-2 ${expiryLabel.urgent ? 'text-red-400' : 'text-white/40'}`}>
+          <Clock className="h-2.5 w-2.5 flex-shrink-0" />
+          <span>{expiryLabel.label}</span>
+        </div>
       )}
 
       {/* Tags */}

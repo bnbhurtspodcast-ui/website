@@ -117,7 +117,11 @@ export async function updateTaskColumn(id: string, columnId: string) {
 		supabase.from("tasks").select("title").eq("id", id).single(),
 		supabase.from("kanban_columns").select("name").eq("id", columnId).single(),
 	]);
-	await supabase.from("tasks").update({ column_id: columnId }).eq("id", id);
+	const isDone = column?.name === "Done";
+	await supabase
+		.from("tasks")
+		.update({ column_id: columnId, done_at: isDone ? new Date().toISOString() : null })
+		.eq("id", id);
 	revalidatePath("/admin/tasks");
 	await sendDiscordNotification(
 		`🔀 **Task Moved**\n**Task:** ${task?.title ?? id}\n**To column:** ${column?.name ?? columnId}\n`,
@@ -224,12 +228,13 @@ export async function archiveDoneTasks(): Promise<{ archivedCount: number }> {
 		.single();
 	if (!doneColumn) return { archivedCount: 0 };
 	const cutoff = new Date();
-	cutoff.setDate(cutoff.getDate() - 30);
+	cutoff.setDate(cutoff.getDate() - 7);
 	const { data: archived } = await supabase
 		.from("tasks")
 		.update({ archived_at: new Date().toISOString() })
 		.eq("column_id", doneColumn.id)
-		.lt("created_at", cutoff.toISOString())
+		.lt("done_at", cutoff.toISOString())
+		.not("done_at", "is", null)
 		.is("archived_at", null)
 		.select("id");
 	revalidatePath("/admin/tasks");
