@@ -3,8 +3,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import type { Task, KanbanColumn, CalendarEvent, AffiliateLink, SocialPost, SocialPostStatus, SocialPlatform, SocialPostType, PlatformSettings } from "@/types";
+import { cookies } from "next/headers";
+import type { Task, KanbanColumn, CalendarEvent, AffiliateLink, SocialPost, SocialPostStatus, SocialPlatform, SocialPostType, PlatformSettings, SocialToken, OAuthPlatform } from "@/types";
 import { sendDiscordNotification } from "@/lib/discord";
+import { buildYouTubeAuthUrl, buildTikTokAuthUrl, buildMetaAuthUrl, generateState, generatePKCE } from "@/lib/oauth";
 
 export async function updateContactStatus(
 	id: string,
@@ -610,4 +612,54 @@ export async function getSocialPostsForDateRange(
 		.in("status", ["scheduled", "posted"])
 		.order("scheduled_at", { ascending: true });
 	return (data as SocialPost[]) ?? [];
+}
+
+// ── Social Tokens ──────────────────────────────────────────────────────────────
+
+export async function getSocialTokens(): Promise<SocialToken[]> {
+	const supabase = await createClient();
+	const { data } = await supabase.from("social_tokens").select("*").order("platform");
+	return (data as SocialToken[]) ?? [];
+}
+
+export async function disconnectSocialPlatform(platform: OAuthPlatform): Promise<{ error?: string }> {
+	const supabase = await createClient();
+	const { error } = await supabase.from("social_tokens").delete().eq("platform", platform);
+	if (error) return { error: error.message };
+	revalidatePath("/admin/social-media");
+	return {};
+}
+
+const OAUTH_COOKIE_OPTIONS = {
+	httpOnly: true,
+	secure: process.env.NODE_ENV === "production",
+	sameSite: "lax" as const,
+	maxAge: 300, // 5 minutes
+	path: "/",
+};
+
+export async function getYouTubeOAuthUrl(returnTo: "admin" | "demo" = "admin"): Promise<{ url: string }> {
+	const state = generateState();
+	const cookieStore = await cookies();
+	cookieStore.set("oauth_state", state, OAUTH_COOKIE_OPTIONS);
+	cookieStore.set("oauth_return", returnTo, OAUTH_COOKIE_OPTIONS);
+	return { url: buildYouTubeAuthUrl(state) };
+}
+
+export async function getTikTokOAuthUrl(returnTo: "admin" | "demo" = "admin"): Promise<{ url: string }> {
+	const state = generateState();
+	const { verifier, challenge } = generatePKCE();
+	const cookieStore = await cookies();
+	cookieStore.set("oauth_state", state, OAUTH_COOKIE_OPTIONS);
+	cookieStore.set("oauth_code_verifier", verifier, OAUTH_COOKIE_OPTIONS);
+	cookieStore.set("oauth_return", returnTo, OAUTH_COOKIE_OPTIONS);
+	return { url: buildTikTokAuthUrl(state, challenge) };
+}
+
+export async function getMetaOAuthUrl(returnTo: "admin" | "demo" = "admin"): Promise<{ url: string }> {
+	const state = generateState();
+	const cookieStore = await cookies();
+	cookieStore.set("oauth_state", state, OAUTH_COOKIE_OPTIONS);
+	cookieStore.set("oauth_return", returnTo, OAUTH_COOKIE_OPTIONS);
+	return { url: buildMetaAuthUrl(state) };
 }

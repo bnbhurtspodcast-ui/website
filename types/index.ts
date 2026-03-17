@@ -234,3 +234,21 @@ export interface SocialPost {
   created_at: string
   updated_at: string
 }
+
+// ── social_tokens ───────────────────────────────────────────────────────────────
+
+export type OAuthPlatform = 'youtube' | 'tiktok' | 'instagram' | 'threads'
+
+export interface SocialToken {
+  id: string
+  platform: OAuthPlatform
+  access_token: string
+  refresh_token: string | null
+  expires_at: string | null
+  platform_user_id: string | null
+  platform_username: string | null
+  platform_avatar_url: string | null
+  scopes: string[] | null
+  created_at: string
+  updated_at: string
+}

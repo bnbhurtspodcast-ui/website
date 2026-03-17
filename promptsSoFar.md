@@ -241,3 +241,24 @@ Details and content will not be saved as we are not managing social media conten
 
 
 So for the taskboard, it is very robust. I would like it to be a little bit real time. so when users are logged in to view this task board. when there is update on one user, it will be reflected for other users
+
+
+----
+
+So for submissions, we have started receiving a lot of spam. Is there a way to prevent it?
+
+
+----
+
+In the Kanban Board, for column 'Done' has a soft delete after 1 week of placing in the done column.
+
+- Users are allowed to bring content back out from the done column to any other column
+- When users place task into done, mark it with a date that is 1 week expiry to do a soft delete
+- Mark all current done to have a expiry date of today and then remove them after 1 week
+- Show the contents inside done where it is not soft deleted
+
+----
+
+We would like to do Show reviews for the shows that we have attended in the event sheet.
+
+So for the past shows
