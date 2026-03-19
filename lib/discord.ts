@@ -1,8 +1,8 @@
 export async function sendDiscordNotification(content: string, type: string) {
 	const webhookUrl: Record<string, string | undefined> = {
-		task: process.env.DISCORD_INQUIRIES_WEBHOOK,
+		task: process.env.DISCORD_TASK_WEBHOOK,
 		inquiries: process.env.DISCORD_INQUIRIES_WEBHOOK,
-		shop: process.env.DISCORD_INQUIRIES_WEBHOOK,
+		shop: process.env.DISCORD_SHOP_WEBHOOK,
 	};
 
 	if (!webhookUrl[type]) return;
