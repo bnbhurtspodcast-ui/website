@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import { Youtube, Instagram, Loader2, CheckCircle2, XCircle, LinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import type { SocialToken, OAuthPlatform } from '@/types'
-import { getYouTubeOAuthUrl, getTikTokOAuthUrl, getMetaOAuthUrl } from '@/app/(admin)/admin/actions'
+import { getYouTubeOAuthUrl, getTikTokOAuthUrl, getMetaOAuthUrl, getThreadsOAuthUrl } from '@/app/(admin)/admin/actions'
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 
@@ -75,9 +75,9 @@ const PLATFORMS: DemoPlatform[] = [
     color: 'text-white/80',
     bgColor: 'bg-white/4',
     borderColor: 'border-white/12',
-    product: 'Threads API · Facebook Login',
+    product: 'Threads API',
     scopes: ['threads_basic', 'threads_content_publish'],
-    getUrl: () => getMetaOAuthUrl('demo'),
+    getUrl: () => getThreadsOAuthUrl('demo'),
   },
 ]
 
@@ -212,7 +212,7 @@ export function SocialDemoClient({
             <CheckCircle2 className="size-5 flex-shrink-0" />
             <span>
               {connected === 'meta'
-                ? 'Instagram & Threads connected successfully — token stored and verified.'
+                ? 'Instagram connected successfully — token stored and verified.'
                 : `${connected.charAt(0).toUpperCase() + connected.slice(1)} connected successfully — token stored and verified.`}
             </span>
           </div>

@@ -8,6 +8,7 @@ import {
   getYouTubeOAuthUrl,
   getTikTokOAuthUrl,
   getMetaOAuthUrl,
+  getThreadsOAuthUrl,
   disconnectSocialPlatform,
 } from '@/app/(admin)/admin/actions'
 import { PostWizard } from '@/app/(admin)/admin/social-media/PostWizard'
@@ -75,7 +76,7 @@ const PLATFORMS: PlatformConfig[] = [
     color: 'text-white/70',
     bgColor: 'bg-white/4',
     borderColor: 'border-white/10',
-    getUrl: getMetaOAuthUrl,
+    getUrl: getThreadsOAuthUrl,
   },
 ]
 
@@ -227,7 +228,7 @@ export function SocialMediaClient({
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/25 text-sm text-green-300">
           <CheckCircle2 className="size-4 flex-shrink-0" />
           {connected === 'meta'
-            ? 'Instagram & Threads connected successfully.'
+            ? 'Instagram connected successfully.'
             : `${connected.charAt(0).toUpperCase() + connected.slice(1)} connected successfully.`}
         </div>
       )}

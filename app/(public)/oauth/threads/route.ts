@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { exchangeMetaCode } from '@/lib/oauth'
+import { exchangeThreadsCode } from '@/lib/oauth'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl
@@ -29,20 +29,18 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const token = await exchangeMetaCode(code)
+    const token = await exchangeThreadsCode(code)
     const supabase = createAdminClient()
-
-    // Upsert only instagram — Threads has its own separate app and OAuth flow
     await supabase.from('social_tokens').upsert(
       {
-        platform: 'instagram',
+        platform: 'threads',
         access_token: token.access_token,
         refresh_token: null,
         expires_at: token.expires_at,
         platform_user_id: token.user_id,
         platform_username: token.username,
         platform_avatar_url: token.avatar_url,
-        scopes: ['instagram_basic', 'instagram_content_publish', 'pages_read_engagement'],
+        scopes: token.scopes,
         raw_token_response: token.raw as Record<string, unknown>,
         updated_at: new Date().toISOString(),
       },
@@ -50,13 +48,13 @@ export async function GET(request: NextRequest) {
     )
 
     const response = NextResponse.redirect(
-      new URL(`${redirectBase}?connected=meta`, request.url)
+      new URL(`${redirectBase}?connected=threads`, request.url)
     )
     response.cookies.delete('oauth_state')
     response.cookies.delete('oauth_return')
     return response
   } catch (err) {
-    console.error('Meta OAuth error:', err)
+    console.error('Threads OAuth error:', err)
     return NextResponse.redirect(
       new URL(`${redirectBase}?oauth_error=token_exchange_failed`, request.url)
     )

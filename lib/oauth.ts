@@ -229,3 +229,75 @@ export async function exchangeMetaCode(code: string): Promise<{
 
   return { access_token, expires_at, username, avatar_url, user_id, raw }
 }
+
+// ── Threads (separate app from Meta) ──────────────────────────────────────────
+
+export function buildThreadsAuthUrl(state: string): string {
+  const params = new URLSearchParams({
+    client_id: process.env.THREADS_APP_ID!,
+    redirect_uri: `${appUrl()}/oauth/threads`,
+    scope: 'threads_basic,threads_content_publish',
+    response_type: 'code',
+    state,
+  })
+  return `https://threads.net/oauth/authorize?${params}`
+}
+
+export async function exchangeThreadsCode(code: string): Promise<{
+  access_token: string
+  expires_at: string | null
+  username: string | null
+  avatar_url: string | null
+  user_id: string | null
+  scopes: string[]
+  raw: unknown
+}> {
+  // Step 1: short-lived token
+  const shortRes = await fetch('https://graph.threads.net/oauth/access_token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: process.env.THREADS_APP_ID!,
+      client_secret: process.env.THREADS_APP_SECRET!,
+      redirect_uri: `${appUrl()}/oauth/threads`,
+      code,
+      grant_type: 'authorization_code',
+    }),
+  })
+  const shortRaw = await shortRes.json()
+  if (!shortRes.ok) throw new Error(`Threads short-lived token failed: ${JSON.stringify(shortRaw)}`)
+
+  // Step 2: long-lived token (60 days)
+  const longParams = new URLSearchParams({
+    grant_type: 'th_exchange_token',
+    client_secret: process.env.THREADS_APP_SECRET!,
+    access_token: shortRaw.access_token,
+  })
+  const longRes = await fetch(
+    `https://graph.threads.net/access_token?${longParams}`
+  )
+  const raw = await longRes.json()
+  if (!longRes.ok) throw new Error(`Threads long-lived token failed: ${JSON.stringify(raw)}`)
+
+  const { access_token, expires_in } = raw
+  const expires_at = expires_in
+    ? new Date(Date.now() + expires_in * 1000).toISOString()
+    : null
+
+  // Fetch profile
+  let username: string | null = null
+  let avatar_url: string | null = null
+  let user_id: string | null = null
+  const scopes = ['threads_basic', 'threads_content_publish']
+  try {
+    const profileRes = await fetch(
+      `https://graph.threads.net/v1.0/me?fields=id,username,threads_profile_picture_url&access_token=${access_token}`
+    )
+    const profile = await profileRes.json()
+    user_id = profile?.id ?? null
+    username = profile?.username ?? null
+    avatar_url = profile?.threads_profile_picture_url ?? null
+  } catch { /* non-fatal */ }
+
+  return { access_token, expires_at, username, avatar_url, user_id, scopes, raw }
+}

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import type { Task, KanbanColumn, CalendarEvent, AffiliateLink, SocialPost, SocialPostStatus, SocialPlatform, SocialPostType, PlatformSettings, SocialToken, OAuthPlatform } from "@/types";
 import { sendDiscordNotification } from "@/lib/discord";
-import { buildYouTubeAuthUrl, buildTikTokAuthUrl, buildMetaAuthUrl, generateState, generatePKCE } from "@/lib/oauth";
+import { buildYouTubeAuthUrl, buildTikTokAuthUrl, buildMetaAuthUrl, buildThreadsAuthUrl, generateState, generatePKCE } from "@/lib/oauth";
 
 export async function updateContactStatus(
 	id: string,
@@ -662,4 +662,12 @@ export async function getMetaOAuthUrl(returnTo: "admin" | "demo" = "admin"): Pro
 	cookieStore.set("oauth_state", state, OAUTH_COOKIE_OPTIONS);
 	cookieStore.set("oauth_return", returnTo, OAUTH_COOKIE_OPTIONS);
 	return { url: buildMetaAuthUrl(state) };
+}
+
+export async function getThreadsOAuthUrl(returnTo: "admin" | "demo" = "admin"): Promise<{ url: string }> {
+	const state = generateState();
+	const cookieStore = await cookies();
+	cookieStore.set("oauth_state", state, OAUTH_COOKIE_OPTIONS);
+	cookieStore.set("oauth_return", returnTo, OAUTH_COOKIE_OPTIONS);
+	return { url: buildThreadsAuthUrl(state) };
 }
