@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protect all /admin/* routes except public auth pages
-  if (!user && pathname.startsWith('/admin') && pathname !== '/admin/signin' && pathname !== '/admin/reset-password') {
+  if (!user && pathname.startsWith('/admin') && pathname !== '/admin/signin' && pathname !== '/admin/reset-password' && pathname !== '/admin/forgot-password') {
     return NextResponse.redirect(new URL('/admin/signin', request.url))
   }
 

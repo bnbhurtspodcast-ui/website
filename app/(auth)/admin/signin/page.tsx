@@ -2,7 +2,8 @@
 
 import { Lock, Mail } from 'lucide-react'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function SignInPage() {
@@ -11,6 +12,8 @@ export default function SignInPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const invalidLink = searchParams.get('error') === 'invalid_reset_link'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,11 +38,16 @@ export default function SignInPage() {
         <div className="text-center mb-8">
           <img src="/logo.png" alt="Back n' Body Hurts" className="w-24 h-24 mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-white mb-2">Admin Sign In</h1>
-          {/* <p className="text-[#FAA21B]">Access your dashboard</p> */}
         </div>
 
         {/* Sign In Form */}
         <div className="bg-white rounded-2xl p-8 shadow-xl">
+          {invalidLink && (
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg text-sm">
+              That reset link is invalid or expired. Request a new one below.
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
               {error}
@@ -66,9 +74,17 @@ export default function SignInPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#112B4F] mb-2">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-[#112B4F]">
+                  Password
+                </label>
+                <Link
+                  href="/admin/forgot-password"
+                  className="text-sm text-[#FAA21B] hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input

@@ -227,6 +227,32 @@ There are a few things I would like to achieve with these proposition:
 
 These are the things I can think off right off my head we will add on as we go along
 
+----
+
+Since we want to post from our webapp, we need to create a demo login system to showcase the functionality and for them to approve, we have locked it down with youtube but for Tiktok and Instagram and Threads. 
+
+Tiktok request a demo to be approved:
+For example, it should demonstrate how you use TikTok for Developers' capabilities, such as Login Kit, Share Kit, Display API, Content Posting API, and the relevant scopes.
+If your app has not been approved before, you are required to use a sandbox environment on the Developer Portal to demonstrate the integration.
+The demo video should showcase the website or app where the features will actually be integrated.
+All selected products and scopes must be clearly demonstrated in the video. If you don't need certain products or scopes, make sure to remove them before review. Otherwise, it will delay the review result.
+The video should clearly show the user interface and user interactions.
+If you intend to integrate with a web app, make sure the domain of the website shown in the demo video matches the website URL you provide.
+If you intend to integrate with a mobile app, the demo video should start by showing the app being opened.
+
+Facebook requests a demo:
+Provide instructions for accessing the app so we may complete our review.
+Explain how to navigate to the app, and provide instructions for testing.
+
+In your response, please include confirmation of any use of Meta APIs or integrations pertaining to Facebook Login. If you are no longer using Facebook Login please tell us why and share general instructions for testing. We may reach out to you for more information.
+
+Meta APIs refer to endpoints such as email, public profile, user permissions (user_friends, user_gender, user_birthday, etc). For some apps, this is called advanced access.
+
+
+I have placed the callback url to be `/admin/social-media/{type}-redirect` where type can be `youtube` `tiktok` and `meta` on their respective platforms
+
+
+
 
 ----
 
@@ -262,3 +288,6 @@ In the Kanban Board, for column 'Done' has a soft delete after 1 week of placing
 We would like to do Show reviews for the shows that we have attended in the event sheet.
 
 So for the past shows
+
+
+-----
