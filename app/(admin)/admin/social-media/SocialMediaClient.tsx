@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { Youtube, Instagram, Loader2, CheckCircle2, XCircle, LinkIcon, Unlink, Plus } from 'lucide-react'
-import Image from 'next/image'
 import type { SocialPost, SocialToken, OAuthPlatform } from '@/types'
 import {
   getYouTubeOAuthUrl,
@@ -121,19 +120,9 @@ function PlatformCard({
       {/* Connected state */}
       {isConnected && token ? (
         <div className="flex items-center gap-3">
-          {token.platform_avatar_url ? (
-            <Image
-              src={token.platform_avatar_url}
-              alt={token.platform_username ?? config.label}
-              width={32}
-              height={32}
-              className="size-8 rounded-full object-cover flex-shrink-0"
-            />
-          ) : (
-            <div className="size-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-              <span className={`scale-75 ${config.color}`}>{config.icon}</span>
-            </div>
-          )}
+          <div className="size-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span className={`scale-75 ${config.color}`}>{config.icon}</span>
+          </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium text-white truncate">
               {token.platform_username ?? 'Connected'}
