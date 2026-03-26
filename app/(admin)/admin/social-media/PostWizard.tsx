@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { X, Video, Image, LayoutGrid, Youtube, Instagram, Upload, Loader2, ChevronRight, ChevronLeft, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { createSocialPost } from '@/app/(admin)/admin/actions'
+import { createSocialPost } from '@/app/(admin)/admin/social-media/actions'
 import type { SocialPostType, SocialPlatform, PlatformSettings } from '@/types'
 
 type WizardFormState = {

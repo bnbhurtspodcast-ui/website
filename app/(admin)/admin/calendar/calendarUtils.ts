@@ -10,7 +10,7 @@ import {
   parseISO,
 } from 'date-fns'
 
-import type { CalendarEvent, SocialPost } from '@/types'
+import type { CalendarEvent, SocialPost, RecordingSessionTask } from '@/types'
 
 // Returns the 35–42 day grid for a given month, Mon–Sun weeks
 export function buildCalendarGrid(year: number, month: number): Date[] {
@@ -46,6 +46,18 @@ export function groupSocialPostsByDate(
     const key = post.scheduled_at.slice(0, 10) // "YYYY-MM-DD"
     if (!acc[key]) acc[key] = []
     acc[key].push(post)
+    return acc
+  }, {})
+}
+
+// Groups recording session tasks into a date-keyed map using due_date
+export function groupRecordingTasksByDate(
+  tasks: RecordingSessionTask[]
+): Record<string, RecordingSessionTask[]> {
+  return tasks.reduce<Record<string, RecordingSessionTask[]>>((acc, task) => {
+    const key = task.due_date
+    if (!acc[key]) acc[key] = []
+    acc[key].push(task)
     return acc
   }, {})
 }

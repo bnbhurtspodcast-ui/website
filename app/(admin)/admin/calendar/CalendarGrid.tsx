@@ -2,19 +2,21 @@
 
 import { buildCalendarGrid, toDateKey, isSameMonth, isToday } from '@/app/(admin)/admin/calendar/calendarUtils'
 import { CalendarCell } from '@/app/(admin)/admin/calendar/CalendarCell'
-import type { CalendarEvent, SocialPost } from '@/types'
+import type { CalendarEvent, SocialPost, RecordingSessionTask } from '@/types'
 
 export function CalendarGrid({
   year,
   month,
   eventsByDate,
   socialPostsByDate,
+  recordingTasksByDate,
   onEventClick,
 }: {
   year: number
   month: number
   eventsByDate: Record<string, CalendarEvent[]>
   socialPostsByDate: Record<string, SocialPost[]>
+  recordingTasksByDate: Record<string, RecordingSessionTask[]>
   onEventClick: (event: CalendarEvent) => void
 }) {
   const days = buildCalendarGrid(year, month)
@@ -28,6 +30,7 @@ export function CalendarGrid({
           day={day}
           events={eventsByDate[toDateKey(day)] ?? []}
           socialPosts={socialPostsByDate[toDateKey(day)] ?? []}
+          recordingTasks={recordingTasksByDate[toDateKey(day)] ?? []}
           isCurrentMonth={isSameMonth(day, currentMonth)}
           isToday={isToday(day)}
           onEventClick={onEventClick}

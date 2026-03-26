@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { format, parseISO } from 'date-fns'
 import { Youtube, Instagram, Trash2, History, Video, Image, LayoutGrid } from 'lucide-react'
-import { deleteSocialPost } from '@/app/(admin)/admin/actions'
+import { deleteSocialPost } from '@/app/(admin)/admin/social-media/actions'
 import type { SocialPost, SocialPlatform } from '@/types'
 
 const PLATFORM_ICONS: Record<SocialPlatform, React.ReactNode> = {

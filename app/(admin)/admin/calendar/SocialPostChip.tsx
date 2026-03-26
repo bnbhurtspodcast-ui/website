@@ -12,7 +12,7 @@ export function SocialPostChip({ post }: { post: SocialPost }) {
       className={[
         'w-full text-left px-1.5 py-0.5 rounded text-[10px] font-semibold',
         'border truncate leading-tight',
-        'bg-red-500/20 border-red-500/40 text-red-200',
+        'bg-green-500/20 border-green-500/40 text-green-200',
       ].join(' ')}
     >
       {label}

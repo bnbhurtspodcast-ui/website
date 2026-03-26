@@ -9,7 +9,7 @@ import {
   getMetaOAuthUrl,
   getThreadsOAuthUrl,
   disconnectSocialPlatform,
-} from '@/app/(admin)/admin/actions'
+} from '@/app/(admin)/admin/social-media/actions'
 import { PostWizard } from '@/app/(admin)/admin/social-media/PostWizard'
 import { PostList } from '@/app/(admin)/admin/social-media/PostList'
 import { PostHistory } from '@/app/(admin)/admin/social-media/PostHistory'

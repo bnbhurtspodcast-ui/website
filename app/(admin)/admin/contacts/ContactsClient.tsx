@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Search, Filter, Eye, Trash2, X, RefreshCw } from 'lucide-react'
 import type { ContactSubmission } from '@/types'
 import { createClient } from '@/lib/supabase/client'
-import { updateContactStatus, deleteContactSubmission, reviewContactSubmission } from '@/app/(admin)/admin/actions'
+import { updateContactStatus, deleteContactSubmission, reviewContactSubmission } from '@/app/(admin)/admin/contacts/actions'
 
 const statusColor: Record<string, string> = {
   new: 'admin-badge admin-badge-new',

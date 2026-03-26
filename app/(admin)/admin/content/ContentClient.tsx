@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { FileText, Clock, Calendar, Youtube, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import type { Episode } from '@/types'
-import { saveHighlightedEpisode } from '@/app/(admin)/admin/actions'
+import { saveHighlightedEpisode } from '@/app/(admin)/admin/settings/actions'
 
 interface ContentClientProps {
   episodes: Episode[]

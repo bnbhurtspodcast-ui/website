@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import { Youtube, Instagram, Loader2, CheckCircle2, XCircle, LinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import type { SocialToken, OAuthPlatform } from '@/types'
-import { getYouTubeOAuthUrl, getTikTokOAuthUrl, getMetaOAuthUrl, getThreadsOAuthUrl } from '@/app/(admin)/admin/actions'
+import { getYouTubeOAuthUrl, getTikTokOAuthUrl, getMetaOAuthUrl, getThreadsOAuthUrl } from '@/app/(admin)/admin/social-media/actions'
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 

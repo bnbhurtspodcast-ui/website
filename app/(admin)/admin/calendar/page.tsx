@@ -7,7 +7,8 @@ import {
 } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
 import { CalendarClient } from '@/app/(admin)/admin/calendar/CalendarClient'
-import { getHosts } from '@/app/(admin)/admin/actions'
+import { getHosts } from '@/app/(admin)/admin/hosts/actions'
+import { getRecordingSessionTasksForDateRange } from '@/app/(admin)/admin/calendar/actions'
 import type { CalendarEvent, SocialPost } from '@/types'
 
 export const revalidate = 0
@@ -30,7 +31,10 @@ export default async function CalendarPage({
   const supabase = await createClient()
   const gridFromStr = format(gridFrom, 'yyyy-MM-dd')
   const gridToStr = format(gridTo, 'yyyy-MM-dd')
-  const [{ data }, { data: socialPostsData }, hosts] = await Promise.all([
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const [{ data }, { data: socialPostsData }, hosts, recordingTasks] = await Promise.all([
     supabase
       .from('events')
       .select('*')
@@ -46,6 +50,7 @@ export default async function CalendarPage({
       .in('status', ['scheduled', 'posted'])
       .order('scheduled_at', { ascending: true }),
     getHosts(),
+    getRecordingSessionTasksForDateRange(gridFromStr, gridToStr),
   ])
 
   return (
@@ -55,6 +60,8 @@ export default async function CalendarPage({
       year={year}
       month={month}
       hosts={hosts}
+      recordingTasks={recordingTasks}
+      currentUserId={user?.id ?? null}
     />
   )
 }

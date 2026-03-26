@@ -8,7 +8,7 @@ import {
   updateAffiliateLink,
   deleteAffiliateLink,
   toggleAffiliateLinkActive,
-} from '@/app/(admin)/admin/actions'
+} from '@/app/(admin)/admin/affiliate-links/actions'
 
 type FormState = {
   name: string

@@ -107,6 +107,8 @@ export interface Host {
 
 // ── EDMTrain / Calendar types ──────────────────────────────────────────────────
 
+export type EventType = 'event' | 'festival' | 'livestream' | 'social_post' | 'recording_session'
+
 export interface EventArtist {
   id: number
   name: string
@@ -136,6 +138,34 @@ export interface CalendarEvent {
   synced_at?: string | null
   created_at: string
   updated_at: string
+  // Extended fields
+  event_type?: EventType
+  description?: string | null
+  reviewed?: boolean
+}
+
+export interface EventReview {
+  id: string
+  event_id: string
+  reviewer_id: string
+  reviewer_name?: string
+  sound: number
+  production: number
+  vibes: number
+  venue: number
+  journey: number
+  description: string | null
+  will_go_again: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface RecordingSessionTask {
+  id: string
+  title: string
+  due_date: string
+  event_id?: string | null
+  assignee_names: string[]
 }
 
 export interface EdmtrainEvent {
@@ -166,6 +196,21 @@ export interface EdmtrainEvent {
 export interface EdmtrainApiResponse {
   success: boolean
   data: EdmtrainEvent[]
+}
+
+export interface EdmtrainLocationSuggestion {
+  value: string  // e.g. "Toronto, ON"
+  data: {
+    locationId: number
+    mediumString: string  // e.g. "Toronto, ON"
+    shortString: string   // e.g. "Toronto"
+  }
+  type: null
+}
+
+export interface EdmtrainAutocompleteLocationResponse {
+  query: string
+  suggestions: EdmtrainLocationSuggestion[]
 }
 
 // ── site_settings ─────────────────────────────────────────────────────────────

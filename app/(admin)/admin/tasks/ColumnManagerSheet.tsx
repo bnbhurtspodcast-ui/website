@@ -4,7 +4,7 @@ import { useState, useTransition, useRef } from 'react'
 import { Trash2, Plus, GripVertical } from 'lucide-react'
 import type { KanbanColumn } from '@/types'
 import { COLUMN_TOP_COLOR_MAP } from '@/app/(admin)/admin/tasks/constants'
-import { createColumn, updateColumn, deleteColumn } from '@/app/(admin)/admin/actions'
+import { createColumn, updateColumn, deleteColumn } from '@/app/(admin)/admin/tasks/actions'
 import {
   Sheet,
   SheetContent,

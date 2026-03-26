@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { changePassword } from '@/app/(admin)/admin/actions'
+import { changePassword } from '@/app/(admin)/admin/settings/actions'
 
 export default function ChangePasswordForm() {
   const [current, setCurrent] = useState('')

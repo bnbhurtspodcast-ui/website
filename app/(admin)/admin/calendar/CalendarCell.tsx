@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { format } from 'date-fns'
 import { EventChip } from '@/app/(admin)/admin/calendar/EventChip'
 import { SocialPostChip } from '@/app/(admin)/admin/calendar/SocialPostChip'
-import type { CalendarEvent, SocialPost } from '@/types'
+import { RecordingSessionChip } from '@/app/(admin)/admin/calendar/RecordingSessionChip'
+import type { CalendarEvent, SocialPost, RecordingSessionTask } from '@/types'
 
 const MAX_VISIBLE = 3
 
@@ -12,6 +13,7 @@ export function CalendarCell({
   day,
   events,
   socialPosts,
+  recordingTasks,
   isCurrentMonth,
   isToday,
   onEventClick,
@@ -19,14 +21,16 @@ export function CalendarCell({
   day: Date
   events: CalendarEvent[]
   socialPosts: SocialPost[]
+  recordingTasks: RecordingSessionTask[]
   isCurrentMonth: boolean
   isToday: boolean
   onEventClick: (event: CalendarEvent) => void
 }) {
   const [expanded, setExpanded] = useState(false)
 
+  const allItems = events.length
   const displayed = expanded ? events : events.slice(0, MAX_VISIBLE)
-  const overflowCount = events.length - MAX_VISIBLE
+  const overflowCount = allItems - MAX_VISIBLE
 
   return (
     <div
@@ -50,9 +54,13 @@ export function CalendarCell({
 
       {/* Event chips */}
       <div className="flex flex-col gap-0.5 flex-1">
-        {/* Social post chips — shown first in red */}
+        {/* Social post chips */}
         {socialPosts.map((post) => (
           <SocialPostChip key={post.id} post={post} />
+        ))}
+        {/* Recording session chips */}
+        {recordingTasks.map((task) => (
+          <RecordingSessionChip key={task.id} task={task} />
         ))}
         {displayed.map((event) => (
           <EventChip
