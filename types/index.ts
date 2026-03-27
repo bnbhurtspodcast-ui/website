@@ -153,7 +153,7 @@ export interface EventReview {
   production: number
   vibes: number
   venue: number
-  journey: number
+  cost: number
   description: string | null
   will_go_again: boolean
   created_at: string

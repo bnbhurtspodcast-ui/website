@@ -9,6 +9,7 @@ import { updateEventHosts } from '@/app/(admin)/admin/hosts/actions'
 import { EVENT_TYPE_COLORS, resolveEventType } from '@/app/(admin)/admin/calendar/eventTypeColors'
 import { StarRating } from '@/app/(admin)/admin/calendar/StarRating'
 import { EventReviewForm } from '@/app/(admin)/admin/calendar/EventReviewForm'
+import { REVIEW_WEIGHTS, REVIEW_DESCRIPTIONS } from '@/app/(admin)/admin/calendar/reviewWeights'
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
   event: 'Event',
@@ -152,7 +153,14 @@ export function EventDetailModal({
   }
 
   function calcScore(r: EventReview) {
-    return ((r.sound + r.production + r.vibes + r.venue + r.journey) / 5).toFixed(2)
+    if (!r.cost) return ((r.sound + r.production + r.vibes + r.venue) / 4).toFixed(2)
+    return (
+      r.sound * REVIEW_WEIGHTS.sound +
+      r.vibes * REVIEW_WEIGHTS.vibes +
+      r.production * REVIEW_WEIGHTS.production +
+      r.venue * REVIEW_WEIGHTS.venue +
+      r.cost * REVIEW_WEIGHTS.cost
+    ).toFixed(2)
   }
 
   function getInitials(name?: string) {
@@ -520,11 +528,11 @@ export function EventDetailModal({
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <StarRating label="Sound" value={r.sound} size="sm" />
-                      <StarRating label="Production" value={r.production} size="sm" />
-                      <StarRating label="Vibes" value={r.vibes} size="sm" />
-                      <StarRating label="Venue" value={r.venue} size="sm" />
-                      <StarRating label="Journey" value={r.journey} size="sm" />
+                      <StarRating label="Sound" description={REVIEW_DESCRIPTIONS.sound} value={r.sound} size="sm" />
+                      <StarRating label="Vibes" description={REVIEW_DESCRIPTIONS.vibes} value={r.vibes} size="sm" />
+                      <StarRating label="Production" description={REVIEW_DESCRIPTIONS.production} value={r.production} size="sm" />
+                      <StarRating label="Venue" description={REVIEW_DESCRIPTIONS.venue} value={r.venue} size="sm" />
+                      <StarRating label="Cost" description={REVIEW_DESCRIPTIONS.cost} value={r.cost} size="sm" />
                     </div>
                     {r.will_go_again && (
                       <span className="inline-flex items-center gap-1 text-xs text-green-300 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">

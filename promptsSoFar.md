@@ -285,9 +285,64 @@ In the Kanban Board, for column 'Done' has a soft delete after 1 week of placing
 
 ----
 
-We would like to do Show reviews for the shows that we have attended in the event sheet.
+I would like to document my APIs that I have built for this project. Use Swagger to log all APIs and what does it do.
 
-So for the past shows
+Create a memory for certain task that needs to be done while working on the project
 
 
 -----
+
+
+We would like to do Show reviews for the shows that we have attended in the event sheet.
+
+To do list:
+- Create a button on `Calendar` tab to create an event, it will follow the data structure of what the event block has. Extending the db to have description and link.
+- These now have event types as we have color coded for event, festival, livestream, social post, and recording session
+- We are going to tie in `Recording session` in the kanban board into calendar
+- For event, festival, livestream type of events will have an reviewed boolean
+- Create a new table that will link via event ID to have Reviews because many host can write reviews of the same event
+- Inside the review, to rate out of 5 stars in catagories with the formula of
+- (Sound, production, vibes, venue, journey)/ 6
+- These category can be rated out of 5, description, and have a toggle of `Will go again`
+- It will save the data that will link the reviewer to the event, which will show who reviewed and what are the scores
+
+
+
+-----
+
+
+Under create an event here, we would like to be able to add in event beyond Toronto, so we should create a button within the create event to `Find it on EDMTrain` so we can look up where and have a list to choose from. They have a way to search via city or event have the functionality for both
+
+https://edmtrain.com/api-documentation
+
+Once an event is created here, it will automatically gets updated as a node in `Events` tab under kanban board as a task cause the creation is intentional and there will be people going
+
+
+-----
+
+Removing Journey as a category the new weighing scale would be
+
+  sound:      0.30, // strongest
+  vibes:      0.30, 
+  production: 0.20,
+  venue:      0.15,
+  cost:       0.05,  // least
+
+
+
+We also need to provide context on what does these category mean for people to understand
+
+Sound
+- Incorporates the journey set list, the new IPs, and how it resonates with you.
+
+Vibes
+- The energy, showmanships, PLURR and the smiles of the crowd and DJ
+
+Production
+- The lazers, visuals, stage design and lighting.
+
+Venue
+- The logistics, bar server, hospitality, and security
+
+Cost
+- Is it worth all from the money that you put in, 1 star is not worth it and 5 is most worth it

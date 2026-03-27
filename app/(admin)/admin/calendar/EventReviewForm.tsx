@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { Info } from 'lucide-react'
 import { StarRating } from '@/app/(admin)/admin/calendar/StarRating'
 import { createEventReview } from '@/app/(admin)/admin/calendar/actions'
+import { REVIEW_WEIGHTS, REVIEW_DESCRIPTIONS } from '@/app/(admin)/admin/calendar/reviewWeights'
 import type { EventReview } from '@/types'
 
 type ReviewFormData = {
@@ -10,7 +12,7 @@ type ReviewFormData = {
   production: number
   vibes: number
   venue: number
-  journey: number
+  cost: number
   description: string
   will_go_again: boolean
 }
@@ -31,16 +33,25 @@ export function EventReviewForm({
     production: existingReview?.production ?? 0,
     vibes: existingReview?.vibes ?? 0,
     venue: existingReview?.venue ?? 0,
-    journey: existingReview?.journey ?? 0,
+    cost: existingReview?.cost ?? 0,
     description: existingReview?.description ?? '',
     will_go_again: existingReview?.will_go_again ?? false,
   })
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [showFormula, setShowFormula] = useState(false)
 
-  const totalScore = form.sound + form.production + form.vibes + form.venue + form.journey
-  const overallScore = totalScore > 0 ? (totalScore / 5).toFixed(2) : '—'
-  const canSubmit = form.sound > 0 && form.production > 0 && form.vibes > 0 && form.venue > 0 && form.journey > 0
+  const allRated = form.sound > 0 && form.production > 0 && form.vibes > 0 && form.venue > 0 && form.cost > 0
+  const overallScore = allRated
+    ? (
+        form.sound * REVIEW_WEIGHTS.sound +
+        form.vibes * REVIEW_WEIGHTS.vibes +
+        form.production * REVIEW_WEIGHTS.production +
+        form.venue * REVIEW_WEIGHTS.venue +
+        form.cost * REVIEW_WEIGHTS.cost
+      ).toFixed(2)
+    : '—'
+  const canSubmit = allRated
 
   function handleSubmit() {
     if (!canSubmit) return
@@ -68,18 +79,40 @@ export function EventReviewForm({
       </p>
 
       {/* Star ratings */}
-      <div className="space-y-2.5">
-        <StarRating label="Sound" value={form.sound} onChange={(v) => setForm((f) => ({ ...f, sound: v }))} />
-        <StarRating label="Production" value={form.production} onChange={(v) => setForm((f) => ({ ...f, production: v }))} />
-        <StarRating label="Vibes" value={form.vibes} onChange={(v) => setForm((f) => ({ ...f, vibes: v }))} />
-        <StarRating label="Venue" value={form.venue} onChange={(v) => setForm((f) => ({ ...f, venue: v }))} />
-        <StarRating label="Journey" value={form.journey} onChange={(v) => setForm((f) => ({ ...f, journey: v }))} />
+      <div className="space-y-3">
+        <StarRating label="Sound" description={REVIEW_DESCRIPTIONS.sound} value={form.sound} onChange={(v) => setForm((f) => ({ ...f, sound: v }))} />
+        <StarRating label="Vibes" description={REVIEW_DESCRIPTIONS.vibes} value={form.vibes} onChange={(v) => setForm((f) => ({ ...f, vibes: v }))} />
+        <StarRating label="Production" description={REVIEW_DESCRIPTIONS.production} value={form.production} onChange={(v) => setForm((f) => ({ ...f, production: v }))} />
+        <StarRating label="Venue" description={REVIEW_DESCRIPTIONS.venue} value={form.venue} onChange={(v) => setForm((f) => ({ ...f, venue: v }))} />
+        <StarRating label="Cost" description={REVIEW_DESCRIPTIONS.cost} value={form.cost} onChange={(v) => setForm((f) => ({ ...f, cost: v }))} />
       </div>
 
       {/* Overall score preview */}
-      <div className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-white/5 border border-white/8">
-        <span className="text-xs text-white/40">Overall Score</span>
-        <span className="text-sm font-bold text-[#FAA21B]">{overallScore} <span className="text-white/30 font-normal text-xs">/ 5</span></span>
+      <div className="rounded-lg bg-white/5 border border-white/8 overflow-hidden">
+        <div className="flex items-center justify-between px-2 py-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-white/40">Overall Score</span>
+            <button
+              type="button"
+              onClick={() => setShowFormula((v) => !v)}
+              className="text-white/25 hover:text-white/60 transition-colors"
+              aria-label="How is this scored?"
+            >
+              <Info size={11} />
+            </button>
+          </div>
+          <span className="text-sm font-bold text-[#FAA21B]">{overallScore} <span className="text-white/30 font-normal text-xs">/ 5</span></span>
+        </div>
+        {showFormula && (
+          <div className="px-2 pb-2 border-t border-white/8 pt-1.5 space-y-1">
+            {(Object.entries(REVIEW_WEIGHTS) as [keyof typeof REVIEW_WEIGHTS, number][]).map(([key, weight]) => (
+              <div key={key} className="flex items-center justify-between">
+                <span className="text-[10px] text-white/40 capitalize">{key}</span>
+                <span className="text-[10px] text-white/25">{(weight * 100).toFixed(0)}%</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Description */}

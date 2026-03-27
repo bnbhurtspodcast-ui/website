@@ -55,14 +55,27 @@ export async function createEvent(
 		.ilike("name", "events")
 		.maybeSingle();
 	if (eventsCol) {
+		const hostIds = data.hosts ?? [];
+		let assignee_names: string[] = [];
+		let assignee_ids: string[] = [];
+		if (hostIds.length > 0) {
+			const { data: hostRows } = await supabase
+				.from("hosts")
+				.select("id, name, user_id")
+				.in("id", hostIds);
+			if (hostRows) {
+				assignee_names = hostRows.map((h) => h.name as string);
+				assignee_ids = hostRows.map((h) => (h.user_id ?? h.id) as string);
+			}
+		}
 		await supabase.from("tasks").insert({
 			title: data.name,
 			description: `Event on ${data.event_date}${data.venue_name ? ` at ${data.venue_name}` : ""}`,
 			column_id: eventsCol.id,
 			priority: "medium",
 			event_id: row.id,
-			assignee_names: [],
-			assignee_ids: [],
+			assignee_names,
+			assignee_ids,
 			tags: [],
 			sort_order: 0,
 		});
@@ -112,7 +125,7 @@ type ReviewUpsertData = {
 	production: number;
 	vibes: number;
 	venue: number;
-	journey: number;
+	cost: number;
 	description?: string | null;
 	will_go_again: boolean;
 };
@@ -195,7 +208,7 @@ export async function getEventReviews(eventId: string): Promise<EventReview[]> {
 		production: r.production as number,
 		vibes: r.vibes as number,
 		venue: r.venue as number,
-		journey: r.journey as number,
+		cost: (r.cost ?? 0) as number,
 		description: r.description as string | null,
 		will_go_again: r.will_go_again as boolean,
 		created_at: r.created_at as string,
