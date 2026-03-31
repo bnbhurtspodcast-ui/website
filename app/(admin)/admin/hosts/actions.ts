@@ -60,7 +60,27 @@ export async function updateEventHosts(id: string, hosts: string[]) {
 		.from("events")
 		.update({ hosts, updated_at: new Date().toISOString() })
 		.eq("id", id);
+
+	// Sync the linked task's assignees
+	let assignee_names: string[] = [];
+	let assignee_ids: string[] = [];
+	if (hosts.length > 0) {
+		const { data: hostRows } = await supabase
+			.from("hosts")
+			.select("id, name, user_id")
+			.in("id", hosts);
+		if (hostRows) {
+			assignee_names = hostRows.map((h) => h.name as string);
+			assignee_ids = hostRows.map((h) => (h.user_id ?? h.id) as string);
+		}
+	}
+	await supabase
+		.from("tasks")
+		.update({ assignee_names, assignee_ids })
+		.eq("event_id", id);
+
 	revalidatePath("/admin/calendar");
+	revalidatePath("/admin/tasks");
 }
 
 export async function getHosts(): Promise<

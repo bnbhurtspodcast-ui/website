@@ -312,25 +312,29 @@ function EventModal({ event, onClose }: { event: EventWithHosts; onClose: () => 
               rel="noopener noreferrer"
               className="rave-btn inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold w-full justify-center"
             >
-              <Image src="/edmtrainLogo.svg" alt="" width={16} height={16} />
-              View on EDMTRAIN
+              {event.edmtrain_id && (
+                <Image src="/edmtrainLogo.svg" alt="" width={16} height={16} />
+              )}
+              {event.edmtrain_id ? 'View on EDMTRAIN' : 'View Ticketing Link'}
               <ExternalLink className="h-4 w-4" />
             </a>
           )}
 
-          {/* Attribution */}
-          <div className="flex items-center justify-center gap-2 opacity-40">
-            <span className="text-xs text-white/60">Event data provided by</span>
-            <a
-              href="https://edmtrain.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 hover:opacity-100 transition-opacity"
-            >
-              <Image src="/edmtrainLogo.svg" alt="EDMTRAIN" width={14} height={14} />
-              <span className="text-xs font-bold" style={{ color: '#ee008e' }}>EDMTRAIN</span>
-            </a>
-          </div>
+          {/* Attribution — EDMTrain events only */}
+          {event.edmtrain_id && (
+            <div className="flex items-center justify-center gap-2 opacity-40">
+              <span className="text-xs text-white/60">Event data provided by</span>
+              <a
+                href="https://edmtrain.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 hover:opacity-100 transition-opacity"
+              >
+                <Image src="/edmtrainLogo.svg" alt="EDMTRAIN" width={14} height={14} />
+                <span className="text-xs font-bold" style={{ color: '#ee008e' }}>EDMTRAIN</span>
+              </a>
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>

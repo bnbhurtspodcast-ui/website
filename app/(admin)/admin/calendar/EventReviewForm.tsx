@@ -80,7 +80,7 @@ export function EventReviewForm({
 
       {/* Star ratings */}
       <div className="space-y-3">
-        <StarRating label="Sound" description={REVIEW_DESCRIPTIONS.sound} value={form.sound} onChange={(v) => setForm((f) => ({ ...f, sound: v }))} />
+        <StarRating label="Music" description={REVIEW_DESCRIPTIONS.sound} value={form.sound} onChange={(v) => setForm((f) => ({ ...f, sound: v }))} />
         <StarRating label="Vibes" description={REVIEW_DESCRIPTIONS.vibes} value={form.vibes} onChange={(v) => setForm((f) => ({ ...f, vibes: v }))} />
         <StarRating label="Production" description={REVIEW_DESCRIPTIONS.production} value={form.production} onChange={(v) => setForm((f) => ({ ...f, production: v }))} />
         <StarRating label="Venue" description={REVIEW_DESCRIPTIONS.venue} value={form.venue} onChange={(v) => setForm((f) => ({ ...f, venue: v }))} />

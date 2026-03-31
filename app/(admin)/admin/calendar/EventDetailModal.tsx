@@ -153,7 +153,7 @@ export function EventDetailModal({
   }
 
   function calcScore(r: EventReview) {
-    if (!r.cost) return ((r.sound + r.production + r.vibes + r.venue) / 4).toFixed(2)
+    // if (!r.cost) return ((r.sound + r.production + r.vibes + r.venue) / 4).toFixed(2)
     return (
       r.sound * REVIEW_WEIGHTS.sound +
       r.vibes * REVIEW_WEIGHTS.vibes +
@@ -528,7 +528,7 @@ export function EventDetailModal({
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <StarRating label="Sound" description={REVIEW_DESCRIPTIONS.sound} value={r.sound} size="sm" />
+                      <StarRating label="Music" description={REVIEW_DESCRIPTIONS.sound} value={r.sound} size="sm" />
                       <StarRating label="Vibes" description={REVIEW_DESCRIPTIONS.vibes} value={r.vibes} size="sm" />
                       <StarRating label="Production" description={REVIEW_DESCRIPTIONS.production} value={r.production} size="sm" />
                       <StarRating label="Venue" description={REVIEW_DESCRIPTIONS.venue} value={r.venue} size="sm" />
