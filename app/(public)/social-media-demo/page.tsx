@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SocialDemoClient } from '@/app/(public)/social-media-demo/SocialDemoClient'
@@ -17,6 +18,7 @@ export default async function SocialMediaDemoPage({
 }: {
   searchParams: Promise<{ connected?: string; oauth_error?: string }>
 }) {
+  notFound()
   const params = await searchParams
 
   // Use service role to read tokens — no auth required for the demo page

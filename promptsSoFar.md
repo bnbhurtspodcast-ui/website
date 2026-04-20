@@ -346,3 +346,17 @@ Venue
 
 Cost
 - Is it worth all from the money that you put in, 1 star is not worth it and 5 is most worth it
+
+
+-----
+
+1. Wellfound: https://wellfound.com
+2. Working Nomads: https://workingnomads.com
+3. Web3 Jobs: https://cryptojobslist.com
+4. Remote OK: https://remoteok.com
+5. We Work Remotely: https://weworkremotely.com 
+
+
+----
+
+

@@ -28,7 +28,7 @@ const navGroups = [
       { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Task Board', path: '/admin/tasks', icon: Trello },
       { name: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
-      { name: 'Social Media', path: '/admin/social-media', icon: Share2 },
+      // { name: 'Social Media', path: '/admin/social-media', icon: Share2 }, // hidden: TikTok does not allow internal/personal use
     ],
   },
   {

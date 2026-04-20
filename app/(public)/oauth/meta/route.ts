@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { exchangeMetaCode } from '@/lib/oauth'
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl
+export async function GET(_request: NextRequest) {
+  return new NextResponse(null, { status: 404 })
+  const { searchParams } = _request.nextUrl
   const code = searchParams.get('code')
   const state = searchParams.get('state')
   const error = searchParams.get('error')
