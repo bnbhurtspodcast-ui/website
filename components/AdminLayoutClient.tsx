@@ -17,6 +17,7 @@ import {
   CalendarDays,
   Link2,
   Share2,
+  CalendarCheck,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -37,6 +38,7 @@ const navGroups = [
       { name: 'Contact Submissions', path: '/admin/contacts', icon: Mail },
       { name: 'Guest Applications', path: '/admin/guests', icon: User },
       { name: 'Sponsorship Inquiries', path: '/admin/sponsorships', icon: Briefcase },
+      { name: 'Show Invitations', path: '/admin/invitations', icon: CalendarCheck },
     ],
   },
   {

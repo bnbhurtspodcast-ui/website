@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -27,7 +27,7 @@ const inputCls = [
 
 const labelCls = 'block text-[10px] font-bold text-white/40 mb-1.5 uppercase tracking-widest'
 
-type FormState = {
+export type FormState = {
   name: string
   event_type: EventType
   event_date: string
@@ -67,14 +67,22 @@ export function CreateEventSheet({
   onCreated,
   hosts,
   defaultDate,
+  prefill,
 }: {
   open: boolean
   onClose: () => void
   onCreated?: (event: CalendarEvent) => void
   hosts: { id: string; name: string }[]
   defaultDate?: string
+  prefill?: Partial<FormState> | null
 }) {
   const [form, setForm] = useState<FormState>({ ...emptyForm, event_date: defaultDate ?? '' })
+
+  useEffect(() => {
+    if (open && prefill) {
+      setForm({ ...emptyForm, event_date: defaultDate ?? '', ...prefill })
+    }
+  }, [open, prefill])
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
