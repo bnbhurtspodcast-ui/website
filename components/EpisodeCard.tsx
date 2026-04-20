@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Play, Calendar, Clock } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useAudioPlayer } from '@/components/AudioPlayerContext'
@@ -52,9 +53,11 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
       >
         {/* Image */}
         <div className="relative overflow-hidden">
-          <img
+          <Image
             src={episode.imageUrl}
             alt={episode.title}
+            width={400}
+            height={400}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/85 via-transparent to-transparent" />
@@ -62,6 +65,11 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           {/* Pulsing play button on hover */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <motion.div
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setCurrentEpisode(episode)
+              }}
               animate={{
                 boxShadow: [
                   '0 0 0px rgba(250,162,27,0)',
@@ -70,7 +78,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
                 ],
               }}
               transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center shadow-lg"
+              className="w-16 h-16 bg-[#FAA21B] rounded-full flex items-center justify-center shadow-lg cursor-pointer"
             >
               <Play className="h-7 w-7 text-[#112B4F] ml-1" />
             </motion.div>
@@ -78,7 +86,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-5 flex flex-col h-[11rem]">
+        <div className="p-5 flex flex-col min-h-[11rem]">
           <h3
             className="text-lg font-bold mb-2 line-clamp-2 transition-colors group-hover:text-[#FAA21B]"
             style={{

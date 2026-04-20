@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Play,
   Pause,
@@ -14,12 +15,20 @@ import {
 } from 'lucide-react'
 import { useAudioPlayer } from '@/components/AudioPlayerContext'
 
+const SPEEDS = [1, 1.25, 1.5, 2] as const
+type Speed = typeof SPEEDS[number]
+
 export function AudioPlayer() {
-  const { currentEpisode: episode, episodes, setCurrentEpisode, closePlayer } = useAudioPlayer()
+  const { currentEpisode: episode, episodes, savedTime, setCurrentEpisode, savePlaybackTime, closePlayer } = useAudioPlayer()
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(80)
+  const [speed, setSpeed] = useState<Speed>(() => {
+    if (typeof window === 'undefined') return 1
+    const saved = parseFloat(localStorage.getItem('bnb_speed') ?? '')
+    return (SPEEDS as readonly number[]).includes(saved) ? (saved as Speed) : 1
+  })
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
@@ -29,6 +38,13 @@ export function AudioPlayer() {
       setDuration(0)
     }
   }, [episode])
+
+  // Apply speed whenever it changes or a new episode loads
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = speed
+    }
+  }, [speed, episode])
 
   const currentIndex = episode ? episodes.findIndex((ep) => ep.id === episode.id) : -1
   const hasPrev = currentIndex > 0
@@ -53,13 +69,20 @@ export function AudioPlayer() {
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime)
+      const t = audioRef.current.currentTime
+      setCurrentTime(t)
+      savePlaybackTime(t)
     }
   }
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration)
+      if (savedTime > 0) {
+        audioRef.current.currentTime = savedTime
+        setCurrentTime(savedTime)
+      }
+      audioRef.current.playbackRate = speed
     }
   }
 
@@ -106,6 +129,20 @@ export function AudioPlayer() {
     }
   }
 
+  const cycleSpeed = () => {
+    const nextIndex = (SPEEDS.indexOf(speed) + 1) % SPEEDS.length
+    const nextSpeed = SPEEDS[nextIndex]
+    setSpeed(nextSpeed)
+    if (audioRef.current) {
+      audioRef.current.playbackRate = nextSpeed
+    }
+    try {
+      localStorage.setItem('bnb_speed', String(nextSpeed))
+    } catch {
+      // ignore
+    }
+  }
+
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
 
   if (!episode) return null
@@ -129,9 +166,11 @@ export function AudioPlayer() {
       <div className="mx-auto max-w-4xl px-4 py-3 overflow-hidden">
         {/* Mobile: episode info row */}
         <div className="flex sm:hidden items-center gap-2 mb-2 min-w-0 w-full overflow-hidden">
-          <img
+          <Image
             src={episode.imageUrl}
             alt={episode.title}
+            width={32}
+            height={32}
             className="h-8 w-8 rounded object-cover flex-shrink-0"
           />
           <div className="min-w-0 flex-1">
@@ -156,9 +195,11 @@ export function AudioPlayer() {
         <div className="flex items-center gap-3 w-full overflow-hidden">
           {/* Episode Info — desktop only */}
           <div className="hidden sm:flex items-center gap-3 min-w-0 w-[240px] flex-shrink-0">
-            <img
+            <Image
               src={episode.imageUrl}
               alt={episode.title}
+              width={48}
+              height={48}
               className="h-12 w-12 rounded-lg object-cover flex-shrink-0"
             />
             <div className="min-w-0">
@@ -239,6 +280,17 @@ export function AudioPlayer() {
                 }`}
               >
                 <SkipForward className="h-4 w-4" />
+              </button>
+
+              {/* Speed toggle */}
+              <button
+                onClick={cycleSpeed}
+                aria-label="Playback speed"
+                className={`px-2 py-1 rounded text-xs font-bold transition-colors ${
+                  speed !== 1 ? 'text-amber-400' : 'text-white/60 hover:text-white'
+                }`}
+              >
+                {speed}x
               </button>
             </div>
 
