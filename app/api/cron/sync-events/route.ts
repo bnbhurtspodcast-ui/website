@@ -77,9 +77,12 @@ export async function GET(request: Request) {
 			};
 		});
 
-	const { error } = await supabase
-		.from("events")
-		.upsert(rows, { onConflict: "edmtrain_id", ignoreDuplicates: false });
+	// Use rpc() so that hosts[] and notes are never overwritten on update.
+	// The plain .upsert() would reset absent columns to their DB defaults,
+	// wiping any manual edits made in the admin panel.
+	const { error } = await supabase.rpc("upsert_edmtrain_events", {
+		p_rows: rows,
+	});
 
 	if (error) {
 		console.error("[sync-events] upsert error:", error);

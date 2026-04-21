@@ -360,3 +360,25 @@ Cost
 ----
 
 
+We need to check if the event is self created through edmtrain or not. If the event was created without EDM train, this needs to be labled as `View ticketing link` and remove the event data provided by
+
+
+----
+
+I would like to create a new form section called "Show invitation", This will be a form that when people invite us to go to their shows, so that we will know what kind of event is it and will it be free, because we want to know if the event someone invited us that we can go
+
+- Form that will save to our db naming `invitation`
+- have a way to save just like the events tab
+- On the Calendar, have another button next to create event button labeled, "Generate Invitation"
+- Have a route in public `/invitation`
+
+
+
+----
+
+Tiktok does not allow users to post only internal content `Note from reviewer: TikTok for Developers currently does not support personal or internal company use`
+So I think the whole social media section will be scraped because it is of no use, so hide the feature for now and keep the files in placed. 
+
+
+----
+
