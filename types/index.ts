@@ -58,6 +58,26 @@ export interface SponsorshipInquiry {
   updated_at: string
 }
 
+export interface Invitation {
+  id: string
+  event_name: string
+  event_date?: string | null
+  event_type: 'event' | 'festival' | 'concert' | 'club_night' | 'other'
+  venue_name?: string | null
+  venue_location?: string | null
+  is_free: boolean
+  ticket_price?: string | null
+  description?: string | null
+  contact_name: string
+  contact_email: string
+  contact_phone?: string | null
+  message?: string | null
+  status: 'new' | 'reviewed' | 'accepted' | 'declined'
+  reviewed_by?: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface AuthUser {
   id: string
   email: string

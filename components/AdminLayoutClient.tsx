@@ -17,6 +17,7 @@ import {
   CalendarDays,
   Link2,
   Share2,
+  CalendarCheck,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -28,7 +29,7 @@ const navGroups = [
       { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Task Board', path: '/admin/tasks', icon: Trello },
       { name: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
-      { name: 'Social Media', path: '/admin/social-media', icon: Share2 },
+      // { name: 'Social Media', path: '/admin/social-media', icon: Share2 }, // hidden: TikTok does not allow internal/personal use
     ],
   },
   {
@@ -37,6 +38,7 @@ const navGroups = [
       { name: 'Contact Submissions', path: '/admin/contacts', icon: Mail },
       { name: 'Guest Applications', path: '/admin/guests', icon: User },
       { name: 'Sponsorship Inquiries', path: '/admin/sponsorships', icon: Briefcase },
+      { name: 'Show Invitations', path: '/admin/invitations', icon: CalendarCheck },
     ],
   },
   {

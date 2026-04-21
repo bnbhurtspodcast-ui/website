@@ -1,18 +1,21 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Ticket } from 'lucide-react'
 import { format, addMonths, subMonths } from 'date-fns'
 import { CalendarGrid } from '@/app/(admin)/admin/calendar/CalendarGrid'
 import { EventDetailModal } from '@/app/(admin)/admin/calendar/EventDetailModal'
 import { CreateEventSheet } from '@/app/(admin)/admin/calendar/CreateEventSheet'
+import type { FormState } from '@/app/(admin)/admin/calendar/CreateEventSheet'
+import { InvitationPickerSheet } from '@/app/(admin)/admin/calendar/InvitationPickerSheet'
 import {
   groupEventsByDate,
   groupSocialPostsByDate,
   groupRecordingTasksByDate,
 } from '@/app/(admin)/admin/calendar/calendarUtils'
 import { getEventReviews } from '@/app/(admin)/admin/calendar/actions'
+import { createClient } from '@/lib/supabase/client'
 import type { CalendarEvent, SocialPost, RecordingSessionTask, EventReview } from '@/types'
 
 const DAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -39,7 +42,16 @@ export function CalendarClient({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [reviews, setReviews] = useState<EventReview[]>([])
   const [createSheetOpen, setCreateSheetOpen] = useState(false)
+  const [createSheetPrefill, setCreateSheetPrefill] = useState<Partial<FormState> | null>(null)
+  const [invitationPickerOpen, setInvitationPickerOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string>('')
   const [, startTransition] = useTransition()
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? '')
+    })
+  }, [])
 
   const currentDate = new Date(year, month, 1)
   const eventsByDate = groupEventsByDate(events)
@@ -86,6 +98,13 @@ export function CalendarClient({
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setInvitationPickerOpen(true)}
+            className="admin-btn-ghost px-4 py-2 rounded-lg text-sm flex items-center gap-1.5"
+          >
+            <Ticket className="size-4" aria-hidden="true" />
+            Invitations
+          </button>
           <button
             onClick={() => setCreateSheetOpen(true)}
             className="admin-btn-primary px-4 py-2 rounded-lg text-sm flex items-center gap-1.5"
@@ -181,9 +200,23 @@ export function CalendarClient({
 
       <CreateEventSheet
         open={createSheetOpen}
-        onClose={() => setCreateSheetOpen(false)}
+        onClose={() => {
+          setCreateSheetOpen(false)
+          setCreateSheetPrefill(null)
+        }}
         onCreated={handleEventCreated}
         hosts={hosts}
+        prefill={createSheetPrefill}
+      />
+
+      <InvitationPickerSheet
+        open={invitationPickerOpen}
+        onClose={() => setInvitationPickerOpen(false)}
+        currentUserEmail={userEmail}
+        onSelectInvitation={(prefill) => {
+          setCreateSheetPrefill(prefill)
+          setCreateSheetOpen(true)
+        }}
       />
     </div>
   )

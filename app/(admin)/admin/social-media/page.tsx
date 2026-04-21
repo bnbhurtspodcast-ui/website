@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SocialMediaClient } from '@/app/(admin)/admin/social-media/SocialMediaClient'
 import type { SocialPost, SocialToken } from '@/types'
@@ -9,6 +10,7 @@ export default async function SocialMediaPage({
 }: {
   searchParams: Promise<{ connected?: string; oauth_error?: string }>
 }) {
+  notFound()
   const supabase = await createClient()
   const params = await searchParams
 

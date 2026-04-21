@@ -144,6 +144,18 @@ function EventCard({ event, onClick }: { event: EventWithHosts; onClick: () => v
         </div>
       )}
 
+      {/* Going: host avatars */}
+      {event.attendingHosts.length > 0 && (
+        <div className="flex items-center gap-2 mt-auto pt-3">
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Going:</span>
+          <div className="flex -space-x-2">
+            {event.attendingHosts.map((host) => (
+              <HostAvatar key={host.id} host={host} size="sm" />
+            ))}
+          </div>
+        </div>
+      )}
+
     </motion.button>
   )
 }

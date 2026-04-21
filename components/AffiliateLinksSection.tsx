@@ -85,7 +85,7 @@ function AffiliateCard({ link }: { link: AffiliateLink }) {
         </p>
 
         {/* Terms */}
-        {link.terms && false && (
+        {link.terms && (
           <p
             className="text-xs leading-relaxed mb-4 italic"
             style={{ color: 'rgba(255,255,255,0.3)' }}
